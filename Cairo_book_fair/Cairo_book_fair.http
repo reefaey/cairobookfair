@@ -1,0 +1,6 @@
+@Cairo_book_fair_HostAddress = http://localhost:5025
+
+GET {{Cairo_book_fair_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
