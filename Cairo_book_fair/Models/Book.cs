@@ -6,18 +6,13 @@ namespace Cairo_book_fair.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Author { get; set; }
-
-        [ForeignKey("Hall")]
-        public int HallNumber { get; set; }
-        public Hall Hall { get; set; }
-        [ForeignKey("Stage")]
-        public string StageName { get; set; }
-        public Stage Stage { get; set; }
         public string ImageUrl { get; set; }
         public string PublishingYear { get; set; }
         public int PagesNumber { get; set; }
         public List<string> Category { get; set; }
-        public string SoundBook { get; set; }
+        public Publisher Publisher { get; set; }
+        public string? SoundBook { get; set; }
+        public Author Author {  get; set; }
+        public List<Review>? Reviews { get; set; }
     }
 }
