@@ -3,7 +3,6 @@
     public class BookCategory
     {
         public int Id { get; set; }
-        
         public int BookFK { get; set; }
         public int CategoryFK { get; set; }
 

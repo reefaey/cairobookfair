@@ -1,4 +1,7 @@
 
+using Cairo_book_fair.DBContext;
+using Microsoft.EntityFrameworkCore;
+
 namespace Cairo_book_fair
 {
     public class Program
@@ -13,6 +16,13 @@ namespace Cairo_book_fair
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<Context>(options =>
+            {
+                options.UseSqlServer("Data Source=.;Initial Catalog=Cairo_Book_Fair;trustservercertificate = true;Integrated Security=True;Encrypt=False");
+            });
+
+            builder.Services.AddCors(options => options.AddPolicy("MyPolicy", policy =>
+            policy.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
 
             var app = builder.Build();
 
