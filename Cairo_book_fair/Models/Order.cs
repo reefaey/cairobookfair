@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public decimal TotalPrice { get; set; }
         public List<Book> Items { get; set; }
-        public Account Account { get; set; }
+        public User Account { get; set; }
     }
 }

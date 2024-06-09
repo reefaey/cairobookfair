@@ -6,6 +6,6 @@
         public string Name { get; set; }
         public decimal Price { get; set; }
         public DateTime DateTime { get; set; }
-        public Account Account { get; set; }
+        public User User { get; set; }
     }
 }

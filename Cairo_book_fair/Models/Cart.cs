@@ -3,6 +3,6 @@
     public class Cart
     {
         public BookCart BookCart { get; set; }
-        public Account Account { get; set; }
+        public User Account { get; set; }
     }
 }

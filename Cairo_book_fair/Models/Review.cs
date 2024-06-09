@@ -6,6 +6,6 @@
         public DateTime Date {  get; set; }
         public string Comment { get; set; }
         public Book Book { get; set; }
-        public Account Account { get; set; }
+        public User Account { get; set; }
     }
 }
