@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cairo_book_fair.Models
 {
-    public class User : IdentityUser
+    public class User : IdentityUser 
     {
         [Required]
         [MaxLength(25, ErrorMessage = "Name Must Be Less Than 25 Char")]

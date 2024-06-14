@@ -31,8 +31,8 @@ namespace Cairo_book_fair.DBContext
         //{
         //    //// for default data in database like this ^_^
 
-        //    //modelBuilder.Entity<Product>()
-        //    //    .HasData(new Product() { Id = 2, Name = "car", Description = "Expinsive one", Price = 20000, Quentity = 10 });
+        //    //modelBuilder.Entity<Books>()
+        //    //    .HasData(new Book() { Id = 1, Name = "A", Description = "Expinsive one", Price = 20000, Quentity = 10 });
 
         //}
 
