@@ -1,5 +1,6 @@
 
 using Cairo_book_fair.DBContext;
+using Cairo_book_fair.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cairo_book_fair
@@ -18,11 +19,17 @@ namespace Cairo_book_fair
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer("Data Source=.;Initial Catalog=Cairo_Book_Fair;trustservercertificate = true;Integrated Security=True;Encrypt=False");
+                options.UseSqlServer("Data Source=DESKTOP-8H9KKU1\\SQLEXPRESS;Initial Catalog=CairoBook;Integrated Security=True;Encrypt=False");
             });
 
             builder.Services.AddCors(options => options.AddPolicy("MyPolicy", policy =>
             policy.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
+
+
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+
+
 
             var app = builder.Build();
 
