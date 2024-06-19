@@ -1,6 +1,8 @@
 
 using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
+using Cairo_book_fair.Repositories;
+using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,11 @@ namespace Cairo_book_fair
             {
                 options.UseSqlServer("Data Source=.;Initial Catalog=Cairo_Book_Fair;trustservercertificate = true;Integrated Security=True;Encrypt=False");
             });
+
+            builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
+            builder.Services.AddScoped<IAuthorService, AuthorService>();
+
+
 
             builder.Services.AddCors(options => options.AddPolicy("MyPolicy", policy =>
             policy.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
@@ -111,7 +118,6 @@ namespace Cairo_book_fair
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

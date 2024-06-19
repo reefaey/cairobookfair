@@ -1,8 +1,14 @@
-﻿namespace Cairo_book_fair.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Cairo_book_fair.Models
 {
     public class Cart
     {
-        public BookCart BookCart { get; set; }
-        public User Account { get; set; }
+        public int Id { get; set; }
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public decimal TotalCost { get; set; }
+        public List<BookCart>? BookCart { get; set; }
+        public User User { get; set; }
     }
 }
