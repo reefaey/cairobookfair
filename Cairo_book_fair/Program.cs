@@ -19,7 +19,7 @@ namespace Cairo_book_fair
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer("Data Source=DESKTOP-8H9KKU1\\SQLEXPRESS;Initial Catalog=CairoBook;Integrated Security=True;Encrypt=False");
+                options.UseSqlServer("Data Source=.;Initial Catalog=CairoBook;Integrated Security=True;Encrypt=False");
             });
 
             builder.Services.AddCors(options => options.AddPolicy("MyPolicy", policy =>
