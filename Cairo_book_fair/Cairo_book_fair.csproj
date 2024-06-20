@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Hub\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
