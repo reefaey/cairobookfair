@@ -12,9 +12,10 @@ namespace Cairo_book_fair.Models
 
         public string? ProfileImage { get; set; } = "default";
 
+        //BirthDay
+
         [MaxLength(150, ErrorMessage = "Bio Must Be Less Than 150 Char")]
         public string? Bio { get; set; } = "Hello";
-
         public string? Location { get; set; } = "";
         public DateTime JoinDate { get; set; } = DateTime.Now;
         public List<Ticket>? Tickets { get; set; }
