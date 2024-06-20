@@ -47,7 +47,7 @@ namespace Cairo_book_fair.Controllers
                 bookDTO.PublishingYear = bookDB.PublishingYear;
                 bookDTO.ImageUrl = bookDB.ImageUrl;
                 bookDTO.HallNumber = bookDB.Publisher.Block.Hall.Id;
-                bookDTO.CategoryNames = bookDB.Categories.Select(c => c.Name).ToList();
+                //bookDTO.CategoryNames = bookDB.Categories.Select(c => c.Name).ToList();
 
                 return Ok(bookDTO);
             }

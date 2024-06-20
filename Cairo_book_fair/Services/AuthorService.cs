@@ -22,9 +22,9 @@ namespace Cairo_book_fair.Services
             authorRepository.Delete(item);
         }
 
-        public List<AuthorDTO> GetAll(string include = null)
+        public List<AuthorDTO> GetAllDTO(string include = null)
         {
-            var authors = authorRepository.GetAll()
+            var authors = authorRepository.GetAll(include)
                 .Select(author => new AuthorDTO
                 {
                     Name = author.Name,
@@ -35,6 +35,10 @@ namespace Cairo_book_fair.Services
                 .ToList();
 
             return authors;
+        }
+        public List<Author> GetAll(string include = null)
+        {
+            return authorRepository.GetAll(include);
         }
 
         public Author Get(int id)
