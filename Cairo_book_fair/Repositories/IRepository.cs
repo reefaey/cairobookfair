@@ -2,7 +2,7 @@
 {
     public interface IRepository<T>
     {
-        public List<T> GetAll(string include = null)
+        public List<T> GetAll(string include = null);
 
         T Get(int id);
 

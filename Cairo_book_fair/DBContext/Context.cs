@@ -20,6 +20,7 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Review> Reviews { get; set; }
         public DbSet<BookCategory> BooksCategories { get; set; }
         public DbSet<BookCart> BooksCarts { get; set; }
+        public DbSet<BookOrder> BooksOrders { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Ticket> Tickets { get; set; }

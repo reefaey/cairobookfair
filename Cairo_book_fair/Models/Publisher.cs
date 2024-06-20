@@ -1,4 +1,6 @@
-﻿namespace Cairo_book_fair.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Cairo_book_fair.Models
 {
     //public struct Location
     //{
@@ -10,6 +12,9 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public int NumberOfBooks { get; set; }
+
+        [ForeignKey("Block")]
+        public int BlockId { get; set; }
         public Block Block { get; set; }
 
         //public Location Location { get; set; }

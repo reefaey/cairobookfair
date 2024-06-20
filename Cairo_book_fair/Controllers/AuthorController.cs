@@ -1,4 +1,6 @@
 ﻿using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Models;
+using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,20 +10,13 @@ namespace Cairo_book_fair.Controllers
     [ApiController]
     public class AuthorController : ControllerBase
     {
+        private readonly IAuthorService _authorService;
+
         [HttpGet]
         public ActionResult<IEnumerable<AuthorDTO>> GetAuthors()
         {
-            var posts = _postRepository.GetAll()
-                .Select(post => new AuthorDTO
-                {
-                    Content = post.Content,
-                    PostTime = post.PostTime,
-                    PostImage = post.PostImage,
-                    UserId = post.UserId
-                })
-                .ToList();
-
-            return Ok(posts);
+            List<AuthorDTO> authorDTOs = _authorService.GetAll();
+            return Ok(authorDTOs);
         }
     }
 }
