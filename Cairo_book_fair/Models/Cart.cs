@@ -5,14 +5,11 @@ namespace Cairo_book_fair.Models
     public class Cart
     {
         public int Id { get; set; }
-        public BookCart BookCart { get; set; }
-
         [ForeignKey("User")]
-        public string userid { get; set; }
-
-        public User Account { get; set; }
-
-        public List<Book>? Books { get; set; }
+        public string UserId { get; set; }
+        public decimal TotalCost { get; set; }
+        public List<BookCart>? BookCarts { get; set; }
+        public User User { get; set; }
 
     }
 }

@@ -14,7 +14,7 @@ namespace Cairo_book_fair.Models
         public int NumberOfBooks { get; set; }
 
         [ForeignKey("Block")]
-        public int BlockID { get; set; }
+        public int BlockId { get; set; }
         public Block Block { get; set; }
 
         //public Location Location { get; set; }

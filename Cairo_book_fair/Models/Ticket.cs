@@ -1,4 +1,6 @@
-﻿namespace Cairo_book_fair.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Cairo_book_fair.Models
 {
     public class Ticket
     {
@@ -6,6 +8,9 @@
         public string Name { get; set; }
         public float Price { get; set; }
         public DateTime DateTime { get; set; }
+
+        [ForeignKey("User")]
+        public string UserId { get; set; }
         public User User { get; set; }
     }
 }
