@@ -14,5 +14,6 @@ namespace Cairo_book_fair.Models
         [ForeignKey("Hall")]
         public int HallId { get; set; }
         public Hall Hall { get; set; }
+
     }
 }

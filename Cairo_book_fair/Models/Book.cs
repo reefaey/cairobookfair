@@ -36,8 +36,7 @@ namespace Cairo_book_fair.Models
         //public int? CartId { get; set; } 
         public List<BookCart>? BookCarts { get; set; }
         public List<BookOrder>? BookOrders { get; set; }
-
-
+      
         //There is no FK For One to Many And Many To Many Relationships
     }
 }

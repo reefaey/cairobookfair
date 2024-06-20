@@ -12,5 +12,9 @@ namespace Cairo_book_fair.Models
         public string UserId { get; set; }
         public User User { get; set; }
         public DateTime OrderDate { get; set; } // Date the order was placed
+      
+        [ForeignKey("Shipment")]
+        public int? ShipmentId { get; set; }
+        public Shipment? Shipment { get; set; }
     }
 }

@@ -21,6 +21,5 @@ namespace Cairo_book_fair.Models
         public string? Notes { get; set; }
         public User User { get; set; }
         public Book Book { get; set; }
-
     }
 }

@@ -5,6 +5,7 @@ using Cairo_book_fair.Repositories;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -26,7 +27,7 @@ namespace Cairo_book_fair
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer("Data Source=.;Initial Catalog=Cairo_Book_Fair;trustservercertificate = true;Integrated Security=True;Encrypt=False");
+                options.UseSqlServer("Data Source=DESKTOP-8H9KKU1\\SQLEXPRESS;Initial Catalog=CairoBook;Integrated Security=True;Encrypt=False");
             });
 
             builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
@@ -74,14 +75,14 @@ namespace Cairo_book_fair
 
             builder.Services.AddSwaggerGen(swagger =>
             {
-                //This is to generate the Default UI of Swagger Documentation    
+                //Thisï¿½isï¿½toï¿½generateï¿½theï¿½Defaultï¿½UIï¿½ofï¿½Swaggerï¿½Documentationï¿½ï¿½ï¿½ï¿½
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "ASP.NET 5 Web API",
+                    Title = "ASP.NETï¿½5ï¿½Webï¿½API",
                     Description = " ITI Project"
                 });
-                // To Enable authorization using Swagger (JWT)    
+                //ï¿½Toï¿½Enableï¿½authorizationï¿½usingï¿½Swaggerï¿½(JWT)ï¿½ï¿½ï¿½ï¿½
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
@@ -89,7 +90,7 @@ namespace Cairo_book_fair
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+                    Description = "Enterï¿½'Bearer'ï¿½[space]ï¿½andï¿½thenï¿½yourï¿½validï¿½tokenï¿½inï¿½theï¿½textï¿½inputï¿½below.\r\n\r\nExample:ï¿½\"Bearerï¿½eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -106,6 +107,12 @@ namespace Cairo_book_fair
                     }
                     });
             });
+
+
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+
+
 
             var app = builder.Build();
 

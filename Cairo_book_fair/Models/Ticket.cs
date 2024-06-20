@@ -6,7 +6,7 @@ namespace Cairo_book_fair.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public decimal Price { get; set; }
+        public float Price { get; set; }
         public DateTime DateTime { get; set; }
 
         [ForeignKey("User")]
