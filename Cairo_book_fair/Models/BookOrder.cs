@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cairo_book_fair.Models
 {
-    [Keyless]
+    //[Keyless]
     public class BookOrder
     {
+        //public int Id { get; set; } // if there is more properties than essential of join table as quantity then u require id?
+
         [ForeignKey("Book")]
         public int BookId { get; set; }
         public Book Book { get; set; }

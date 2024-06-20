@@ -28,14 +28,43 @@ namespace Cairo_book_fair.DBContext
 
         public Context(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    //// for default data in database like this ^_^
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        //    //modelBuilder.Entity<Books>()
-        //    //    .HasData(new Book() { Id = 1, Name = "A", Description = "Expinsive one", Price = 20000, Quentity = 10 });
+            // Set precision and scale for decimal properties
+            modelBuilder.Entity<Book>()
+                .Property(b => b.Price)
+                .HasColumnType("decimal(18, 2)");
 
-        //}
+            modelBuilder.Entity<Cart>()
+                .Property(c => c.TotalCost)
+                .HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalPrice)
+                .HasColumnType("decimal(18, 2)");
+
+            // Other configurations
+            modelBuilder.Entity<BookCategory>()
+                .HasKey(bc => new { bc.BookId, bc.CategoryId });
+
+            modelBuilder.Entity<BookCart>()
+                .HasKey(bc => new { bc.BookId, bc.CartId });
+
+            modelBuilder.Entity<BookOrder>()
+                .HasKey(bo => new { bo.BookId, bo.OrderId });
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Shipment)
+                .WithOne(s => s.Order)
+                .HasForeignKey<Order>(o => o.ShipmentId);
+
+            //modelBuilder.Entity<Block>()
+            //.HasOne(b => b.Publisher)
+            //.WithOne(p => p.Block)
+            //.HasForeignKey<Publisher>(p => p.BlockId);
+        }
 
 
     }

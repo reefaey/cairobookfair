@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cairo_book_fair.Models
 {
-    [Keyless]
+    //[Keyless]
     public class BookCategory
     {
         //public int Id { get; set; }   // The id is the composite key
