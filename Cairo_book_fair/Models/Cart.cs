@@ -8,7 +8,7 @@ namespace Cairo_book_fair.Models
         [ForeignKey("User")]
         public string UserId { get; set; }
         public decimal TotalCost { get; set; }
-        public List<BookCart>? BookCart { get; set; }
+        public List<BookCart>? BookCarts { get; set; }
         public User User { get; set; }
     }
 }

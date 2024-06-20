@@ -1,11 +1,17 @@
-﻿namespace Cairo_book_fair.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Cairo_book_fair.Models
 {
     public class BookCategory
     {
-        public int Id { get; set; }
-        public int BookFK { get; set; }
-        public int CategoryFK { get; set; }
+        //public int Id { get; set; }   // The id is the composite key
 
-        //public Book
+        [ForeignKey("Book")]
+        public int BookId { get; set; }
+        public Book Book { get; set; }
+
+        [ForeignKey("Category")]
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }

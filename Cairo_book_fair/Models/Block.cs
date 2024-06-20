@@ -9,7 +9,7 @@ namespace Cairo_book_fair.Models
         public Publisher Publisher{ get; set; }
 
         [ForeignKey("Hall")]
-        public int HallID { get; set; }
+        public int HallId { get; set; }
         public Hall Hall { get; set; }
     }
 }
