@@ -6,6 +6,6 @@ namespace Cairo_book_fair.Services
 {
     public interface IAuthorService : IRepository<Author>
     {
-        public List<AuthorDTO> GetAll(string include = null);
+        public List<AuthorDTO> GetAllDTO(string include = null);
     }
 }

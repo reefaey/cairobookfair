@@ -15,7 +15,7 @@ namespace Cairo_book_fair.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<AuthorDTO>> GetAuthors()
         {
-            List<AuthorDTO> authorDTOs = _authorService.GetAll();
+            List<AuthorDTO> authorDTOs = _authorService.GetAllDTO();
             return Ok(authorDTOs);
         }
     }
