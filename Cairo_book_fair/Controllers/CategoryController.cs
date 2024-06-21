@@ -1,5 +1,5 @@
 ﻿using Cairo_book_fair.Models;
-using Cairo_book_fair.Repositories;
+using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cairo_book_fair.Controllers
@@ -8,24 +8,24 @@ namespace Cairo_book_fair.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository categoryRepository;
+        private readonly ICategoryService categoryService;
 
-        public CategoryController(ICategoryRepository categoryRepository)
+        public CategoryController(ICategoryService categoryService)
         {
-            this.categoryRepository = categoryRepository;
+            this.categoryService = categoryService;
         }
 
         [HttpGet]
         public IActionResult GetAll(string[] includes = null)
         {
-            List<Category> categories = categoryRepository.GetAll();
+            List<Category> categories = categoryService.GetAll();
             return Ok(categories);
         }
 
         [HttpGet("All")]
         public IActionResult Get(Func<Category, bool> where)
         {
-            List<Category> categories = categoryRepository.Get(where);
+            List<Category> categories = categoryService.Get(where);
             return Ok(categories);
 
         }
@@ -34,7 +34,7 @@ namespace Cairo_book_fair.Controllers
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            Category category = categoryRepository.Get(id);
+            Category category = categoryService.Get(id);
             if (category != null)
             {
                 return Ok(category);
@@ -47,8 +47,8 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid == true)
             {
-                categoryRepository.Insert(category);
-                categoryRepository.Save();
+                categoryService.Insert(category);
+                categoryService.Save();
                 return CreatedAtAction("Get", new { id = category.Id }, category);
             }
             return BadRequest(ModelState);
@@ -58,8 +58,8 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid == true)
             {
-                categoryRepository.Update(category);
-                categoryRepository.Save();
+                categoryService.Update(category);
+                categoryService.Save();
                 return NoContent();
             }
             return BadRequest(ModelState);
@@ -67,7 +67,7 @@ namespace Cairo_book_fair.Controllers
         [HttpDelete]
         public IActionResult Delete(Category category)
         {
-            categoryRepository.Delete(category);
+            categoryService.Delete(category);
             return NoContent();
         }
     }
