@@ -14,64 +14,43 @@ namespace Cairo_book_fair.Controllers
         private readonly IBookService bookService;
         private readonly IMapper mapper;
 
-        BookController(IBookService bookService, IMapper mapper)
+        public BookController(IBookService bookService, IMapper mapper)
         {
 
             this.bookService = bookService;
             this.mapper = mapper;
         }
-        ///////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         [HttpGet]
-        public IActionResult GetAll(int pageNo, int pagesize, string[] includes = null)
+        public IActionResult GetAll(string[] includes = null)
         {
-            List<Book> books = bookService.GetAll();
+            List<BookWithDetails> books = bookService.GetAll(includes);
             if (books != null)
             {
-                var booksDTO = mapper.Map<IEnumerable<BookWithDetails>>(books);
-                return Ok(booksDTO);
+                return Ok(books);
             }
-
-            //pagination//
-            int NoOfRecordsPerPage = 5;
-            int NoOfPages = (int)Math.Ceiling(books.Count / (double)NoOfRecordsPerPage);
-            int NoOfRecordsToSkip = (pageNo - 1) * NoOfRecordsPerPage;
-            books = books.Skip(NoOfRecordsToSkip).Take(NoOfRecordsPerPage).ToList();
-
-
             return BadRequest();
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ///////////////////////////////////////////////////////////////////////////
-        [HttpGet("{id:int}")]
-        public IActionResult Get(int id)
+        [HttpGet("Paginated")]
+        public IActionResult GetPaginatedBooks(int pageNo, int pagesize, string[] includes = null)
         {
-            Book bookDB = bookService.Get(id);
+            return Ok(bookService.GetPaginatedBooks());
+        }
 
-            if (bookDB != null)
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id, string[] include = null)
+        {
+            BookWithDetails book = bookService.Get(id, include);
+            if (book != null)
             {
-                BookWithDetails bookDTO = mapper.Map<BookWithDetails>(bookDB);
-
-                //bookDTO.BookName = bookDB.Name;
-                ///////////bookDTO.AuthorName = bookDB.Author.Name;
-                ////////////bookDTO.BlockName = bookDB.Publisher.Block.Name;
-                //bookDTO.PagesNumber = bookDB.PagesNumber;
-                //bookDTO.SoundBook = bookDB.SoundBook;
-                //bookDTO.PublishingYear = bookDB.PublishingYear;
-                //bookDTO.ImageUrl = bookDB.ImageUrl;
-                /////////////bookDTO.HallNumber = bookDB.Publisher.Block.Hall.Id;
-                /////////////bookDTO.CategoryNames = bookDB.Categories.Select(c => c.Name).ToList();
-
-                return Ok(bookDTO);
+                return Ok(book);
             }
             return BadRequest();
         }
-        /////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-        //////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost]
         public IActionResult Insert(Book bookDB)
@@ -103,6 +82,17 @@ namespace Cairo_book_fair.Controllers
         {
             bookService.Delete(book);
             return NoContent();
+        }
+        ///////////////////////////////////////////////////////////////////////////////
+        [HttpGet("Search")]
+        public IActionResult Search(String search)
+        {
+            List<BookWithDetails> books = bookService.Search(search);
+            if (books != null)
+            {
+                return Ok(books);
+            }
+            return NotFound("No books found");
         }
 
 
