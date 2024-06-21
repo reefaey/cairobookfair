@@ -3,10 +3,11 @@ using Cairo_book_fair.Models;
 
 namespace Cairo_book_fair.Repositories
 {
-    public class TicketRepository : Repository<Ticket>, ITicketRepository
+    public class AuthorRepository : Repository<Author>, IAuthorRepository
     {
-        public TicketRepository(Context _context) : base(_context)
+        public AuthorRepository(Context _context) : base(_context)
         {
         }
     }
 }
+

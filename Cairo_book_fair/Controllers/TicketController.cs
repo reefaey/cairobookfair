@@ -2,6 +2,10 @@
 using Cairo_book_fair.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+﻿using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Services;
+using System.Collections.Generic;
+
 
 namespace Cairo_book_fair.Controllers
 {
@@ -9,11 +13,14 @@ namespace Cairo_book_fair.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
+    
+        private readonly ITicketService _ticketService;
         private readonly ITicketRepository ticketRepository;
 
-        public TicketController(ITicketRepository ticketRepository)
+        public TicketController(ITicketRepository ticketRepository, ITicketService _ticketService)
         {
             this.ticketRepository = ticketRepository;
+            this._ticketService = _ticketService;
         }
 
         [HttpGet]
@@ -70,6 +77,15 @@ namespace Cairo_book_fair.Controllers
         {
             ticketRepository.Delete(ticket);
             return NoContent();
+            
+       
+
+        [HttpGet]
+        public ActionResult<IEnumerable<TicketDTO>> GetTickets()
+        {
+            List<TicketDTO> ticketDTOs = _ticketService.GetAllDTO();
+            return Ok(ticketDTOs);
+
         }
     }
 }

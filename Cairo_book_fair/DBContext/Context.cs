@@ -20,6 +20,7 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Review> Reviews { get; set; }
         public DbSet<BookCategory> BooksCategories { get; set; }
         public DbSet<BookCart> BooksCarts { get; set; }
+        public DbSet<BookOrder> BooksOrders { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -27,14 +28,43 @@ namespace Cairo_book_fair.DBContext
 
         public Context(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    //// for default data in database like this ^_^
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        //    //modelBuilder.Entity<Product>()
-        //    //    .HasData(new Product() { Id = 2, Name = "car", Description = "Expinsive one", Price = 20000, Quentity = 10 });
+            // Set precision and scale for decimal properties
+            modelBuilder.Entity<Book>()
+                .Property(b => b.Price)
+                .HasColumnType("decimal(18, 2)");
 
-        //}
+            modelBuilder.Entity<Cart>()
+                .Property(c => c.TotalCost)
+                .HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalPrice)
+                .HasColumnType("decimal(18, 2)");
+
+            // Other configurations
+            modelBuilder.Entity<BookCategory>()
+                .HasKey(bc => new { bc.BookId, bc.CategoryId });
+
+            modelBuilder.Entity<BookCart>()
+                .HasKey(bc => new { bc.BookId, bc.CartId });
+
+            modelBuilder.Entity<BookOrder>()
+                .HasKey(bo => new { bo.BookId, bo.OrderId });
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Shipment)
+                .WithOne(s => s.Order)
+                .HasForeignKey<Order>(o => o.ShipmentId);
+
+            //modelBuilder.Entity<Block>()
+            //.HasOne(b => b.Publisher)
+            //.WithOne(p => p.Block)
+            //.HasForeignKey<Publisher>(p => p.BlockId);
+        }
 
 
     }
