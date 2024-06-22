@@ -75,14 +75,14 @@ namespace Cairo_book_fair
 
             builder.Services.AddSwaggerGen(swagger =>
             {
-                //This�is�to�generate�the�Default�UI�of�Swagger�Documentation����
+                //This is to generate the Default UI of Swagger Documentation
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "ASP.NET�5�Web�API",
+                    Title = "ASP.NET 5 Web API",
                     Description = " ITI Project"
                 });
-                //�To�Enable�authorization�using�Swagger�(JWT)����
+                //To Enable authorization using Swagger (JWT)    
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
@@ -90,7 +90,7 @@ namespace Cairo_book_fair
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter�'Bearer'�[space]�and�then�your�valid�token�in�the�text�input�below.\r\n\r\nExample:�\"Bearer�eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {

@@ -33,14 +33,18 @@ namespace Cairo_book_fair.Controllers
                 User user = new User()
                 {
                     Email = NewUser.Email,
-                    UserName = NewUser.UserName,
-                    PasswordHash = NewUser.Password
+                    UserName = NewUser.Username,
+                    PasswordHash = NewUser.Password,
+                    Name = NewUser.Name,
+                    Location = NewUser.Location,
+                    ProfileImage = NewUser.ProfileImage,
+                    Bio = NewUser.Bio
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, NewUser.Password);
                 if (result.Succeeded)
                 {
-                    return Ok("Account Created Successfully");
+                    return Ok( new { message = "User registered successfully" });
                 }
                 return BadRequest(result.Errors);
 
@@ -89,19 +93,38 @@ namespace Cairo_book_fair.Controllers
             return BadRequest(ModelState);
         }
 
-        [Authorize]
-        [HttpGet]
+        //[Authorize]
+        [HttpPut("EditAccount")]
         public async Task<ActionResult> EditProfile(EditProfileDTO profileDTO)
         {
             string UserName = User.Identity.Name;
             User UserDB = await _userManager.FindByNameAsync(UserName);
-            UserDB.Name = profileDTO.Name;
-            UserDB.Location = profileDTO.Location;
-            UserDB.ProfileImage = profileDTO.ProfileImage;
-            UserDB.Bio = profileDTO.Bio;
-            await _userManager.UpdateAsync(UserDB);
-            return Ok();
 
+            if (UserDB != null)
+            {
+                UserDB.Name = profileDTO.Name;
+                UserDB.Location = profileDTO.Location;
+                UserDB.ProfileImage = profileDTO.ProfileImage;
+                UserDB.Bio = profileDTO.Bio;
+
+                IdentityResult result = await _userManager.UpdateAsync(UserDB);
+                if (result.Succeeded)
+                {
+                    return Ok(new
+                    {
+                        message = "Profile updated successfully",
+                        user = new
+                        {
+                            UserDB.Name,
+                            UserDB.Location,
+                            UserDB.ProfileImage,
+                            UserDB.Bio
+                        }
+                    });
+                }
+                return BadRequest(result.Errors);
+            }
+            return NotFound(new { message = "User not found" });
         }
 
         [HttpGet("userId")]
