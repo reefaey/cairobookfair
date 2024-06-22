@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cairo_book_fair.Models
 {
@@ -26,19 +25,17 @@ namespace Cairo_book_fair.Models
 
         [ForeignKey("Author")]
         public int AuthorId { get; set; }
-        public Author Author {  get; set; }
+        public Author Author { get; set; }
         public bool IsAvailableForDonation { get; set; } = false;
-        //[ForeignKey("Review")]
-        //public int? ReviewID { get; set; }
+
         public List<Review>? Reviews { get; set; }
 
-        //[ForeignKey("BookCarts")]
-        //public int? CartId { get; set; } 
-
-        public Donation? Donation {  get; set; }
+        [ForeignKey("Donation")]
+        public int? DonationId { get; set; }
+        public Donation? Donation { get; set; }
         public List<BookCart>? BookCarts { get; set; }
         public List<BookOrder>? BookOrders { get; set; }
-      
+
         //There is no FK For One to Many And Many To Many Relationships
     }
 }
