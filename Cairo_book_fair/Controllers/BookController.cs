@@ -1,6 +1,7 @@
-﻿using Cairo_book_fair.DTOs;
+﻿using AutoMapper;
+using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
-using Cairo_book_fair.Repositories;
+using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cairo_book_fair.Controllers
@@ -9,59 +10,55 @@ namespace Cairo_book_fair.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly IBookRepository bookRepository;
 
-        BookController(IBookRepository bookRepository)
+        private readonly IBookService bookService;
+        private readonly IMapper mapper;
+
+        public BookController(IBookService bookService, IMapper mapper)
         {
-            this.bookRepository = bookRepository;
+
+            this.bookService = bookService;
+            this.mapper = mapper;
         }
-        ///////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         [HttpGet]
         public IActionResult GetAll(string[] includes = null)
         {
-            List<Book> books = bookRepository.GetAll();
-            return Ok(books);
-        }
-        ////////////////////////////////////////////////////////////////////////////
-        [HttpGet("All")]
-        public IActionResult Get(Func<Book, bool> where)
-        {
-            List<Book> books = bookRepository.Get(where);
-
-            return Ok(books);
-        }
-        ///////////////////////////////////////////////////////////////////////////
-        [HttpGet("{id:int}")]
-        public IActionResult Get(int id)
-        {
-            Book bookDB = bookRepository.Get(id);
-            BookWithDetails bookDTO = new BookWithDetails();
-
-            if (bookDB != null)
+            List<BookWithDetails> books = bookService.GetAll(includes);
+            if (books != null)
             {
-                bookDTO.BookName = bookDB.Name;
-                bookDTO.AuthorName = bookDB.Author.Name;
-                bookDTO.BlockName = bookDB.Publisher.Block.Name;
-                bookDTO.PagesNumber = bookDB.PagesNumber;
-                bookDTO.SoundBook = bookDB.SoundBook;
-                bookDTO.PublishingYear = bookDB.PublishingYear;
-                bookDTO.ImageUrl = bookDB.ImageUrl;
-                bookDTO.HallNumber = bookDB.Publisher.Block.Hall.Id;
-                //bookDTO.CategoryNames = bookDB.Categories.Select(c => c.Name).ToList();
-
-                return Ok(bookDTO);
+                return Ok(books);
             }
             return BadRequest();
         }
-        //////////////////////////////////////////////////////////////////////////////////
-        ///
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [HttpGet("Paginated")]
+        public IActionResult GetPaginatedBooks(int pageNo, int pagesize, string[] includes = null)
+        {
+            return Ok(bookService.GetPaginatedBooks());
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id, string[] include = null)
+        {
+            BookWithDetails book = bookService.Get(id, include);
+            if (book != null)
+            {
+                return Ok(book);
+            }
+            return BadRequest();
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////
+
         [HttpPost]
         public IActionResult Insert(Book bookDB)
         {
             if (ModelState.IsValid == true)
             {
-                bookRepository.Insert(bookDB);
-                bookRepository.Save();
+                bookService.Insert(bookDB);
+                bookService.Save();
                 return CreatedAtAction("Get", new { id = bookDB.Id }, bookDB);
             }
             return BadRequest(ModelState);
@@ -73,17 +70,29 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid == true)
             {
-                bookRepository.Update(bookDB);
-                bookRepository.Save();
+                bookService.Update(bookDB);
+                bookService.Save();
                 return NoContent();
             }
             return BadRequest(ModelState);
         }
+        //////////////////////////////////////////////////////////////////
         [HttpDelete]
         public IActionResult Delete(Book book)
         {
-            bookRepository.Delete(book);
+            bookService.Delete(book);
             return NoContent();
+        }
+        ///////////////////////////////////////////////////////////////////////////////
+        [HttpGet("Search")]
+        public IActionResult Search(String search)
+        {
+            List<BookWithDetails> books = bookService.Search(search);
+            if (books != null)
+            {
+                return Ok(books);
+            }
+            return NotFound("No books found");
         }
 
 
