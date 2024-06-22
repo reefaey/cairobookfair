@@ -24,7 +24,6 @@ namespace Cairo_book_fair
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<Context>(options =>
             {
                 options.UseSqlServer("Data Source=.;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
@@ -34,10 +33,12 @@ namespace Cairo_book_fair
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IAuthorService, AuthorService>();
 
-
-
             builder.Services.AddCors(options => options.AddPolicy("MyPolicy", policy =>
-            policy.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
+                policy.AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyOrigin()
+            ));
+
             builder.Services.AddIdentity<User, IdentityRole>(
                 options =>
                 {
@@ -48,9 +49,18 @@ namespace Cairo_book_fair
                     options.Password.RequireUppercase = true;
                     options.Password.RequireLowercase = true;
                     options.Password.RequiredUniqueChars = 4;
+
+                    options.Lockout.AllowedForNewUsers = true;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+
+                    options.User.RequireUniqueEmail = true;
+
                 })
                 .AddEntityFrameworkStores<Context>()
                 .AddDefaultTokenProviders();
+
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme =
@@ -71,6 +81,10 @@ namespace Cairo_book_fair
                     IssuerSigningKey = new
                                 SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
+            }).AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]; ;
+                googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
             });
 
             builder.Services.AddSwaggerGen(swagger =>

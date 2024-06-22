@@ -1,5 +1,7 @@
 ﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +29,7 @@ namespace Cairo_book_fair.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserResgisterDTO NewUser)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && NewUser.Password == NewUser.ConfirmPassword)
             {
                 //create acc
                 User user = new User()
@@ -35,7 +37,7 @@ namespace Cairo_book_fair.Controllers
                     Email = NewUser.Email,
                     UserName = NewUser.Username,
                     PasswordHash = NewUser.Password,
-                    Name = NewUser.Name,
+                    Name = NewUser.Fullname,
                     Location = NewUser.Location,
                     ProfileImage = NewUser.ProfileImage,
                     Bio = NewUser.Bio
@@ -49,7 +51,7 @@ namespace Cairo_book_fair.Controllers
                 return BadRequest(result.Errors);
 
             }
-            return BadRequest(ModelState);
+            return BadRequest("Passwords do not match or model is invalid.");
         }
 
         [HttpPost("login")]
@@ -148,6 +150,32 @@ namespace Cairo_book_fair.Controllers
                     message = "Invalid Email"
                 });
             }
+        }
+
+        [HttpGet("GoogleLogin")]
+        public IActionResult GoogleLogin()
+        {
+            AuthenticationProperties properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("GoogleResponse")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+            if (!result.Succeeded)
+                return BadRequest(); // Handle error scenario
+
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            {
+                claim.Type,
+                claim.Value
+            });
+
+            // Here you would typically create or update the user in your database
+            // and generate a JWT token for them
+
+            return Ok(claims);
         }
     }
 }
