@@ -6,8 +6,7 @@ namespace Cairo_book_fair.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Phone { get; set; }
-
+        public int TicketNum { get; set; }
         public float Price { get; set; }
         public string side { get; set; }
 
@@ -16,6 +15,6 @@ namespace Cairo_book_fair.Models
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }
-        public string side { get; set; }
+
     }
 }

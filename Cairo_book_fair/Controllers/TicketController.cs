@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+﻿using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Models;
+using Cairo_book_fair.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -7,80 +10,117 @@ namespace Cairo_book_fair.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
+        private readonly ITicketService ticketService;
+
+        public TicketController(ITicketService ticketService)
+        {
+            this.ticketService = ticketService;
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<TicketDTO>> GetAllTickets()
+        {
+            var tickets = ticketService.GetAll();
+            var ticketDTOs = new List<TicketDTO>();
+
+            foreach (var ticket in tickets)
+            {
+                ticketDTOs.Add(new TicketDTO
+                {
+                    Id = ticket.Id,
+                    TicketName = ticket.Name,
+                    TicketNumber = ticket.TicketNum,
+                    TicketPrice = ticket.Price,
+                    DateTime = ticket.DateTime,
+                    User = ticket.User
+                });
+            }
+
+            return Ok(ticketDTOs);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<TicketDTO> GetTicket(int id)
+        {
+            var ticket = ticketService.Get(id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            var ticketDTO = new TicketDTO
+            {
+                Id = ticket.Id,
+                TicketName = ticket.Name,
+                TicketNumber = ticket.TicketNum,
+                TicketPrice = ticket.Price,
+                DateTime = ticket.DateTime,
+                User = ticket.User
+            };
+
+            return Ok(ticketDTO);
+        }
+
+        [HttpPost]
+        public ActionResult<TicketDTO> CreateTicket(TicketDTO ticketDTO)
+        {
+            var ticket = new Ticket
+            {
+                Name = ticketDTO.TicketName,
+                TicketNum = ticketDTO.TicketNumber,
+                Price = ticketDTO.TicketPrice,
+                DateTime = ticketDTO.DateTime,
+                UserId = ticketDTO.User.Id
+            };
+
+            ticketService.Insert(ticket);
+            ticketService.Save();
+
+            ticketDTO.Id = ticket.Id;
+
+            return CreatedAtAction(nameof(GetTicket), new { id = ticketDTO.Id }, ticketDTO);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateTicket(int id, TicketDTO ticketDTO)
+        {
+            if (id != ticketDTO.Id)
+            {
+                return BadRequest();
+            }
+
+            var ticket = ticketService.Get(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            ticket.Name = ticketDTO.TicketName;
+            ticket.TicketNum = ticketDTO.TicketNumber;
+            ticket.Price = ticketDTO.TicketPrice;
+            ticket.DateTime = ticketDTO.DateTime;
+            ticket.UserId = ticketDTO.User.Id;
+
+            ticketService.Update(ticket);
+            ticketService.Save();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteTicket(int id)
+        {
+            var ticket = ticketService.Get(id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            ticketService.Delete(ticket);
+            ticketService.Save();
+
+            return NoContent();
+        }
     }
 }
-//    private readonly ITicketService _ticketService;
-//    private readonly ITicketRepository ticketRepository;
-
-//    public TicketController(ITicketRepository ticketRepository, ITicketService _ticketService)
-//    {
-//        this.ticketRepository = ticketRepository;
-//        this._ticketService = _ticketService;
-//    }
-
-//    [HttpGet]
-//    public IActionResult GetAll(string[] includes = null)
-//    {
-//        List<Ticket> tickets = ticketRepository.GetAll();
-//        return Ok(tickets);
-//    }
-
-//    [HttpGet("All")]
-//    public IActionResult Get(Func<Ticket, bool> where)
-//    {
-//        List<Ticket> tickets = ticketRepository.Get(where);
-//        return Ok(tickets);
-//    }
-
-//    [HttpGet("{id:int}")]
-//    public IActionResult Get(int id)
-//    {
-//        Ticket ticket = ticketRepository.Get(id);
-//        if (ticket != null)
-//        {
-//            return Ok(ticket);
-//        }
-//        return BadRequest();
-//    }
-
-//    [HttpPost]
-//    public IActionResult Insert(Ticket ticket)
-//    {
-//        if (ModelState.IsValid)
-//        {
-//            ticketRepository.Insert(ticket);
-//            ticketRepository.Save();
-//            return CreatedAtAction("Get", new { id = ticket.Id }, ticket);
-//        }
-//        return BadRequest(ModelState);
-//    }
-
-//    [HttpPut]
-//    public IActionResult Update(Ticket ticket)
-//    {
-//        if (ModelState.IsValid)
-//        {
-//            ticketRepository.Update(ticket);
-//            ticketRepository.Save();
-//            return NoContent();
-//        }
-//        return BadRequest(ModelState);
-//    }
-
-//    [HttpDelete]
-//    public IActionResult Delete(Ticket ticket)
-//    {
-//        ticketRepository.Delete(ticket);
-//        return NoContent();
-
-
-
-//    [HttpGet]
-//    //public ActionResult<IEnumerable<TicketDTO>> GetTickets()
-//    //{
-//    //    List<TicketDTO> ticketDTOs = _ticketService.GetAllDTO();
-//    //    return Ok(ticketDTOs);
-
-//    //}
-//}
-
