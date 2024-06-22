@@ -123,11 +123,13 @@ namespace Cairo_book_fair
                     });
             });
 
-
+            //Abdelraheem Services//
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<IBookService, BookService>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
 
             builder.Services.AddAutoMapper(typeof(Program));
