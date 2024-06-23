@@ -16,5 +16,6 @@ namespace Cairo_book_fair.Models
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }
+        public string side { get; set; }
     }
 }
