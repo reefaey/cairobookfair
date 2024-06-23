@@ -7,6 +7,8 @@ namespace Cairo_book_fair.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int TicketNum { get; set; }
+        public int phone { get; set; }
+
         public float Price { get; set; }
         public string side { get; set; }
 

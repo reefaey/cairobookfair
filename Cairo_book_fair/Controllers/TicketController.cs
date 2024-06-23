@@ -29,6 +29,7 @@ namespace Cairo_book_fair.Controllers
                 {
                     Id = ticket.Id,
                     TicketName = ticket.Name,
+                    Phone=ticket.phone,
                     TicketNumber = ticket.TicketNum,
                     TicketPrice = ticket.Price,
                     DateTime = ticket.DateTime,
@@ -54,6 +55,7 @@ namespace Cairo_book_fair.Controllers
                 Id = ticket.Id,
                 TicketName = ticket.Name,
                 TicketNumber = ticket.TicketNum,
+                Phone = ticket.phone,
                 TicketPrice = ticket.Price,
                 DateTime = ticket.DateTime,
                 User = ticket.User
@@ -69,6 +71,7 @@ namespace Cairo_book_fair.Controllers
             {
                 Name = ticketDTO.TicketName,
                 TicketNum = ticketDTO.TicketNumber,
+                phone = ticketDTO.Phone,
                 Price = ticketDTO.TicketPrice,
                 DateTime = ticketDTO.DateTime,
                 UserId = ticketDTO.User.Id
@@ -98,6 +101,7 @@ namespace Cairo_book_fair.Controllers
 
             ticket.Name = ticketDTO.TicketName;
             ticket.TicketNum = ticketDTO.TicketNumber;
+            ticket.phone = ticketDTO.Phone;
             ticket.Price = ticketDTO.TicketPrice;
             ticket.DateTime = ticketDTO.DateTime;
             ticket.UserId = ticketDTO.User.Id;
