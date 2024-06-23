@@ -50,9 +50,9 @@ namespace Cairo_book_fair
                     options.Password.RequireLowercase = true;
                     options.Password.RequiredUniqueChars = 4;
 
-                    options.Lockout.AllowedForNewUsers = true;
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    //options.Lockout.AllowedForNewUsers = true;
+                    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    //options.Lockout.MaxFailedAccessAttempts = 5;
 
                     options.User.RequireUniqueEmail = true;
 
@@ -81,11 +81,11 @@ namespace Cairo_book_fair
                     IssuerSigningKey = new
                                 SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };
-            }).AddGoogle(googleOptions =>
-            {
-                googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]; ;
-                googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-            });
+            });//.AddGoogle(googleOptions =>
+            //{
+            //    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]; ;
+            //    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            //});
 
             builder.Services.AddSwaggerGen(swagger =>
             {

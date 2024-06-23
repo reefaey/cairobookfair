@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Google.Apis.Auth;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -19,7 +20,7 @@ namespace Cairo_book_fair.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-
+        //private readonly ILogger<AccountController> _logger;
         public AccountController(UserManager<User> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -90,7 +91,7 @@ namespace Cairo_book_fair.Controllers
                         );
                     }
                 }
-                return BadRequest("Invalid User Name");
+                return Unauthorized("Invalid username or password");
             }
             return BadRequest(ModelState);
         }
@@ -152,30 +153,70 @@ namespace Cairo_book_fair.Controllers
             }
         }
 
-        [HttpGet("GoogleLogin")]
-        public IActionResult GoogleLogin()
-        {
-            AuthenticationProperties properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-        }
+        //[HttpGet("GoogleLogin")]
+        //public IActionResult GoogleLogin()
+        //{
+        //    AuthenticationProperties properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+        //    return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        //}
 
-        [HttpGet("GoogleResponse")]
-        public async Task<IActionResult> GoogleResponse()
-        {
-            var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
-            if (!result.Succeeded)
-                return BadRequest(); // Handle error scenario
+        //[HttpGet("GoogleResponse")]
+        //public async Task<IActionResult> GoogleResponse()
+        //{
+        //    var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+        //    if (!result.Succeeded)
+        //        return BadRequest(); // Handle error scenario
 
-            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+        //    var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+        //    {
+        //        claim.Type,
+        //        claim.Value
+        //    });
+
+        //    // Here you would typically create or update the user in your database
+        //    // and generate a JWT token for them
+
+        //    return Ok(claims);
+        //}
+        [HttpPost("google-login")]
+        public async Task<ActionResult> GoogleLogin([FromBody] GoogleLoginDTO googleLoginDto)
+        {
+            string idtoken = googleLoginDto.IdToken;
+            var setting = new GoogleJsonWebSignature.ValidationSettings
             {
-                claim.Type,
-                claim.Value
-            });
+                Audience = new string[] 
+                {
+                    "1058478672774-r4eisi8our5n78186g1eie17ubaovfsd.apps.googleusercontent.com"
+                }
+            };
+            var result = await GoogleJsonWebSignature.ValidateAsync(idtoken,setting);
+            if(result != null)
+            {
+                //create token
+                SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);
+                JwtHeader JWTHeader = new(credentials);
+                List<Claim> MyClaims = new();
+                MyClaims.Add(new Claim(ClaimTypes.Email, result.Email));
+                MyClaims.Add(new Claim(ClaimTypes.NameIdentifier, result.JwtId));
+                MyClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, DateTime.Now.ToString()));
+                JwtPayload pyload = new(
+                    issuer: _configuration["JWT:ValidIssuer"],
+                    audience: _configuration["JWT:ValidAudience"],
+                    claims: MyClaims,
+                    expires: DateTime.Now.AddDays(30),
+                    notBefore: null
+                    );
+                JwtSecurityToken token = new(JWTHeader, pyload);
+                return Ok(
+                    new
+                    {
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                    }
+                );
+            }
+            return BadRequest("Login Failure");
+        }   
 
-            // Here you would typically create or update the user in your database
-            // and generate a JWT token for them
-
-            return Ok(claims);
-        }
     }
 }
