@@ -77,8 +77,8 @@ namespace Cairo_book_fair.Controllers
         {
             ticketRepository.Delete(ticket);
             return NoContent();
-            
-       
+
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<TicketDTO>> GetTickets()
