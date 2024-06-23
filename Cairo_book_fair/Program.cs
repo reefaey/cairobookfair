@@ -136,6 +136,9 @@ namespace Cairo_book_fair
             builder.Services.AddAutoMapper(typeof(Program));
 
 
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<ITicketService, TicketService>();
+
 
             var app = builder.Build();
 
