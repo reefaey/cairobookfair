@@ -56,6 +56,20 @@ namespace Cairo_book_fair.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BooksCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookID = table.Column<int>(type: "int", nullable: false),
+                    CategoryID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BooksCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -195,9 +209,7 @@ namespace Cairo_book_fair.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NumberOfBooks = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -216,15 +228,14 @@ namespace Cairo_book_fair.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TotalCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    userid = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Carts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Carts_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Carts_AspNetUsers_userid",
+                        column: x => x.userid,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -236,20 +247,16 @@ namespace Cairo_book_fair.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DonationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Condition = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Donations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Donations_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Donations_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -258,11 +265,8 @@ namespace Cairo_book_fair.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrackingNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Region = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -288,7 +292,7 @@ namespace Cairo_book_fair.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -297,8 +301,7 @@ namespace Cairo_book_fair.Migrations
                         name: "FK_Tickets_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -308,15 +311,58 @@ namespace Cairo_book_fair.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HallId = table.Column<int>(type: "int", nullable: false)
+                    HallID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Blocks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Blocks_Halls_HallId",
-                        column: x => x.HallId,
+                        name: "FK_Blocks_Halls_HallID",
+                        column: x => x.HallID,
                         principalTable: "Halls",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BooksCarts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookID = table.Column<int>(type: "int", nullable: false),
+                    CartID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BooksCarts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BooksCarts_Carts_CartID",
+                        column: x => x.CartID,
+                        principalTable: "Carts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsedBook",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfPurchase = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DonationID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsedBook", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UsedBook_Donations_DonationID",
+                        column: x => x.DonationID,
+                        principalTable: "Donations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -327,9 +373,8 @@ namespace Cairo_book_fair.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalPrice = table.Column<float>(type: "real", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ShipmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -356,14 +401,14 @@ namespace Cairo_book_fair.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NumberOfBooks = table.Column<int>(type: "int", nullable: false),
-                    BlockId = table.Column<int>(type: "int", nullable: false)
+                    BlockID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Publishers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Publishers_Blocks_BlockId",
-                        column: x => x.BlockId,
+                        name: "FK_Publishers_Blocks_BlockID",
+                        column: x => x.BlockID,
                         principalTable: "Blocks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -376,110 +421,68 @@ namespace Cairo_book_fair.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PublishingYear = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PagesNumber = table.Column<int>(type: "int", nullable: true),
-                    PublisherId = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublishingYear = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PagesNumber = table.Column<int>(type: "int", nullable: false),
                     SoundBook = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AuthorId = table.Column<int>(type: "int", nullable: false),
-                    IsAvailableForDonation = table.Column<bool>(type: "bit", nullable: false),
-                    DonationId = table.Column<int>(type: "int", nullable: true)
+                    CategoryID = table.Column<int>(type: "int", nullable: true),
+                    PublisherID = table.Column<int>(type: "int", nullable: true),
+                    AuthorID = table.Column<int>(type: "int", nullable: true),
+                    ReviewID = table.Column<int>(type: "int", nullable: true),
+                    CartId = table.Column<int>(type: "int", nullable: true),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Books_Authors_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "Authors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Books_Donations_DonationId",
-                        column: x => x.DonationId,
-                        principalTable: "Donations",
+                        name: "FK_Books_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Books_Publishers_PublisherId",
-                        column: x => x.PublisherId,
-                        principalTable: "Publishers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BooksCarts",
-                columns: table => new
-                {
-                    CartId = table.Column<int>(type: "int", nullable: false),
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BooksCarts", x => new { x.BookId, x.CartId });
+                        name: "FK_Books_Authors_AuthorID",
+                        column: x => x.AuthorID,
+                        principalTable: "Authors",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_BooksCarts_Books_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BooksCarts_Carts_CartId",
+                        name: "FK_Books_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BooksCategories",
-                columns: table => new
-                {
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BooksCategories", x => new { x.BookId, x.CategoryId });
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_BooksCategories_Books_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BooksCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BooksOrders",
-                columns: table => new
-                {
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BooksOrders", x => new { x.BookId, x.OrderId });
-                    table.ForeignKey(
-                        name: "FK_BooksOrders_Books_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BooksOrders_Orders_OrderId",
+                        name: "FK_Books_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Books_Publishers_PublisherID",
+                        column: x => x.PublisherID,
+                        principalTable: "Publishers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookCategory",
+                columns: table => new
+                {
+                    BooksId = table.Column<int>(type: "int", nullable: false),
+                    CategoriesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookCategory", x => new { x.BooksId, x.CategoriesId });
+                    table.ForeignKey(
+                        name: "FK_BookCategory_Books_BooksId",
+                        column: x => x.BooksId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookCategory_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -493,17 +496,16 @@ namespace Cairo_book_fair.Migrations
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reviews_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Reviews_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Reviews_Books_BookId",
                         column: x => x.BookId,
@@ -557,57 +559,61 @@ namespace Cairo_book_fair.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Blocks_HallId",
+                name: "IX_Blocks_HallID",
                 table: "Blocks",
-                column: "HallId");
+                column: "HallID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_AuthorId",
+                name: "IX_BookCategory_CategoriesId",
+                table: "BookCategory",
+                column: "CategoriesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_AuthorID",
                 table: "Books",
-                column: "AuthorId");
+                column: "AuthorID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_DonationId",
+                name: "IX_Books_CartId",
                 table: "Books",
-                column: "DonationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Books_PublisherId",
-                table: "Books",
-                column: "PublisherId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BooksCarts_CartId",
-                table: "BooksCarts",
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BooksCategories_CategoryId",
-                table: "BooksCategories",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BooksOrders_OrderId",
-                table: "BooksOrders",
+                name: "IX_Books_OrderId",
+                table: "Books",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Carts_UserId",
-                table: "Carts",
-                column: "UserId",
+                name: "IX_Books_PublisherID",
+                table: "Books",
+                column: "PublisherID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_UserId",
+                table: "Books",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BooksCarts_CartID",
+                table: "BooksCarts",
+                column: "CartID",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Donations_UserId",
+                name: "IX_Carts_userid",
+                table: "Carts",
+                column: "userid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Donations_AccountId",
                 table: "Donations",
-                column: "UserId");
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShipmentId",
                 table: "Orders",
-                column: "ShipmentId",
-                unique: true,
-                filter: "[ShipmentId] IS NOT NULL");
+                column: "ShipmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -615,19 +621,20 @@ namespace Cairo_book_fair.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Publishers_BlockId",
+                name: "IX_Publishers_BlockID",
                 table: "Publishers",
-                column: "BlockId");
+                column: "BlockID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_AccountId",
+                table: "Reviews",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_BookId",
                 table: "Reviews",
                 column: "BookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId",
-                table: "Reviews",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shipments_UserId",
@@ -638,6 +645,11 @@ namespace Cairo_book_fair.Migrations
                 name: "IX_Tickets_UserId",
                 table: "Tickets",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsedBook_DonationID",
+                table: "UsedBook",
+                column: "DonationID");
         }
 
         /// <inheritdoc />
@@ -659,13 +671,13 @@ namespace Cairo_book_fair.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "BookCategory");
+
+            migrationBuilder.DropTable(
                 name: "BooksCarts");
 
             migrationBuilder.DropTable(
                 name: "BooksCategories");
-
-            migrationBuilder.DropTable(
-                name: "BooksOrders");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
@@ -674,37 +686,40 @@ namespace Cairo_book_fair.Migrations
                 name: "Tickets");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "UsedBook");
 
             migrationBuilder.DropTable(
-                name: "Carts");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Orders");
-
-            migrationBuilder.DropTable(
                 name: "Books");
-
-            migrationBuilder.DropTable(
-                name: "Shipments");
-
-            migrationBuilder.DropTable(
-                name: "Authors");
 
             migrationBuilder.DropTable(
                 name: "Donations");
 
             migrationBuilder.DropTable(
+                name: "Authors");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "Publishers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Shipments");
 
             migrationBuilder.DropTable(
                 name: "Blocks");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Halls");

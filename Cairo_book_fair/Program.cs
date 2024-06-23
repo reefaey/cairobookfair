@@ -69,7 +69,8 @@ namespace Cairo_book_fair
                 JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme =
                 JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
+            }).AddJwtBearer(options =>
+            {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters()
@@ -124,7 +125,12 @@ namespace Cairo_book_fair
 
 
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IBookService, BookService>();
+
+
+            builder.Services.AddAutoMapper(typeof(Program));
 
 
 
