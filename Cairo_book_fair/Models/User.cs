@@ -8,7 +8,7 @@ namespace Cairo_book_fair.Models
         [Required]
         [MaxLength(25, ErrorMessage = "Name Must Be Less Than 25 Char")]
         [MinLength(3, ErrorMessage = "Name Must Be More That 3 Char")]
-        public string Name { get; set; } = "sa";
+        public string Name { get; set; } = "";
 
         public string? ProfileImage { get; set; } = "default";
 
@@ -23,5 +23,6 @@ namespace Cairo_book_fair.Models
         public Cart Cart { get; set; }
         public List<Order>? Orders { get; set; }
         public List<Author>? AuthorsFollowing { get; set; }
+        public int NumberOfDonatedBooks { get; set; } = 0;
     }
 }
