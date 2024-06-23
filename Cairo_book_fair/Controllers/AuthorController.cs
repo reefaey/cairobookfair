@@ -18,5 +18,6 @@ namespace Cairo_book_fair.Controllers
             List<AuthorDTO> authorDTOs = _authorService.GetAllDTO();
             return Ok(authorDTOs);
         }
+        //test
     }
 }
