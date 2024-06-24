@@ -30,7 +30,7 @@ namespace Cairo_book_fair.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserResgisterDTO NewUser)
         {
-            if (ModelState.IsValid && NewUser.Password == NewUser.ConfirmPassword)
+            if (ModelState.IsValid)
             {
                 //create acc
                 User user = new User()
@@ -68,7 +68,7 @@ namespace Cairo_book_fair.Controllers
                     if (IsPassCorrect)
                     {
                         //create token
-                        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:SigninKey"]));
                         SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);
                         JwtHeader JWTHeader = new(credentials);
                         List<Claim> MyClaims = new();
@@ -79,7 +79,7 @@ namespace Cairo_book_fair.Controllers
                             issuer: _configuration["JWT:ValidIssuer"],
                             audience: _configuration["JWT:ValidAudience"],
                             claims: MyClaims,
-                            expires: DateTime.Now.AddDays(30),
+                            expires: DateTime.Now.AddMinutes(5),
                             notBefore: null
                             );
                         JwtSecurityToken token = new(JWTHeader, pyload);
@@ -193,7 +193,7 @@ namespace Cairo_book_fair.Controllers
             if(result != null)
             {
                 //create token
-                SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration["JWT:SigninKey"]));
                 SigningCredentials credentials = new(key, SecurityAlgorithms.HmacSha256);
                 JwtHeader JWTHeader = new(credentials);
                 List<Claim> MyClaims = new();
@@ -216,6 +216,7 @@ namespace Cairo_book_fair.Controllers
                 );
             }
             return BadRequest("Login Failure");
+            
         }   
 
     }
