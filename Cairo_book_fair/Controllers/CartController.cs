@@ -1,4 +1,5 @@
 ﻿using Cairo_book_fair.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,11 @@ namespace Cairo_book_fair.Controllers
         {
             _cartService = cartService;
         }
-
-        //[HttpGet("{id:int}")]
-        //public IActionResult GetCart(int id)
-        //{
-
-        //}
+        [Authorize]
+        [HttpGet("{id:int}")]
+        public IActionResult GetCart(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

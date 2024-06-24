@@ -124,7 +124,6 @@ namespace Cairo_book_fair
             builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
             builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
-
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IAuthorService, AuthorService>();
 

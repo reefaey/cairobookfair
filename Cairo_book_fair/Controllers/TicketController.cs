@@ -1,6 +1,7 @@
 ﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -16,8 +17,9 @@ namespace Cairo_book_fair.Controllers
         {
             this.ticketService = ticketService;
         }
-
+        
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<TicketDTO>> GetAllTickets()
         {
             var tickets = ticketService.GetAll();

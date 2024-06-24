@@ -32,6 +32,7 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 //create acc
                 User user = new User()
                 {
@@ -41,7 +42,8 @@ namespace Cairo_book_fair.Controllers
                     Name = NewUser.Fullname,
                     Location = NewUser.Location,
                     ProfileImage = NewUser.ProfileImage,
-                    Bio = NewUser.Bio
+                    Bio = NewUser.Bio,
+                    CartId = (new Cart()).Id
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, NewUser.Password);
