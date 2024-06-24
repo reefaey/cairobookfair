@@ -29,11 +29,8 @@ namespace Cairo_book_fair
                 options.UseSqlServer("Data Source=.;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
             });
 
-            builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
-            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-            builder.Services.AddScoped<IAuthorService, AuthorService>();
-
-            builder.Services.AddCors(options => options.AddPolicy("MyPolicy", policy =>
+            builder.Services.AddCors(options => 
+            options.AddPolicy("MyPolicy", policy =>
                 policy.AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowAnyOrigin()
@@ -80,7 +77,7 @@ namespace Cairo_book_fair
                     ValidAudience = builder.Configuration["JWT:ValidAudience"],
                     ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new
-                                SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                                SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigninKey"]))
                 };
             });//.AddGoogle(googleOptions =>
             //{
@@ -123,6 +120,14 @@ namespace Cairo_book_fair
                     });
             });
 
+            //~~Abdallah Services~~//
+            builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
+            builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+            builder.Services.AddScoped<IAuthorService, AuthorService>();
+
             //Abdelraheem Services//
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -148,6 +153,10 @@ namespace Cairo_book_fair
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseStaticFiles(); // to make it able to read static pages in wwwroot if needed
+
+            app.UseCors("MyPolicy"); // to make the provider able to serve consumer from other domains
 
             app.UseHttpsRedirection();
 
