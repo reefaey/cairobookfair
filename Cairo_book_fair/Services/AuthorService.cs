@@ -17,6 +17,18 @@ namespace Cairo_book_fair.Services
         //***************************************************
 
 
+        public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto)
+        {
+            Author author = new();
+            author.Name = authorDto.Name;
+            author.Description = authorDto.Description;
+            author.Image = authorDto.Image;
+            author.NumberOfBooks = authorDto.NumberOfBooks;
+
+            return author;
+        }
+
+
         public void Delete(Author item)
         {
             authorRepository.Delete(item);
@@ -51,7 +63,7 @@ namespace Cairo_book_fair.Services
             return authorRepository.Get(where);
         }
 
-        public void Insert(Author item)
+        public void Insert(ِAuthor item)
         {
             authorRepository.Insert(item);
         }

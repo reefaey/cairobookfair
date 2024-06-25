@@ -13,11 +13,17 @@ namespace Cairo_book_fair.Controllers
         private readonly IAuthorService _authorService;
 
         [HttpGet]
-        public ActionResult<IEnumerable<AuthorDTO>> GetAuthors()
+        public IActionResult GetAuthors()
         {
             List<AuthorDTO> authorDTOs = _authorService.GetAllDTO();
             return Ok(authorDTOs);
         }
-        //test
+
+        [HttpPost]
+        public IActionResult InsertAuthor()
+        { 
+            
+        }
+
     }
 }
