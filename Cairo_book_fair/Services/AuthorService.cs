@@ -17,9 +17,12 @@ namespace Cairo_book_fair.Services
         //***************************************************
 
 
-        public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto)
+        public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto, Author author = null)
         {
-            Author author = new();
+            if(author == null)
+            {
+                author = new();
+            }          
             author.Name = authorDto.Name;
             author.Description = authorDto.Description;
             author.Image = authorDto.Image;
@@ -29,9 +32,11 @@ namespace Cairo_book_fair.Services
         }
 
 
-        public void Delete(Author item)
+        public void Delete(int id)
         {
+            Author item = authorRepository.Get(id);
             authorRepository.Delete(item);
+            authorRepository.Save();
         }
 
         public List<AuthorDTO> GetAllDTO(string include = null)
@@ -53,7 +58,20 @@ namespace Cairo_book_fair.Services
             return authorRepository.GetAll(include);
         }
 
-        public Author Get(int id)
+        public AuthorDTO Get(int id)
+        {
+            Author author = authorRepository.Get(id);
+            AuthorDTO authorDTO = new();
+
+            authorDTO.Name = author.Name;
+            authorDTO.Description = author.Description;
+            authorDTO.Image = author.Image;
+            authorDTO.NumberOfBooks = author.NumberOfBooks;
+
+            return authorDTO;
+        }
+
+        public Author GetById(int id)
         {
             return authorRepository.Get(id);
         }
@@ -63,14 +81,22 @@ namespace Cairo_book_fair.Services
             return authorRepository.Get(where);
         }
 
-        public void Insert(ِAuthor item)
+        public void Insert(Author item)
         {
             authorRepository.Insert(item);
+            authorRepository.Save();
         }
 
-        public void Update(Author item)
+        public void Update(int id, AuthorDTO author)
         {
+            Author item = authorRepository.Get(id);
+            item.Name = author.Name;
+            item.Description = author.Description;
+            item.Image = author.Image;
+            item.NumberOfBooks = author.NumberOfBooks;
+
             authorRepository.Update(item);
+
         }
 
         public void Save()
