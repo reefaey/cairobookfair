@@ -33,7 +33,8 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid)
             {
-                Author author = _authorService.MappingFromAuthorDtoToAuthor(authorDto);
+                Author author = new();
+                author = _authorService.MappingFromAuthorDtoToAuthor(authorDto, author);
                 _authorService.Insert(author);
                 _authorService.Save();
 
