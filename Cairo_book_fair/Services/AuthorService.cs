@@ -8,25 +8,29 @@ namespace Cairo_book_fair.Services
     public class AuthorService : IAuthorService
     {
         private readonly IAuthorRepository authorRepository;
+        public readonly IBookRepository bookRepository;
 
-        public AuthorService(IAuthorRepository authorRepository)
+        public AuthorService(IAuthorRepository authorRepository, IBookRepository bookRepository)
         {
             this.authorRepository = authorRepository;
+            this.bookRepository = bookRepository;
         }
 
         //***************************************************
 
 
-        public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto, Author author = null)
+        public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto, Author? author)
         {
             if(author == null)
             {
                 author = new();
-            }          
+            }
+            author.Id = 0;
             author.Name = authorDto.Name;
             author.Description = authorDto.Description;
             author.Image = authorDto.Image;
             author.NumberOfBooks = authorDto.NumberOfBooks;
+            author.Books = new List<Book>();
 
             return author;
         }
@@ -86,6 +90,13 @@ namespace Cairo_book_fair.Services
             authorRepository.Insert(item);
             authorRepository.Save();
         }
+
+        //public List<AuthorIdWithHisBooksID> GetAllBooksIdForAuthor(string[] include = null)
+        //{
+        //    List<Book> booksDB = bookRepository.GetAll();
+        //    List<BookWithDetails> booksDTO = mapper.Map<List<BookWithDetails>>(booksDB);
+        //    return booksDTO;
+        //}
 
         public void Update(int id, AuthorDTO author)
         {
