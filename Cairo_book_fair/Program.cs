@@ -1,4 +1,3 @@
-
 using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
@@ -130,6 +129,8 @@ namespace Cairo_book_fair
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IUsedBookRepository, UsedBookRepository>();
+            builder.Services.AddScoped<IUsedBookService, UsedBookService>();
 
 
             builder.Services.AddAutoMapper(typeof(Program));

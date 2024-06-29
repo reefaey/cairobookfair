@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Principal;
-using Cairo_book_fair.Enums;
 
 namespace Cairo_book_fair.Models
 {
     public class Donation
     {
         public int Id { get; set; }
-        public List<Book> Books {  get; set; }
+        public List<UsedBook> UsedBooks { get; set; }
 
         [ForeignKey("User")]
         public string UserId { get; set; }

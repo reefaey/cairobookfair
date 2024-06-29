@@ -1,8 +1,6 @@
 ﻿using Cairo_book_fair.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using System;
 
 namespace Cairo_book_fair.DBContext
 {
@@ -16,6 +14,7 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Order> Orders { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Book> Books { get; set; }
+        public DbSet<UsedBook> UsedBooks { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<BookCategory> BooksCategories { get; set; }

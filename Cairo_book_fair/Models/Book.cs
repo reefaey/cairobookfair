@@ -30,9 +30,9 @@ namespace Cairo_book_fair.Models
 
         public List<Review>? Reviews { get; set; }
 
-        [ForeignKey("Donation")]
-        public int? DonationId { get; set; }
-        public Donation? Donation { get; set; }
+        //[ForeignKey("Donation")]
+        //public int? DonationId { get; set; }
+        //public Donation? Donation { get; set; }
         public List<BookCart>? BookCarts { get; set; }
         public List<BookOrder>? BookOrders { get; set; }
 
