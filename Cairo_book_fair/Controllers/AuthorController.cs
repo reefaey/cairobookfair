@@ -13,6 +13,11 @@ namespace Cairo_book_fair.Controllers
     {
         private readonly IAuthorService _authorService;
 
+        public AuthorController(IAuthorService authorService)
+        {
+            _authorService = authorService;
+        }
+
         [HttpGet]
         public IActionResult GetAuthors()
         {
@@ -73,5 +78,13 @@ namespace Cairo_book_fair.Controllers
             }
         }
 
+        [HttpPost("InsertBook")]
+        public IActionResult InsertBook(BookDetailsWithAuthorId bookDetailsWithAuthorId)
+        {
+            if(ModelState.IsValid)
+            {
+                
+            }
+        }
     }
 }

@@ -17,16 +17,18 @@ namespace Cairo_book_fair.Services
         //***************************************************
 
 
-        public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto, Author author = null)
+        public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto, Author? author)
         {
             if(author == null)
             {
                 author = new();
-            }          
+            }
+            author.Id = 0;
             author.Name = authorDto.Name;
             author.Description = authorDto.Description;
             author.Image = authorDto.Image;
             author.NumberOfBooks = authorDto.NumberOfBooks;
+            author.Books = new List<Book>();
 
             return author;
         }
