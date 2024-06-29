@@ -4,8 +4,8 @@ using Cairo_book_fair.Repositories;
 
 namespace Cairo_book_fair.Services
 {
-    public interface ITicketService : IRepository<Ticket>
+    public interface ITicketService : ITicketRepository
     {
-        List<TicketDTO> GetAllDTO(string include = null);
+     
     }
 }
