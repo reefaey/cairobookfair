@@ -8,10 +8,12 @@ namespace Cairo_book_fair.Services
     public class AuthorService : IAuthorService
     {
         private readonly IAuthorRepository authorRepository;
+        public readonly IBookRepository bookRepository;
 
-        public AuthorService(IAuthorRepository authorRepository)
+        public AuthorService(IAuthorRepository authorRepository, IBookRepository bookRepository)
         {
             this.authorRepository = authorRepository;
+            this.bookRepository = bookRepository;
         }
 
         //***************************************************
@@ -88,6 +90,13 @@ namespace Cairo_book_fair.Services
             authorRepository.Insert(item);
             authorRepository.Save();
         }
+
+        //public List<AuthorIdWithHisBooksID> GetAllBooksIdForAuthor(string[] include = null)
+        //{
+        //    List<Book> booksDB = bookRepository.GetAll();
+        //    List<BookWithDetails> booksDTO = mapper.Map<List<BookWithDetails>>(booksDB);
+        //    return booksDTO;
+        //}
 
         public void Update(int id, AuthorDTO author)
         {

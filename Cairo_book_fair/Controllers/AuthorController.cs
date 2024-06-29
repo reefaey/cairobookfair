@@ -78,13 +78,13 @@ namespace Cairo_book_fair.Controllers
             }
         }
 
-        [HttpPost("InsertBook")]
-        public IActionResult InsertBook(BookDetailsWithAuthorId bookDetailsWithAuthorId)
-        {
-            if(ModelState.IsValid)
-            {
+        //[HttpPost("InsertBook")]
+        //public IActionResult InsertBook(BookDetailsWithAuthorId bookDetailsWithAuthorId)
+        //{
+        //    if(ModelState.IsValid)
+        //    {
                 
-            }
-        }
+        //    }
+        //}
     }
 }
