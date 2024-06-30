@@ -110,6 +110,31 @@ namespace Cairo_book_fair.Services
 
         }
 
+        public List<AuthorDTO> GetPaginatedAuthor(int page, int pageSize)
+        {
+            //pageSize is the number of items in each page
+            //page is the number of page u want
+
+            List<Author> authors = authorRepository.GetAll();
+            int totalCount = authors.Count;
+            int totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
+            List<Author> authorsPerPage = authors.Skip((page -1) * pageSize).Take(pageSize).ToList();
+
+            List<AuthorDTO> paginatedAuthors = new();
+            foreach(Author author in authors)
+            {
+                paginatedAuthors.Add(new AuthorDTO
+                {
+                    Name = author.Name,
+                    Description = author.Description,
+                    Image = author.Image,
+                    NumberOfBooks = author.NumberOfBooks,
+
+                });
+            }
+            return paginatedAuthors;
+        }
+
         public void Save()
         {
             authorRepository.Save();

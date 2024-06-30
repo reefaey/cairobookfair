@@ -6,6 +6,9 @@ namespace Cairo_book_fair.Services
 {
     public interface IAuthorService 
     {
+
+        public List<AuthorDTO> GetPaginatedAuthor(int page, int pageSize);
+
         public Author MappingFromAuthorDtoToAuthor(AuthorDTO authorDto, Author author = null);
         public List<AuthorDTO> GetAllDTO(string include = null);
 

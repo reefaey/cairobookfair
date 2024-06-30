@@ -78,12 +78,19 @@ namespace Cairo_book_fair.Controllers
             }
         }
 
+
+        [HttpGet("Pagenation")]
+        public IActionResult Get(int page, int pageSize)
+        {
+            return Ok(_authorService.GetPaginatedAuthor(page, pageSize));
+        }
+
         //[HttpPost("InsertBook")]
         //public IActionResult InsertBook(BookDetailsWithAuthorId bookDetailsWithAuthorId)
         //{
         //    if(ModelState.IsValid)
         //    {
-                
+
         //    }
         //}
     }
