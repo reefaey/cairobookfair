@@ -4,6 +4,7 @@ using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -76,6 +77,13 @@ namespace Cairo_book_fair.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+
+        [HttpGet("Pagenation")]
+        public IActionResult Get(int page, int pageSize)
+        {
+            return Ok(_authorService.GetPaginatedAuthor(page, pageSize));
         }
 
         //[HttpPost("InsertBook")]
