@@ -48,6 +48,7 @@ namespace Cairo_book_fair.Services
             var authors = authorRepository.GetAll(include)
                 .Select(author => new AuthorDTO
                 {
+                    Id = author.Id,
                     Name = author.Name,
                     Image = author.Image,
                     Description = author.Description,
@@ -67,6 +68,7 @@ namespace Cairo_book_fair.Services
             Author author = authorRepository.Get(id);
             AuthorDTO authorDTO = new();
 
+            authorDTO.Id = author.Id;
             authorDTO.Name = author.Name;
             authorDTO.Description = author.Description;
             authorDTO.Image = author.Image;
@@ -125,6 +127,7 @@ namespace Cairo_book_fair.Services
             {
                 paginatedAuthors.Add(new AuthorDTO
                 {
+                    Id = author.Id,
                     Name = author.Name,
                     Description = author.Description,
                     Image = author.Image,
