@@ -4,7 +4,6 @@ using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -91,7 +90,7 @@ namespace Cairo_book_fair.Controllers
         //{
         //    if(ModelState.IsValid)
         //    {
-                
+
         //    }
         //}
     }
