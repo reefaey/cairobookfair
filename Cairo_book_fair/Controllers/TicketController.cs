@@ -53,7 +53,7 @@ namespace Cairo_book_fair.Controllers
             var ticketDTO = new TicketDTO
             {
                 Id = ticket.Id,
-                TicketName = ticket.Name,
+                 = ticket.Name,
                 TicketNumber = ticket.TicketNum,
                 Phone = ticket.phone,
                 TicketPrice = ticket.Price,
@@ -99,12 +99,11 @@ namespace Cairo_book_fair.Controllers
                 return NotFound();
             }
 
-            ticket.Name = ticketDTO.TicketName;
-            ticket.TicketNum = ticketDTO.TicketNumber;
+            ticket.Name = ticketDTO.Name;
             ticket.phone = ticketDTO.Phone;
-            ticket.Price = ticketDTO.TicketPrice;
+            ticket.Price = ticketDTO.Quantity * 5;
             ticket.DateTime = ticketDTO.DateTime;
-            ticket.UserId = ticketDTO.User.Id;
+            ticket.UserId = User.Identity.Name;
 
             ticketService.Update(ticket);
             ticketService.Save();
