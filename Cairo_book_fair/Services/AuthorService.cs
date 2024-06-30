@@ -121,7 +121,7 @@ namespace Cairo_book_fair.Services
             List<Author> authorsPerPage = authors.Skip((page -1) * pageSize).Take(pageSize).ToList();
 
             List<AuthorDTO> paginatedAuthors = new();
-            foreach(Author author in authors)
+            foreach (Author author in authorsPerPage)
             {
                 paginatedAuthors.Add(new AuthorDTO
                 {
