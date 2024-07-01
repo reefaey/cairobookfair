@@ -1,8 +1,10 @@
-﻿using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Models;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -23,12 +25,39 @@ namespace Cairo_book_fair.Controllers
 
         //}
 
-        //[HttpPost]
-        //public IActionResult InserItem(int userId, int bookId)
+        //[HttpGet]
+        //public IActionResult GetBookNamewithUserName()
         //{
-        //    _bookCartService.FindCartId()
-        //    BookCart bookCart = new();
 
         //}
+
+        [HttpPost]
+        public IActionResult InserItem(BookItemWithUserID bookItemWithUserID)
+        {
+            if(ModelState.IsValid)
+            {
+                _bookCartService.AddItem(bookItemWithUserID.userId, bookItemWithUserID.bookId);
+                _bookCartService.Save();
+
+                return Ok(bookItemWithUserID);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(BookItemWithUserID bookItemWithUserID)
+        {
+            if (ModelState.IsValid)
+            {
+                _bookCartService.RemoveItem(bookItemWithUserID.userId, bookItemWithUserID.bookId);
+                _bookCartService.Save();
+                return NoContent();
+            }
+
+            return BadRequest(ModelState);          
+
+        }
+
+
     }
 }

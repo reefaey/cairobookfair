@@ -8,5 +8,15 @@ namespace Cairo_book_fair.Repositories
         public BookCartRepository(Context _context) : base(_context)
         {
         }
+
+        public BookCart GetBookCart(int cartId,  int bookId)
+        {
+            BookCart bookCart = Context.Set<BookCart>()
+                .Where(c => c.CartId == cartId && c.BookId == bookId)
+                .FirstOrDefault();
+
+            return bookCart;
+
+        }
     }
 }
