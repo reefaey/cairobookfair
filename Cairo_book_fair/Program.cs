@@ -123,7 +123,10 @@ namespace Cairo_book_fair
             //~~Abdallah Services~~//
             builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
             builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<IBookCartRepository, BookCartRepository>();
+            builder.Services.AddScoped<IBookCartService, BookCartService>();
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IAuthorService, AuthorService>();
 

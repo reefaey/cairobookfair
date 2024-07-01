@@ -21,9 +21,6 @@ namespace Cairo_book_fair.Models
         public DateTime JoinDate { get; set; } = DateTime.Now;
         public List<Ticket>? Tickets { get; set; }
         public List<Review>? Reviews { get; set; }
-        [ForeignKey("Cart")]
-        public int CartId {  get; set; }
-        public Cart Cart { get; set; }
         public List<Order>? Orders { get; set; }
         public List<Author>? AuthorsFollowing { get; set; }
         public int NumberOfDonatedBooks { get; set; } = 0;
