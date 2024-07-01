@@ -6,24 +6,43 @@ namespace Cairo_book_fair.Services
 {
     public class BookCartService : IBookCartService
     {
-        private readonly IBookCartRepository repository;
+        private readonly ICartRepository _cartRepository;
+        private readonly IBookCartRepository _bookCartRepository;
         private readonly UserManager<User> _userManager;
 
         public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager)
         {
-            this.repository = bookCartRepository;
+            this._bookCartRepository = bookCartRepository;
             this._userManager = userManager;
         }
 
-        //public async Task<int> FindCartId(string userId)
-        //{
-        //    User? userDb = await _userManager.FindByIdAsync(userId);
-        //    return userDb != null ? userDb.CartId : -1;
-        //}
+        public void AddItem(string userId, int bookId)
+        {
+            Cart cart = _cartRepository.GetCartByUserId(userId);
+            BookCart bookCart = new()
+            {
+                CartId = cart.Id,
+                BookId = bookId,
+                Quantity = 1
+            };
+            _bookCartRepository.Insert(bookCart);
+            
+        }
 
-        //public void AddItem(int cartId, int bookId)
-        //{
-        //    repository.
-        //}
+
+        public void RemoveItem(string userId, int bookId)
+        {
+            Cart cart = _cartRepository.GetCartByUserId(userId);
+            BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, bookId);
+            _bookCartRepository.Delete(bookCart);
+            
+        }
+
+        public void Save()
+        {
+            _bookCartRepository.Save();
+        }
+
+
     }
 }

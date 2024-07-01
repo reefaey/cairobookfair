@@ -2,6 +2,12 @@
 {
     public interface IBookCartService
     {
-        //public Task<int> FindCartId(string userId);
+        public void AddItem(string userId, int bookId);
+
+        public void RemoveItem(string userId, int bookId);
+
+        public void Save();
+
+
     }
 }
