@@ -2,6 +2,8 @@
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Collections.Generic;
 
 namespace Cairo_book_fair.Services
 {
@@ -9,12 +11,14 @@ namespace Cairo_book_fair.Services
     {
         private readonly ICartRepository _cartRepository;
         private readonly IBookCartRepository _bookCartRepository;
+        private readonly IBookService _bookService;
         private readonly UserManager<User> _userManager;
 
-        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager)
+        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookService bookService)
         {
             this._bookCartRepository = bookCartRepository;
             this._userManager = userManager;
+            this._bookService = bookService;
         }
 
         public void AddItem(int cartId, int bookId)
@@ -36,12 +40,31 @@ namespace Cairo_book_fair.Services
 
         public List<CartItemDTO> GetAllCartItems(int cartId)
         {
-            var cartItems = _bookCartRepository.GetAllBooksInCart(cartId)
-                .Select(cartItem => new CartItemDTO
-                { 
-                    CartId = cartId,
-                    BookId = 
-                }).ToList();
+            //var cartItems = _bookCartRepository.GetAllBooksInCart(cartId)
+            //    .Select(cartItem => new CartItemDTO
+            //    { 
+            //        BookId = cartItem.BookId,
+            //        Quantity = cartItem.Quantity,
+            //        Name= "csarsa",
+            //        Image= "dsadsad"
+            //    }).ToList();
+            List<BookCart> cartItems = _bookCartRepository.GetAllBooksInCart(cartId);
+
+            List<CartItemDTO> cartItemsDto = new List<CartItemDTO>();
+            foreach (BookCart cartItem in cartItems)
+            {
+
+                BookWithDetails book = _bookService.Get(cartItem.BookId);
+                cartItemsDto.Add( new CartItemDTO()
+                {
+                    BookId = cartItem.BookId,
+                    Name = book.BookName,
+                    Image = book.ImageUrl,
+                    Quantity = cartItem.Quantity
+                });
+
+            }
+            return cartItemsDto;
 
         }
 

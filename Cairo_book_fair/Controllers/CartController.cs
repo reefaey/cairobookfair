@@ -22,10 +22,16 @@ namespace Cairo_book_fair.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetAllItems()
+        public IActionResult GetAllItems(int cartId)
         {
+            List<CartItemDTO> cartItemsDto = _bookCartService.GetAllCartItems(cartId);
 
-            return;
+            if(cartItemsDto == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(cartItemsDto);
         }
 
         //[HttpGet]
@@ -68,7 +74,8 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid)
             {
-                _bookCartService.RemoveItem(bookItemWithUserID.userId, bookItemWithUserID.bookId);
+                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
+                _bookCartService.RemoveItem(cart.Id, bookItemWithUserID.bookId);
                 _bookCartService.Save();
                 return NoContent();
             }
