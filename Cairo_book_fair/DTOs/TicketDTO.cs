@@ -6,7 +6,6 @@ namespace Cairo_book_fair.DTOs
     {
         public int Id { get; set; }
         public string TicketName { get; set; }
-
         public int Phone { get; set; }
         public int TicketNumber { get; set; }
         public float TicketPrice { get; set; }

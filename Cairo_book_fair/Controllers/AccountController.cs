@@ -11,6 +11,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Google.Apis.Auth;
+using Cairo_book_fair.Repositories;
+using Cairo_book_fair.Services;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -20,11 +22,13 @@ namespace Cairo_book_fair.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ICartService _cartService;
         //private readonly ILogger<AccountController> _logger;
-        public AccountController(UserManager<User> userManager, IConfiguration configuration)
+        public AccountController(UserManager<User> userManager, IConfiguration configuration, ICartService cartService)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _cartService = cartService;
         }
 
         [HttpPost("register")]
@@ -32,6 +36,8 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid)
             {
+
+
                 //create acc
                 User user = new User()
                 {
@@ -41,12 +47,16 @@ namespace Cairo_book_fair.Controllers
                     Name = NewUser.Fullname,
                     Location = NewUser.Location,
                     ProfileImage = NewUser.ProfileImage,
-                    Bio = NewUser.Bio
+                    Bio = NewUser.Bio,
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, NewUser.Password);
                 if (result.Succeeded)
                 {
+                    _cartService.Insert(user.Id);
+
+                    //_cartService.UpdateID(user.CartId, user.Id);
+                    _cartService.Save();
                     return Ok( new { message = "User registered successfully" });
                 }
                 return BadRequest(result.Errors);

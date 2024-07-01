@@ -1,4 +1,6 @@
-﻿using Cairo_book_fair.Services;
+﻿using Cairo_book_fair.Models;
+using Cairo_book_fair.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,16 +10,24 @@ namespace Cairo_book_fair.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICartService _cartService;
+        private readonly IBookCartService _bookCartService;
         
-        public CartController(ICartService cartService)
+        public CartController(IBookCartService bookCartService)
         {
-            _cartService = cartService;
+            _bookCartService = bookCartService;
         }
 
-        //[HttpGet("{id:int}")]
-        //public IActionResult GetCart(int id)
+        //[HttpGet("All")]
+        //public IActionResult GetAllItems()
         //{
+
+        //}
+
+        //[HttpPost]
+        //public IActionResult InserItem(int userId, int bookId)
+        //{
+        //    _bookCartService.FindCartId()
+        //    BookCart bookCart = new();
 
         //}
     }
