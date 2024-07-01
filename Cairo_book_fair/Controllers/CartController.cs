@@ -13,17 +13,20 @@ namespace Cairo_book_fair.Controllers
     public class CartController : ControllerBase
     {
         private readonly IBookCartService _bookCartService;
+        private readonly ICartService _cartService;
         
-        public CartController(IBookCartService bookCartService)
+        public CartController(IBookCartService bookCartService, ICartService cartService)
         {
             _bookCartService = bookCartService;
+            _cartService = cartService;
         }
 
-        //[HttpGet("All")]
-        //public IActionResult GetAllItems()
-        //{
+        [HttpGet("All")]
+        public IActionResult GetAllItems()
+        {
 
-        //}
+            return;
+        }
 
         //[HttpGet]
         //public IActionResult GetBookNamewithUserName()
@@ -36,7 +39,8 @@ namespace Cairo_book_fair.Controllers
         {
             if(ModelState.IsValid)
             {
-                _bookCartService.AddItem(bookItemWithUserID.userId, bookItemWithUserID.bookId);
+                 Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
+                _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
                 _bookCartService.Save();
 
                 return Ok(bookItemWithUserID);
@@ -49,12 +53,27 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid)
             {
-                _bookCartService.RemoveItem(bookItemWithUserID.userId, bookItemWithUserID.bookId);
+                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
+                _bookCartService.RemoveItem(cart.Id, bookItemWithUserID.bookId);
                 _bookCartService.Save();
                 return NoContent();
             }
 
             return BadRequest(ModelState);          
+
+        }
+
+        [HttpPut("Change Quantity")]
+        public IActionResult ChangeQuantity(int quantity, BookItemWithUserID bookItemWithUserID)
+        {
+            if (ModelState.IsValid)
+            {
+                _bookCartService.RemoveItem(bookItemWithUserID.userId, bookItemWithUserID.bookId);
+                _bookCartService.Save();
+                return NoContent();
+            }
+
+            return BadRequest(ModelState);
 
         }
 
