@@ -18,5 +18,15 @@ namespace Cairo_book_fair.Repositories
             return bookCart;
 
         }
+
+        public List<BookCart> GetAllBooksInCart(int cartId)
+        {
+            List<BookCart> itemsList = Context.BooksCarts
+                .Where(c =>  cartId == c.CartId)
+                .ToList();
+
+            return itemsList;
+        }
+
     }
 }

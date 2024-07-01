@@ -8,7 +8,7 @@ namespace Cairo_book_fair.Services
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
-       public CartService(ICartRepository cartRepository) 
+        public CartService(ICartRepository cartRepository)
         {
             _cartRepository = cartRepository;
         }
@@ -18,6 +18,17 @@ namespace Cairo_book_fair.Services
         {
             return _cartRepository.Get(id);
         }
+
+        //public List<CartItemDTO> GetAllCartItems()
+        //{
+        //    _cartRepository.get
+        //}
+
+        public Cart GetCartByUserId(string userId)
+        {
+            return _cartRepository.GetCartByUserId(userId);
+        }
+
 
         public void UpdateID(int cartId, string userId)
         {
