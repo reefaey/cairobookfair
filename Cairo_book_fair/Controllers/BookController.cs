@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Cairo_book_fair.DTOs;
-using Cairo_book_fair.Models;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,35 +52,51 @@ namespace Cairo_book_fair.Controllers
         /////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost]
-        public IActionResult Insert(Book bookDB)
+        public IActionResult Insert(BookDTO book)
         {
             if (ModelState.IsValid == true)
             {
-                bookService.Insert(bookDB);
+                bookService.Insert(book);
                 bookService.Save();
-                return CreatedAtAction("Get", new { id = bookDB.Id }, bookDB);
+                return CreatedAtAction("Get", new { id = book }, book);
             }
             return BadRequest(ModelState);
         }
         ////////////////////////////////////////////////////////////////////////////////
         ///
         [HttpPut]
-        public IActionResult Update(Book bookDB)
+        public IActionResult Update(int id, BookDTO book)
         {
             if (ModelState.IsValid == true)
             {
-                bookService.Update(bookDB);
-                bookService.Save();
-                return NoContent();
+                try
+                {
+                    bookService.Update(id, book);
+                    bookService.Save();
+                    return NoContent();
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
             return BadRequest(ModelState);
         }
         //////////////////////////////////////////////////////////////////
         [HttpDelete]
-        public IActionResult Delete(Book book)
+        public IActionResult Delete(int id)
         {
-            bookService.Delete(book);
-            return NoContent();
+            try
+            {
+                bookService.Delete(id);
+                bookService.Save();
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
         ///////////////////////////////////////////////////////////////////////////////
         [HttpGet("Search")]
