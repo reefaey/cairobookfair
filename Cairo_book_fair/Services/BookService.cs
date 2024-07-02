@@ -15,9 +15,14 @@ namespace Cairo_book_fair.Services
             this.mapper = mapper;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public void Delete(Book item)
+        public void Delete(int id)
         {
-            bookRepository.Delete(item);
+            Book bookDb = bookRepository.Get(id);
+            if (bookDb != null)
+            {
+                bookRepository.Delete(bookDb);
+            }
+            throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public List<Book> Get(Func<Book, bool> where)
@@ -54,9 +59,10 @@ namespace Cairo_book_fair.Services
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public void Insert(Book item)
+        public void Insert(BookDTO bookDTO)
         {
-            bookRepository.Insert(item);
+            Book bookDB = mapper.Map<Book>(bookDTO);
+            bookRepository.Insert(bookDB);
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////
         public void Save()
@@ -72,9 +78,15 @@ namespace Cairo_book_fair.Services
 
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////
-        public void Update(Book item)
+        public void Update(int id, BookDTO item)
         {
-            bookRepository.Update(item);
+            Book bookDB = bookRepository.Get(id);
+            if (bookDB != null)
+            {
+                bookDB = mapper.Map<Book>(bookDB);
+                bookRepository.Update(bookDB);
+            }
+            throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////
 

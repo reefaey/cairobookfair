@@ -10,9 +10,9 @@ namespace Cairo_book_fair.Services
         public List<BookWithDetails> GetAll(string[] include = null);
         List<Book> Get(Func<Book, bool> where);
         BookWithDetails Get(int id, string[] include = null);
-        void Insert(Book item);
-        void Update(Book item);
-        void Delete(Book item);
+        void Insert(BookDTO item);
+        void Update(int id, BookDTO item);
+        void Delete(int id);
         public void Save();
         public List<BookWithDetails> Search(string SearchBookName);
 
