@@ -23,6 +23,7 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+
         public Context(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -56,6 +57,19 @@ namespace Cairo_book_fair.DBContext
                 .HasOne(o => o.Shipment)
                 .WithOne(s => s.Order)
                 .HasForeignKey<Order>(o => o.ShipmentId);
+
+            //for Review ///////
+            /* modelBuilder.Entity<Review>()
+                .HasOne(r => r.Book)
+                .WithMany(b => b.Reviews)
+                .HasForeignKey(r => r.BookId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId); */ 
+
+            
 
             //modelBuilder.Entity<Block>()
             //.HasOne(b => b.Publisher)

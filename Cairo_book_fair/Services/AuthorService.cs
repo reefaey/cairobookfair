@@ -51,6 +51,7 @@ namespace Cairo_book_fair.Services
             var authors = authorRepository.GetAll(include)
                 .Select(author => new AuthorDTO
                 {
+                    Id = author.Id,
                     Name = author.Name,
                     Image = author.Image,
                     Description = author.Description,
@@ -119,6 +120,7 @@ namespace Cairo_book_fair.Services
             item.NumberOfBooks = author.NumberOfBooks;
 
             authorRepository.Update(item);
+            authorRepository.Save();
 
         }
 
@@ -133,10 +135,11 @@ namespace Cairo_book_fair.Services
             List<Author> authorsPerPage = authors.Skip((page -1) * pageSize).Take(pageSize).ToList();
 
             List<AuthorDTO> paginatedAuthors = new();
-            foreach(Author author in authors)
+            foreach(Author author in authorsPerPage)
             {
                 paginatedAuthors.Add(new AuthorDTO
                 {
+                    Id = author.Id,
                     Name = author.Name,
                     Description = author.Description,
                     Image = author.Image,

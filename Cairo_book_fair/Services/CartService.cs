@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Cairo_book_fair.Services
 {
-    public class CartService : ICartService
+    public class CartService : Service<Cart>, ICartService
     {
         private readonly ICartRepository _cartRepository;
-        public CartService(ICartRepository cartRepository)
+        public CartService(ICartRepository cartRepository, IRepository<Cart> repository) : base(repository)
         {
             _cartRepository = cartRepository;
         }
@@ -32,6 +32,7 @@ namespace Cairo_book_fair.Services
 
         public void UpdateID(int cartId, string userId)
         {
+            
             Cart cart = _cartRepository.Get(cartId);
             cart.UserId = userId;
             _cartRepository.Update(cart);
