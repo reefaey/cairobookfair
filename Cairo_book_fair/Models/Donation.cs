@@ -5,7 +5,7 @@ namespace Cairo_book_fair.Models
     public class Donation
     {
         public int Id { get; set; }
-        public List<UsedBook> UsedBooks { get; set; }
+        //public List<UsedBook> UsedBooks { get; set; }
 
         [ForeignKey("User")]
         public string UserId { get; set; }

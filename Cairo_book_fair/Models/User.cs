@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cairo_book_fair.Models
 {
-    public class User : IdentityUser 
+    public class User : IdentityUser
     {
         [Required]
         [MaxLength(25, ErrorMessage = "Name Must Be Less Than 25 Char")]
@@ -24,5 +23,7 @@ namespace Cairo_book_fair.Models
         public List<Order>? Orders { get; set; }
         public List<Author>? AuthorsFollowing { get; set; }
         public int NumberOfDonatedBooks { get; set; } = 0;
+        public List<UsedBook>? UsedBooks { get; set; }
+
     }
 }
