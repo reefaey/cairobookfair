@@ -22,6 +22,10 @@ namespace Cairo_book_fair.Helper
                 src.CategoryIds.Select(id => new BookCategory { CategoryId = id }).ToList()))
                 .ReverseMap();
 
+            CreateMap<UsedBook, UsedBookDto>()
+                .ForMember(dest => dest.DonorName, opt => opt.MapFrom(src => src.User.Name))
+                .ReverseMap();
+
         }
     }
 }

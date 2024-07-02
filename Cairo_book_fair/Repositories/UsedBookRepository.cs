@@ -100,7 +100,7 @@ namespace Cairo_book_fair.Repositories
         public List<UsedBook> Search(string SearchBookName)
         {
             List<UsedBook> filteredBooks = context.UsedBooks
-            .Where(b => b.Name.Contains(SearchBookName)).ToList();
+            .Where(b => b.BookName.Contains(SearchBookName)).ToList();
 
             return filteredBooks;
 

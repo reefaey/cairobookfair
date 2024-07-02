@@ -1,4 +1,4 @@
-﻿using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,16 +15,6 @@ namespace Cairo_book_fair.Controllers
             this.usedBookService = usedBookService;
         }
 
-        [HttpGet]
-        public IActionResult GetAll(string[] includes = null)
-        {
-            List<UsedBook> books = usedBookService.GetAll(includes);
-            if (books != null)
-            {
-                return Ok(books);
-            }
-            return BadRequest();
-        }
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpGet("Paginated")]
@@ -37,7 +27,7 @@ namespace Cairo_book_fair.Controllers
         [HttpGet("{id:int}")]
         public IActionResult Get(int id, string[] include = null)
         {
-            UsedBook book = usedBookService.Get(id, include);
+            UsedBookDto book = usedBookService.Get(id, include);
             if (book != null)
             {
                 return Ok(book);
@@ -47,24 +37,25 @@ namespace Cairo_book_fair.Controllers
         /////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost]
-        public IActionResult Insert(UsedBook bookDB)
+        public IActionResult Insert(UsedBookDto bookDB)
         {
             if (ModelState.IsValid == true)
             {
                 usedBookService.Insert(bookDB);
                 usedBookService.Save();
-                return CreatedAtAction("Get", new { id = bookDB.Id }, bookDB);
+                //return CreatedAtAction("Get", new { id = bookDB }, bookDB);
+                return Ok(bookDB);
             }
             return BadRequest(ModelState);
         }
         ////////////////////////////////////////////////////////////////////////////////
         ///
         [HttpPut]
-        public IActionResult Update(UsedBook bookDB)
+        public IActionResult Update(int id, UsedBookDto bookDB)
         {
             if (ModelState.IsValid == true)
             {
-                usedBookService.Update(bookDB);
+                usedBookService.Update(id, bookDB);
                 usedBookService.Save();
                 return NoContent();
             }
@@ -72,16 +63,16 @@ namespace Cairo_book_fair.Controllers
         }
         //////////////////////////////////////////////////////////////////
         [HttpDelete]
-        public IActionResult Delete(UsedBook book)
+        public IActionResult Delete(int id)
         {
-            usedBookService.Delete(book);
+            usedBookService.Delete(id);
             return NoContent();
         }
         ///////////////////////////////////////////////////////////////////////////////
         [HttpGet("Search")]
         public IActionResult Search(String search)
         {
-            List<UsedBook> books = usedBookService.Search(search);
+            List<UsedBookDto> books = usedBookService.Search(search);
             if (books != null)
             {
                 return Ok(books);
