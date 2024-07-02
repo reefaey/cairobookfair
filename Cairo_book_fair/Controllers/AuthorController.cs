@@ -55,7 +55,7 @@ namespace Cairo_book_fair.Controllers
             Author author = _authorService.GetById(id);
             if (author != null)
             {
-                _authorService.MappingFromAuthorDtoToAuthor(authorDto, author);
+                _authorService.Update(id, authorDto);
                 return NoContent();
             }
             return BadRequest("Invalid ID");
