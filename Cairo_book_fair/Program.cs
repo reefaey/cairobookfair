@@ -147,6 +147,13 @@ namespace Cairo_book_fair
             builder.Services.AddScoped<ITicketRepository, TicketRepository>();
             builder.Services.AddScoped<ITicketService, TicketService>();
 
+            //review and shipment services
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+
+            builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            builder.Services.AddScoped<IShipmentService, ShipmentService>();
+
 
             var app = builder.Build();
 

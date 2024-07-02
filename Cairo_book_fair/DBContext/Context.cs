@@ -59,6 +59,19 @@ namespace Cairo_book_fair.DBContext
                 .WithOne(s => s.Order)
                 .HasForeignKey<Order>(o => o.ShipmentId);
 
+            //for Review ///////
+            /* modelBuilder.Entity<Review>()
+                .HasOne(r => r.Book)
+                .WithMany(b => b.Reviews)
+                .HasForeignKey(r => r.BookId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId); */ 
+
+            
+
             //modelBuilder.Entity<Block>()
             //.HasOne(b => b.Publisher)
             //.WithOne(p => p.Block)
