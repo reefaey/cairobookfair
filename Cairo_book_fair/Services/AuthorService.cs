@@ -2,6 +2,7 @@
 using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cairo_book_fair.Services
 {
@@ -9,11 +10,13 @@ namespace Cairo_book_fair.Services
     {
         private readonly IAuthorRepository authorRepository;
         public readonly IBookRepository bookRepository;
+        private readonly Context _context;
 
-        public AuthorService(IAuthorRepository authorRepository, IBookRepository bookRepository)
+        public AuthorService(IAuthorRepository authorRepository, IBookRepository bookRepository, Context context)
         {
             this.authorRepository = authorRepository;
             this.bookRepository = bookRepository;
+            _context = context;
         }
 
         //***************************************************
@@ -64,14 +67,23 @@ namespace Cairo_book_fair.Services
 
         public AuthorDTO Get(int id)
         {
-            Author author = authorRepository.Get(id);
+            Author author = _context.Authors.Include(b => b.Books).FirstOrDefault(i => i.Id == id);
             AuthorDTO authorDTO = new();
+            List<BookDto> books = new List<BookDto>();
 
             authorDTO.Name = author.Name;
             authorDTO.Description = author.Description;
             authorDTO.Image = author.Image;
             authorDTO.NumberOfBooks = author.NumberOfBooks;
+            foreach (var book in author.Books)
 
+                books.Add(new BookDto
+                {
+                    Id = book.Id,
+                    Name = book.Name,
+
+                });
+            authorDTO.Books = books;
             return authorDTO;
         }
 

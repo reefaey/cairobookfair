@@ -23,8 +23,6 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<UsedBook> UsedBooks { get; set; }
-
         public Context(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
