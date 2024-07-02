@@ -70,7 +70,7 @@ namespace Cairo_book_fair.Services
         {
             Author author = _context.Authors.Include(b => b.Books).FirstOrDefault(i => i.Id == id);
             AuthorDTO authorDTO = new();
-            List<BookDto> books = new List<BookDto>();
+            List<BookVM> books = new List<BookVM>();
 
             authorDTO.Name = author.Name;
             authorDTO.Description = author.Description;
@@ -78,7 +78,7 @@ namespace Cairo_book_fair.Services
             authorDTO.NumberOfBooks = author.NumberOfBooks;
             foreach (var book in author.Books)
 
-                books.Add(new BookDto
+                books.Add(new BookVM
                 {
                     Id = book.Id,
                     Name = book.Name,
