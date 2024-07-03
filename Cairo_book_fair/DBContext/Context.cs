@@ -1,8 +1,6 @@
 ﻿using Cairo_book_fair.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using System;
 
 namespace Cairo_book_fair.DBContext
 {
@@ -16,6 +14,7 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Order> Orders { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Book> Books { get; set; }
+        public DbSet<UsedBook> UsedBooks { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<BookCategory> BooksCategories { get; set; }
@@ -24,7 +23,6 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-
 
         public Context(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
@@ -59,6 +57,19 @@ namespace Cairo_book_fair.DBContext
                 .HasOne(o => o.Shipment)
                 .WithOne(s => s.Order)
                 .HasForeignKey<Order>(o => o.ShipmentId);
+
+            //for Review ///////
+            /* modelBuilder.Entity<Review>()
+                .HasOne(r => r.Book)
+                .WithMany(b => b.Reviews)
+                .HasForeignKey(r => r.BookId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId); */ 
+
+            
 
             //modelBuilder.Entity<Block>()
             //.HasOne(b => b.Publisher)

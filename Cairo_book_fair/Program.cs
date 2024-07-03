@@ -1,4 +1,3 @@
-
 using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
@@ -24,20 +23,18 @@ namespace Cairo_book_fair
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<Context>(options =>
             {
                 options.UseSqlServer("Data Source=.;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
             });
 
-            builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
-            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-            builder.Services.AddScoped<IAuthorService, AuthorService>();
+            builder.Services.AddCors(options => 
+            options.AddPolicy("MyPolicy", policy =>
+                policy.AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyOrigin()
+            ));
 
-
-
-            builder.Services.AddCors(options => options.AddPolicy("MyPolicy", policy =>
-            policy.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
             builder.Services.AddIdentity<User, IdentityRole>(
                 options =>
                 {
@@ -48,9 +45,18 @@ namespace Cairo_book_fair
                     options.Password.RequireUppercase = true;
                     options.Password.RequireLowercase = true;
                     options.Password.RequiredUniqueChars = 4;
+
+                    //options.Lockout.AllowedForNewUsers = true;
+                    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    //options.Lockout.MaxFailedAccessAttempts = 5;
+
+                    options.User.RequireUniqueEmail = true;
+
                 })
                 .AddEntityFrameworkStores<Context>()
                 .AddDefaultTokenProviders();
+
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme =
@@ -59,7 +65,8 @@ namespace Cairo_book_fair
                 JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme =
                 JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
+            }).AddJwtBearer(options =>
+            {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters()
@@ -69,20 +76,24 @@ namespace Cairo_book_fair
                     ValidAudience = builder.Configuration["JWT:ValidAudience"],
                     ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new
-                                SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                                SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigninKey"]))
                 };
-            });
+            });//.AddGoogle(googleOptions =>
+            //{
+            //    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]; ;
+            //    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            //});
 
             builder.Services.AddSwaggerGen(swagger =>
             {
-                //This�is�to�generate�the�Default�UI�of�Swagger�Documentation����
+                //This is to generate the Default UI of Swagger Documentation
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "ASP.NET�5�Web�API",
+                    Title = "ASP.NET 5 Web API",
                     Description = " ITI Project"
                 });
-                //�To�Enable�authorization�using�Swagger�(JWT)����
+                //To Enable authorization using Swagger (JWT)    
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
@@ -90,7 +101,7 @@ namespace Cairo_book_fair
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter�'Bearer'�[space]�and�then�your�valid�token�in�the�text�input�below.\r\n\r\nExample:�\"Bearer�eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -108,10 +119,40 @@ namespace Cairo_book_fair
                     });
             });
 
+            //~~Abdallah Services~~//
+            builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
+            builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<IBookCartRepository, BookCartRepository>();
+            builder.Services.AddScoped<IBookCartService, BookCartService>();
+            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+            builder.Services.AddScoped<IAuthorService, AuthorService>();
 
+            //Abdelraheem Services//
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IBookService, BookService>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IUsedBookRepository, UsedBookRepository>();
+            builder.Services.AddScoped<IUsedBookService, UsedBookService>();
 
+
+
+            builder.Services.AddAutoMapper(typeof(Program));
+
+
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<ITicketService, TicketService>();
+
+            //review and shipment services
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+
+            builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            builder.Services.AddScoped<IShipmentService, ShipmentService>();
 
 
             var app = builder.Build();
@@ -122,6 +163,10 @@ namespace Cairo_book_fair
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseStaticFiles(); // to make it able to read static pages in wwwroot if needed
+
+            app.UseCors("MyPolicy"); // to make the provider able to serve consumer from other domains
 
             app.UseHttpsRedirection();
 

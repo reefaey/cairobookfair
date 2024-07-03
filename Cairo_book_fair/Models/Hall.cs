@@ -3,7 +3,7 @@
     public class Hall
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public int HallNumber { get; set; }
         public List<Block> Blocks { get; set; }
     }
 }

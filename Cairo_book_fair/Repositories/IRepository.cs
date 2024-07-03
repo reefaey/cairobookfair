@@ -2,9 +2,12 @@
 {
     public interface IRepository<T>
     {
+        //public List<T> GetAll(string[] include = null);
         public List<T> GetAll(string include = null);
 
-        T Get(int id);
+
+        //T Get(int id, string[] include = null);
+        public T Get(int Id);
 
         List<T> Get(Func<T, bool> where);
 
