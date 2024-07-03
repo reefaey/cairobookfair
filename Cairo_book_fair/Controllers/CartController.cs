@@ -40,12 +40,26 @@ namespace Cairo_book_fair.Controllers
 
         //}
 
-        [HttpPost]
+        [HttpPost ("Buy Regular Book")]
         public IActionResult InserItem(BookItemWithUserID bookItemWithUserID)
         {
             if(ModelState.IsValid)
             {
                  Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
+                _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
+                _bookCartService.Save();
+
+                return Ok(bookItemWithUserID);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost("Take Donated Book")]
+        public IActionResult TakeBook(BookItemWithUserID bookItemWithUserID)
+        {
+            if (ModelState.IsValid)
+            {
+                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
                 _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
                 _bookCartService.Save();
 

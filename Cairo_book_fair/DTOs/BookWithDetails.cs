@@ -12,6 +12,5 @@
         public int? PagesNumber { get; set; }
         public List<string> CategoryNames { get; set; }
         public string? SoundBook { get; set; }
-
     }
 }
