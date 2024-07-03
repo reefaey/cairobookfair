@@ -49,9 +49,9 @@ namespace Cairo_book_fair.Controllers
                 _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
                 _bookCartService.Save();
 
-                return Ok(bookItemWithUserID);
+                return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
             }
-            return BadRequest(ModelState);
+            return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
         }
 
         [HttpPost("Take Donated Book")]
@@ -63,9 +63,9 @@ namespace Cairo_book_fair.Controllers
                 _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
                 _bookCartService.Save();
 
-                return Ok(bookItemWithUserID);
+                return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
             }
-            return BadRequest(ModelState);
+            return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
         }
 
         [HttpDelete]

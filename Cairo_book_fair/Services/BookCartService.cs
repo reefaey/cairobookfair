@@ -23,6 +23,7 @@ namespace Cairo_book_fair.Services
 
         public void AddItem(int cartId, int bookId)
         {
+            //search First in BookCart Table to check if this user added same book and increase its quantity rather than new by if condition
             BookCart bookCart = new()
             {
                 CartId = cartId,
