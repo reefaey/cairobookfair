@@ -85,7 +85,7 @@ namespace Cairo_book_fair.Controllers
             return Ok(_authorService.GetPaginatedAuthor(page, pageSize));
         }
 
-        [HttpGet("Pagenation")]
+        [HttpGet("Search")]
         public IActionResult GetSearchResult(string term)
         {
 
