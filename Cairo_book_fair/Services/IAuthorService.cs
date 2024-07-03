@@ -28,5 +28,7 @@ namespace Cairo_book_fair.Services
 
         public List<Author> GetAll(string include = null);
 
+        public List<AuthorDTO> GetSearchResult(string term);
+
     }
 }

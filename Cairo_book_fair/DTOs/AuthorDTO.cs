@@ -9,5 +9,6 @@ namespace Cairo_book_fair.DTOs
         public string? Image { get; set; }
         public string? Description { get; set; }
         public int NumberOfBooks { get; set; } = 0;
+        public List<BookVM> Books { get; set; }
     }
 }
