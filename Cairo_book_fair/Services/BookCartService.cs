@@ -11,18 +11,19 @@ namespace Cairo_book_fair.Services
     {
         private readonly ICartRepository _cartRepository;
         private readonly IBookCartRepository _bookCartRepository;
-        private readonly IBookService _bookService;
+        private readonly IBookRepository _bookRepository;
         private readonly UserManager<User> _userManager;
 
-        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookService bookService)
+        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository)
         {
             this._bookCartRepository = bookCartRepository;
             this._userManager = userManager;
-            this._bookService = bookService;
+            this._bookRepository = bookRepository;
         }
 
         public void AddItem(int cartId, int bookId)
         {
+            //search First in BookCart Table to check if this user added same book and increase its quantity rather than new by if condition
             BookCart bookCart = new()
             {
                 CartId = cartId,
@@ -54,13 +55,14 @@ namespace Cairo_book_fair.Services
             foreach (BookCart cartItem in cartItems)
             {
 
-                BookWithDetails book = _bookService.Get(cartItem.BookId);
+                Book book = _bookRepository.Get(cartItem.BookId);
                 cartItemsDto.Add( new CartItemDTO()
                 {
                     BookId = cartItem.BookId,
-                    Name = book.BookName,
+                    Name = book.Name,
                     Image = book.ImageUrl,
-                    Quantity = cartItem.Quantity
+                    Quantity = cartItem.Quantity,
+                    Price = book.Price
                 });
 
             }
