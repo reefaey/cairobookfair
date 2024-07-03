@@ -26,7 +26,7 @@ namespace Cairo_book_fair
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer("Data Source=.;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+                options.UseSqlServer("Data Source=DESKTOP-8H9KKU1\\SQLEXPRESS;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=False");
             });
 
             builder.Services.AddCors(options =>

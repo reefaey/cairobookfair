@@ -20,14 +20,14 @@ namespace Cairo_book_fair.Controllers
         [HttpGet("Paginated")]
         public IActionResult GetPaginatedBooks(int pageNo, int pagesize, string[] includes = null)
         {
-            return Ok(usedBookService.GetPaginatedBooks());
+            return Ok(usedBookService.GetPaginatedBooks(pageNo, pagesize));
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id, string[] include = null)
+        public IActionResult Get(int id)
         {
-            UsedBookDto book = usedBookService.Get(id, include);
+            UsedBookDto book = usedBookService.Get(id);
             if (book != null)
             {
                 return Ok(book);
@@ -37,7 +37,7 @@ namespace Cairo_book_fair.Controllers
         /////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost]
-        public IActionResult Insert(UsedBookDto bookDB)
+        public IActionResult Insert(UsedBookForInsert bookDB)
         {
             if (ModelState.IsValid == true)
             {
@@ -51,13 +51,13 @@ namespace Cairo_book_fair.Controllers
         ////////////////////////////////////////////////////////////////////////////////
         ///
         [HttpPut]
-        public IActionResult Update(int id, UsedBookDto bookDB)
+        public IActionResult Update(int id, UsedBookForInsert bookDB)
         {
             if (ModelState.IsValid == true)
             {
                 usedBookService.Update(id, bookDB);
                 usedBookService.Save();
-                return NoContent();
+                return Ok();
             }
             return BadRequest(ModelState);
         }
@@ -66,6 +66,7 @@ namespace Cairo_book_fair.Controllers
         public IActionResult Delete(int id)
         {
             usedBookService.Delete(id);
+            usedBookService.Save();
             return NoContent();
         }
         ///////////////////////////////////////////////////////////////////////////////

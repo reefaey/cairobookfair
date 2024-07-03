@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cairo_book_fair.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240630233857_cart")]
-    partial class cart
+    [Migration("20240703064208_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,9 +93,6 @@ namespace Cairo_book_fair.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DonationId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -124,8 +121,6 @@ namespace Cairo_book_fair.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("DonationId");
 
                     b.HasIndex("PublisherId");
 
@@ -452,6 +447,27 @@ namespace Cairo_book_fair.Migrations
                     b.ToTable("Tickets");
                 });
 
+            modelBuilder.Entity("Cairo_book_fair.Models.Transportation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("routes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transportations");
+                });
+
             modelBuilder.Entity("Cairo_book_fair.Models.UsedBook", b =>
                 {
                     b.Property<int>("Id")
@@ -464,23 +480,24 @@ namespace Cairo_book_fair.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Category")
+                    b.Property<string>("BookName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfPurchase")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DonationID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("DonorName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DonationID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UsedBooks");
                 });
@@ -496,9 +513,6 @@ namespace Cairo_book_fair.Migrations
                     b.Property<string>("Bio")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -563,8 +577,6 @@ namespace Cairo_book_fair.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -574,6 +586,34 @@ namespace Cairo_book_fair.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Cairo_book_fair.Models.Visitors", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cycle")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Hall")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PublishingHouse")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VisitorsCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Visitors");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -735,10 +775,6 @@ namespace Cairo_book_fair.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Cairo_book_fair.Models.Donation", "Donation")
-                        .WithMany("Books")
-                        .HasForeignKey("DonationId");
-
                     b.HasOne("Cairo_book_fair.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
@@ -746,8 +782,6 @@ namespace Cairo_book_fair.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
-
-                    b.Navigation("Donation");
 
                     b.Navigation("Publisher");
                 });
@@ -902,24 +936,11 @@ namespace Cairo_book_fair.Migrations
 
             modelBuilder.Entity("Cairo_book_fair.Models.UsedBook", b =>
                 {
-                    b.HasOne("Cairo_book_fair.Models.Donation", "Donation")
-                        .WithMany()
-                        .HasForeignKey("DonationID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Cairo_book_fair.Models.User", "User")
+                        .WithMany("UsedBooks")
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Donation");
-                });
-
-            modelBuilder.Entity("Cairo_book_fair.Models.User", b =>
-                {
-                    b.HasOne("Cairo_book_fair.Models.Cart", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -999,11 +1020,6 @@ namespace Cairo_book_fair.Migrations
                     b.Navigation("BookCategories");
                 });
 
-            modelBuilder.Entity("Cairo_book_fair.Models.Donation", b =>
-                {
-                    b.Navigation("Books");
-                });
-
             modelBuilder.Entity("Cairo_book_fair.Models.Hall", b =>
                 {
                     b.Navigation("Blocks");
@@ -1034,6 +1050,8 @@ namespace Cairo_book_fair.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Tickets");
+
+                    b.Navigation("UsedBooks");
                 });
 #pragma warning restore 612, 618
         }

@@ -29,26 +29,33 @@ namespace Cairo_book_fair.Services
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public void Insert(UsedBookDto usedBookDto)
+        public void Insert(UsedBookForInsert usedBookDto)
         {
             UsedBook usedBook = mapper.Map<UsedBook>(usedBookDto);
             var userId = GetCurrentUserId();
             var userName = GetCurrentUserName();
             usedBook.UserId = userId;
+            var user = usedBookRepository.GetUserById(userId);
             usedBook.DonorName = userName;
-            usedBook.User.NumberOfDonatedBooks++;
             usedBookRepository.Insert(usedBook);
+            usedBook.User.NumberOfDonatedBooks++;
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////
-        public void Update(int id, UsedBookDto usedBookDto)
+        public void Update(int id, UsedBookForInsert usedBookDto)
         {
             UsedBook usedBookDB = usedBookRepository.Get(id);
             if (usedBookDB != null)
             {
-                usedBookDB = mapper.Map<UsedBook>(usedBookDB);
+                mapper.Map(usedBookDto, usedBookDB);
+                usedBookDB.UserId = GetCurrentUserId();
+                usedBookDB.DonorName = GetCurrentUserName();
                 usedBookRepository.Update(usedBookDB);
             }
-            throw new KeyNotFoundException($"This UsedBook with Id :{id} was not found.");
+            else
+            {
+                throw new KeyNotFoundException($"This UsedBook with Id :{id} was not found.");
+
+            }
 
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +66,11 @@ namespace Cairo_book_fair.Services
             {
                 usedBookRepository.Delete(usedBook);
             }
-            throw new KeyNotFoundException($"This UsedBook with Id :{id} was not found.");
+            else
+            {
+                throw new KeyNotFoundException($"This UsedBook with Id :{id} was not found.");
+
+            }
 
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +80,7 @@ namespace Cairo_book_fair.Services
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public PaginatedList<UsedBookDto> GetPaginatedBooks(int page = 1, int pageSize = 10, string[] include = null)
+        public PaginatedList<UsedBookDto> GetPaginatedBooks(int page, int pageSize, string[] include = null)
         {
             PaginatedList<UsedBook> paginatedList = usedBookRepository.GetPaginatedBooks(page, pageSize, include);
             IEnumerable<UsedBookDto> usedBookDtos = mapper.Map<IEnumerable<UsedBookDto>>(paginatedList.Items);
@@ -85,9 +96,9 @@ namespace Cairo_book_fair.Services
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////   
 
-        public UsedBookDto Get(int id, string[] include)
+        public UsedBookDto Get(int id)
         {
-            UsedBook usedBook = usedBookRepository.Get(id, include);
+            UsedBook usedBook = usedBookRepository.Get(id);
             UsedBookDto usedBookDto = mapper.Map<UsedBookDto>(usedBook);
             return usedBookDto;
         }
