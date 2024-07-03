@@ -22,31 +22,28 @@ namespace Cairo_book_fair.Services
             {
                 bookRepository.Delete(bookDb);
             }
-            throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
+            else
+            {
+                throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
+
+            }
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        public List<Book> Get(Func<Book, bool> where)
-        {
-            return bookRepository.Get(where).ToList();
-        }
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         public BookWithDetails Get(int id, string[] include = null)
         {
-            Book bookDB = bookRepository.Get(id, include);
+            string[] includeProperties = { "Author", "BookCategories.Category", "Publisher.Block.Hall" };
+
+            Book bookDB = bookRepository.Get(id, includeProperties);
             BookWithDetails bookDTO = mapper.Map<BookWithDetails>(bookDB);
             return bookDTO;
         }
-        ///////////////////////////////////////,///////////////////////////////////////////////////////////
-        public List<BookWithDetails> GetAll(string[] include = null)
-        {
-            List<Book> booksDB = bookRepository.GetAll(include);
-            List<BookWithDetails> booksDTO = mapper.Map<List<BookWithDetails>>(booksDB);
-            return booksDTO;
-        }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////
-        public PaginatedList<BookWithDetails> GetPaginatedBooks(int page = 1, int pageSize = 10, string[] include = null)
+        public PaginatedList<BookWithDetails> GetPaginatedBooks(int page, int pageSize, string[] include = null)
         {
-            PaginatedList<Book> paginatedList = bookRepository.GetPaginatedBooks(page, pageSize, include);
+            string[] includeProperties = { "Author", "BookCategories.Category", "Publisher.Block.Hall" };
+            PaginatedList<Book> paginatedList = bookRepository.GetPaginatedBooks(page, pageSize, includeProperties);
             IEnumerable<BookWithDetails> booksDTOs = mapper.Map<IEnumerable<BookWithDetails>>(paginatedList.Items);
             PaginatedList<BookWithDetails> paginatedListDTO = new()
             {
@@ -57,6 +54,7 @@ namespace Cairo_book_fair.Services
             };
             return paginatedListDTO;
         }
+        ///
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         public void Insert(BookDTO bookDTO)
@@ -83,12 +81,15 @@ namespace Cairo_book_fair.Services
             Book bookDB = bookRepository.Get(id);
             if (bookDB != null)
             {
-                bookDB = mapper.Map<Book>(bookDB);
+                mapper.Map(item, bookDB);
                 bookRepository.Update(bookDB);
             }
-            throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
+            else
+            {
+                throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
+            }
         }
-        ///////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////
 
     }
 }
