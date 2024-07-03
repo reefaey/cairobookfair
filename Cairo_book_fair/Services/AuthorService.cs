@@ -72,6 +72,7 @@ namespace Cairo_book_fair.Services
             AuthorDTO authorDTO = new();
             List<BookVM> books = new List<BookVM>();
 
+            authorDTO.Id = author.Id;
             authorDTO.Name = author.Name;
             authorDTO.Description = author.Description;
             authorDTO.Image = author.Image;
@@ -135,6 +136,7 @@ namespace Cairo_book_fair.Services
             List<Author> authorsPerPage = authors.Skip((page -1) * pageSize).Take(pageSize).ToList();
 
             List<AuthorDTO> paginatedAuthors = new();
+
             foreach(Author author in authorsPerPage)
             {
                 paginatedAuthors.Add(new AuthorDTO
@@ -149,6 +151,30 @@ namespace Cairo_book_fair.Services
             }
             return paginatedAuthors;
         }
+
+        public List<AuthorDTO> GetSearchResult(string term)
+        {
+            List<Author> Result = authorRepository.GetSearchResult(term);
+            List<AuthorDTO> ResultList = new List<AuthorDTO>();
+            if (Result != null)
+            {
+                foreach (Author author in Result) 
+                {
+                    ResultList.Add(new AuthorDTO
+                    {
+                        Id = author.Id,
+                        Name = author.Name,
+                        Description = author.Description,
+                        Image = author.Image,
+                        NumberOfBooks = author.NumberOfBooks,
+
+                    });
+                }
+            }
+
+            return ResultList;
+        }
+
 
         public void Save()
         {
