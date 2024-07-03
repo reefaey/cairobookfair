@@ -50,7 +50,7 @@ namespace Cairo_book_fair.Repositories
             }
             return query.ToList();
         }
-        public PaginatedList<Book> GetPaginatedBooks(int page = 1, int pageSize = 10, string[] include = null)
+        public PaginatedList<Book> GetPaginatedBooks(int page, int pageSize, string[] include = null)
         {
             IQueryable<Book> query = context.Books;
             if (include != null)
