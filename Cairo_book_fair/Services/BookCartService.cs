@@ -2,8 +2,6 @@
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Collections.Generic;
 
 namespace Cairo_book_fair.Services
 {
@@ -30,7 +28,7 @@ namespace Cairo_book_fair.Services
                 Quantity = 1
             };
             _bookCartRepository.Insert(bookCart);
-            
+
         }
 
         public BookCart GetBookCart(int cartId, int bookId)
@@ -55,10 +53,10 @@ namespace Cairo_book_fair.Services
             {
 
                 BookWithDetails book = _bookService.Get(cartItem.BookId);
-                cartItemsDto.Add( new CartItemDTO()
+                cartItemsDto.Add(new CartItemDTO()
                 {
                     BookId = cartItem.BookId,
-                    Name = book.BookName,
+                    Name = book.Name,
                     Image = book.ImageUrl,
                     Quantity = cartItem.Quantity
                 });
@@ -72,7 +70,7 @@ namespace Cairo_book_fair.Services
         {
             BookCart bookCart = _bookCartRepository.GetBookCart(cartId, bookId);
             _bookCartRepository.Delete(bookCart);
-            
+
         }
 
         public void ChangeQuantity(string userId, int bookId, int quantity)
@@ -80,7 +78,7 @@ namespace Cairo_book_fair.Services
             Cart cart = _cartRepository.GetCartByUserId(userId);
             BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, bookId);
 
-            bookCart.Quantity= quantity;
+            bookCart.Quantity = quantity;
             _bookCartRepository.Update(bookCart);
             _bookCartRepository.Save();
         }

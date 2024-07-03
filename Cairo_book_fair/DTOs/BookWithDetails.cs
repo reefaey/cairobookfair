@@ -2,7 +2,8 @@
 {
     public class BookWithDetails
     {
-        public string BookName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public string AuthorName { get; set; }
         public int HallNumber { get; set; }
         public string BlockName { get; set; }

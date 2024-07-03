@@ -19,30 +19,20 @@ namespace Cairo_book_fair.Controllers
             this.bookService = bookService;
             this.mapper = mapper;
         }
-        //////////////////////////////////////////////////////////////////////////////////////////////////
-        [HttpGet]
-        public IActionResult GetAll(string[] includes = null)
-        {
-            List<BookWithDetails> books = bookService.GetAll(includes);
-            if (books != null)
-            {
-                return Ok(books);
-            }
-            return BadRequest();
-        }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpGet("Paginated")]
-        public IActionResult GetPaginatedBooks(int pageNo, int pagesize, string[] includes = null)
+        public IActionResult GetPaginatedBooks(int pageNo, int pagesize)
         {
-            return Ok(bookService.GetPaginatedBooks());
+            return Ok(bookService.GetPaginatedBooks(pageNo, pagesize));
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id, string[] include = null)
+        public IActionResult Get(int id)
         {
-            BookWithDetails book = bookService.Get(id, include);
+            BookWithDetails book = bookService.Get(id);
             if (book != null)
             {
                 return Ok(book);
@@ -58,7 +48,7 @@ namespace Cairo_book_fair.Controllers
             {
                 bookService.Insert(book);
                 bookService.Save();
-                return CreatedAtAction("Get", new { id = book }, book);
+                return Ok();
             }
             return BadRequest(ModelState);
         }
