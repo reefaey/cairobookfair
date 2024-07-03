@@ -138,6 +138,30 @@ namespace Cairo_book_fair.Services
             return paginatedAuthors;
         }
 
+        public List<AuthorDTO> GetSearchResult(string term)
+        {
+            List<Author> Result = authorRepository.GetSearchResult(term);
+            List<AuthorDTO> ResultList = new List<AuthorDTO>();
+            if (Result != null)
+            {
+                foreach (Author author in Result) 
+                {
+                    ResultList.Add(new AuthorDTO
+                    {
+                        Id = author.Id,
+                        Name = author.Name,
+                        Description = author.Description,
+                        Image = author.Image,
+                        NumberOfBooks = author.NumberOfBooks,
+
+                    });
+                }
+            }
+
+            return ResultList;
+        }
+
+
         public void Save()
         {
             authorRepository.Save();
