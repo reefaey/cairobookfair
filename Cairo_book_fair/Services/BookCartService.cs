@@ -4,6 +4,7 @@ using Cairo_book_fair.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Cairo_book_fair.Services
 {
@@ -12,18 +13,27 @@ namespace Cairo_book_fair.Services
         private readonly ICartRepository _cartRepository;
         private readonly IBookCartRepository _bookCartRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly IUsedBookRepository _usedBookRepository;
         private readonly UserManager<User> _userManager;
 
-        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository)
+        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository, IUsedBookRepository usedBookRepository)
         {
             this._bookCartRepository = bookCartRepository;
             this._userManager = userManager;
             this._bookRepository = bookRepository;
+            _usedBookRepository = usedBookRepository;
         }
 
-        public void AddItem(int cartId, int bookId)
+        public void AddBook(int cartId, int bookId)
         {
-            //search First in BookCart Table to check if this user added same book and increase its quantity rather than new by if condition
+            if(_bookCartRepository.IsBookAdded(cartId, bookId))
+            {
+                BookCart bookcart = _bookCartRepository.GetBookCart(cartId, bookId);
+                if (bookcart != null)
+                {
+                    bookcart.Quantity++;
+                }
+            }
             BookCart bookCart = new()
             {
                 CartId = cartId,
@@ -34,12 +44,29 @@ namespace Cairo_book_fair.Services
             
         }
 
+        public void AddDonatedBook(int cartId, int bookId)
+        {
+            UsedBook? usedBook = _usedBookRepository.Get(bookId);
+
+            if (usedBook != null)
+            {
+                BookCart bookCart = new()
+                {
+                    CartId = cartId,
+                    DonatedBookId = bookId,
+                    Quantity = 1
+                };
+                _bookCartRepository.Insert(bookCart);
+                _usedBookRepository.Delete(usedBook);
+            }
+        }   
+
         public BookCart GetBookCart(int cartId, int bookId)
         {
             return _bookCartRepository.GetBookCart(cartId, bookId);
         }
 
-        public WholeCartItemsWithTotalPriceDTO GetAllCartItems(int cartId)
+        public WholeCartItemsWithTotalPriceDTO GetCartBooks(int cartId)
         {
             //var cartItems = _bookCartRepository.GetAllBooksInCart(cartId)
             //    .Select(cartItem => new CartItemDTO
@@ -58,27 +85,50 @@ namespace Cairo_book_fair.Services
 
             foreach (BookCart cartItem in cartItems)
             {
-                Book book = _bookRepository.Get(cartItem.BookId);
-                wholeCartItemsWithTotalPriceDTO.cartItems
-                    .Add( new CartItemDTO()
+                if(cartItem.BookId != null)
+                {
+                    Book? book = _bookRepository.Get(cartItem.BookId);
+                
+                
+                    if(book != null)
                     {
-                        BookId = cartItem.BookId,
-                        Name = book.Name,
-                        Image = book.ImageUrl,
-                        Quantity = cartItem.Quantity,
-                        Price = book.Price
+                        wholeCartItemsWithTotalPriceDTO.cartItems
+                        .Add(new CartItemDTO()
+                        {
+                            BookId = cartItem.BookId,
+                            Name = book.Name,
+                            Image = book.ImageUrl,
+                            Quantity = cartItem.Quantity,
+                            Price = book.Price
+                        });
+                        wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price;
+                    }
+                }
+                UsedBook? usedBook = _usedBookRepository.Get(cartItem.BookId);
+                if (usedBook != null)
+                {
+                    wholeCartItemsWithTotalPriceDTO.cartItems
+                    .Add(new CartItemDTO()
+                    {
+                        DonatedBookId = cartItem.BookId,
+                        Name = usedBook.BookName,
+                        Image = usedBook.ImageURL,
+                        Quantity = 1,
+                        Price = 0
                     });
-                wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price;
+                }
+                    
             }
             return wholeCartItemsWithTotalPriceDTO;
-
         }
 
         public void RemoveItem(int cartId, int bookId)
         {
             BookCart bookCart = _bookCartRepository.GetBookCart(cartId, bookId);
-            _bookCartRepository.Delete(bookCart);
-            
+            if (bookCart != null)
+            {
+                _bookCartRepository.Delete(bookCart);
+            }
         }
 
         public void ChangeQuantity(string userId, int bookId, int quantity)
@@ -86,9 +136,12 @@ namespace Cairo_book_fair.Services
             Cart cart = _cartRepository.GetCartByUserId(userId);
             BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, bookId);
 
-            bookCart.Quantity= quantity;
-            _bookCartRepository.Update(bookCart);
-            _bookCartRepository.Save();
+            if (bookCart != null)
+            {
+                bookCart.Quantity= quantity;
+                _bookCartRepository.Update(bookCart);
+                _bookCartRepository.Save();
+            }
         }
 
         public void Save()

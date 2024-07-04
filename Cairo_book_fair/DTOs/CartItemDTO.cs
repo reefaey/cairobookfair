@@ -5,7 +5,8 @@ namespace Cairo_book_fair.DTOs
 {
     public class CartItemDTO
     {
-        public int BookId { get; set; }
+        public int? BookId { get; set; }
+        public int? DonatedBookId { get; set; }
         public string Name { get; set; }
         public string Image { get; set; }
         public int Quantity { get; set; }

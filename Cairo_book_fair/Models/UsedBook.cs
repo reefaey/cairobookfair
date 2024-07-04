@@ -14,6 +14,10 @@ namespace Cairo_book_fair.Models
         public string? UserId { get; set; }
         public User? User { get; set; }
 
+        [ForeignKey("BookCart")]
+        public int? BookCartId {  get; set; }
+        public BookCart? BookCart { get; set; }
+
         //[ForeignKey("Donation")]
         //public int DonationID { get; set; }
         //public Donation Donation { get; set; }
