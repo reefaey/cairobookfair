@@ -10,7 +10,7 @@ namespace Cairo_book_fair.Services
 
         public void ChangeQuantity(string userId, int bookId, int quantity);
 
-        public List<CartItemDTO> GetAllCartItems(int cartId);
+        public WholeCartItemsWithTotalPriceDTO GetAllCartItems(int cartId);
 
         public void Save();
 

@@ -39,7 +39,7 @@ namespace Cairo_book_fair.Services
             return _bookCartRepository.GetBookCart(cartId, bookId);
         }
 
-        public List<CartItemDTO> GetAllCartItems(int cartId)
+        public WholeCartItemsWithTotalPriceDTO GetAllCartItems(int cartId)
         {
             //var cartItems = _bookCartRepository.GetAllBooksInCart(cartId)
             //    .Select(cartItem => new CartItemDTO
@@ -51,22 +51,26 @@ namespace Cairo_book_fair.Services
             //    }).ToList();
             List<BookCart> cartItems = _bookCartRepository.GetAllBooksInCart(cartId);
 
-            List<CartItemDTO> cartItemsDto = new List<CartItemDTO>();
+            WholeCartItemsWithTotalPriceDTO wholeCartItemsWithTotalPriceDTO = new() 
+            { 
+                cartItems = new List<CartItemDTO>()
+            };
+
             foreach (BookCart cartItem in cartItems)
             {
-
                 Book book = _bookRepository.Get(cartItem.BookId);
-                cartItemsDto.Add( new CartItemDTO()
-                {
-                    BookId = cartItem.BookId,
-                    Name = book.Name,
-                    Image = book.ImageUrl,
-                    Quantity = cartItem.Quantity,
-                    Price = book.Price
-                });
-
+                wholeCartItemsWithTotalPriceDTO.cartItems
+                    .Add( new CartItemDTO()
+                    {
+                        BookId = cartItem.BookId,
+                        Name = book.Name,
+                        Image = book.ImageUrl,
+                        Quantity = cartItem.Quantity,
+                        Price = book.Price
+                    });
+                wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price;
             }
-            return cartItemsDto;
+            return wholeCartItemsWithTotalPriceDTO;
 
         }
 
