@@ -132,9 +132,6 @@ namespace Cairo_book_fair.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DonatedBookId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
@@ -144,8 +141,6 @@ namespace Cairo_book_fair.Migrations
                     b.HasKey("BookId", "CartId");
 
                     b.HasIndex("CartId");
-
-                    b.HasIndex("DonatedBookId");
 
                     b.ToTable("BooksCarts");
                 });
@@ -486,9 +481,6 @@ namespace Cairo_book_fair.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CartId")
-                        .HasColumnType("int");
-
                     b.Property<string>("DonorName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -501,8 +493,6 @@ namespace Cairo_book_fair.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CartId");
 
                     b.HasIndex("UserId");
 
@@ -558,9 +548,6 @@ namespace Cairo_book_fair.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<int>("NumberOfDonatedBooks")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfTakedBooks")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
@@ -810,17 +797,9 @@ namespace Cairo_book_fair.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Cairo_book_fair.Models.UsedBook", "UsedBook")
-                        .WithMany()
-                        .HasForeignKey("DonatedBookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Book");
 
                     b.Navigation("Cart");
-
-                    b.Navigation("UsedBook");
                 });
 
             modelBuilder.Entity("Cairo_book_fair.Models.BookCategory", b =>
@@ -954,15 +933,9 @@ namespace Cairo_book_fair.Migrations
 
             modelBuilder.Entity("Cairo_book_fair.Models.UsedBook", b =>
                 {
-                    b.HasOne("Cairo_book_fair.Models.Cart", "Cart")
-                        .WithMany("UsedBooks")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany("UsedBooks")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Cart");
 
                     b.Navigation("User");
                 });
@@ -1037,8 +1010,6 @@ namespace Cairo_book_fair.Migrations
             modelBuilder.Entity("Cairo_book_fair.Models.Cart", b =>
                 {
                     b.Navigation("BookCarts");
-
-                    b.Navigation("UsedBooks");
                 });
 
             modelBuilder.Entity("Cairo_book_fair.Models.Category", b =>

@@ -12,6 +12,6 @@ namespace Cairo_book_fair.Models
         public decimal TotalCost { get; set; } = 0;
         public List<BookCart>? BookCarts { get; set; }
         public User User { get; set; }
-        public List<UsedBook>? UsedBooks { get; set; }
+
     }
 }

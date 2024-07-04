@@ -14,9 +14,5 @@ namespace Cairo_book_fair.Models
         [ForeignKey("Book")]
         public int BookId { get; set; }
         public Book Book { get; set; }
-
-        [ForeignKey("UsedBook")]
-        public int DonatedBookId { get; set; }
-        public UsedBook? UsedBook { get; set; }
     }
 }
