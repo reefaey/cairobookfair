@@ -27,6 +27,15 @@ namespace Cairo_book_fair.Helper
             CreateMap<UsedBookDto, UsedBook>().ReverseMap();
 
 
+            CreateMap<Publisher, PublisherDto>()
+                .ForMember(dest => dest.BlockName, opt => opt.MapFrom(src => src.Block.Name))
+                .ReverseMap();
+
+            CreateMap<Publisher, PublisherDtoForInsert>()
+                .ForMember(dest => dest.BlockId, opt => opt.MapFrom(src => src.Block.Id))
+                .ReverseMap();
+
+
             //here
             CreateMap<Visitors, VisitorsDTO>().ReverseMap();
             CreateMap<Transportation, TransportationDTO>().ReverseMap();
