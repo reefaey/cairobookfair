@@ -100,6 +100,8 @@ namespace Cairo_book_fair.Repositories
         public List<Book> Search(string SearchBookName)
         {
             List<Book> filteredBooks = context.Books
+                .Include(b => b.Publisher).ThenInclude(p => p.Block).ThenInclude(f => f.Hall)
+                .Include(b => b.Author)
             .Where(b => b.Name.Contains(SearchBookName)).ToList();
 
             return filteredBooks;
