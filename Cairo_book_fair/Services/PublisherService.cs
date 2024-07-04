@@ -5,12 +5,12 @@ using Cairo_book_fair.Repositories;
 
 namespace Cairo_book_fair.Services
 {
-    public class PublisherServicem : IPublisherService
+    public class PublisherService : IPublisherService
     {
         private readonly IPublisherRepository publisherRepository;
         private readonly IMapper mapper;
 
-        public PublisherServicem(IPublisherRepository publisherRepository, IMapper mapper)
+        public PublisherService(IPublisherRepository publisherRepository, IMapper mapper)
         {
             this.publisherRepository = publisherRepository;
             this.mapper = mapper;
