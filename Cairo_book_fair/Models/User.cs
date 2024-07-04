@@ -23,7 +23,6 @@ namespace Cairo_book_fair.Models
         public List<Order>? Orders { get; set; }
         public List<Author>? AuthorsFollowing { get; set; }
         public int NumberOfDonatedBooks { get; set; } = 0;
-        public int NumberOfTakedBooks { get; set; } = 0;
         public List<UsedBook>? UsedBooks { get; set; }
 
     }

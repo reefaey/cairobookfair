@@ -1,19 +1,16 @@
 ﻿using Cairo_book_fair.DTOs;
-using Cairo_book_fair.Models;
 
 namespace Cairo_book_fair.Services
 {
     public interface IBookCartService
     {
+        public void AddItem(int cartId, int bookId);
 
-        public BookCart GetBookCart(int cartId, int bookId);
-        public void AddBook(int cartId, int bookId);
-        public void AddDonatedBook(int cartId, int bookId);
         public void RemoveItem(int cartId, int bookId);
 
         public void ChangeQuantity(string userId, int bookId, int quantity);
 
-        public WholeCartItemsWithTotalPriceDTO GetCartBooks(int cartId);
+        public WholeCartItemsWithTotalPriceDTO GetAllCartItems(int cartId);
 
         public void Save();
 

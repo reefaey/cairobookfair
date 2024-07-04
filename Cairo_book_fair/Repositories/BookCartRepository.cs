@@ -1,6 +1,5 @@
 ﻿using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
-using Microsoft.IdentityModel.Abstractions;
 
 namespace Cairo_book_fair.Repositories
 {
@@ -13,20 +12,11 @@ namespace Cairo_book_fair.Repositories
         public BookCart GetBookCart(int cartId,  int bookId)
         {
             BookCart bookCart = Context.Set<BookCart>()
-                .Where(c => c.CartId == cartId && (c.BookId == bookId || c.DonatedBookId == bookId))
+                .Where(c => c.CartId == cartId && c.BookId == bookId)
                 .FirstOrDefault();
 
             return bookCart;
 
-        }
-
-        public bool IsBookAdded(int cartId, int bookId)
-        {
-            BookCart? bookCart = Context.Set<BookCart>()
-                .Where(c => c.CartId == cartId && (c.BookId == bookId))
-                .FirstOrDefault();
-
-            return bookCart != null ? true : false ;
         }
 
         public List<BookCart> GetAllBooksInCart(int cartId)
