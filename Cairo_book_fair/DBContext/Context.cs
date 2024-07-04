@@ -1,4 +1,5 @@
 ﻿using Cairo_book_fair.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,16 +72,79 @@ namespace Cairo_book_fair.DBContext
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
-                .HasForeignKey(r => r.UserId); */ 
+                .HasForeignKey(r => r.UserId); */
 
-            
+
 
             //modelBuilder.Entity<Block>()
             //.HasOne(b => b.Publisher)
             //.WithOne(p => p.Block)
             //.HasForeignKey<Publisher>(p => p.BlockId);
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+             new IdentityRole()
+             {
+                 Id = "1",
+                 Name = "Admin",
+                 NormalizedName = "ADMIN"
+             },
+              new IdentityRole()
+              {
+                  Id = "2",
+                  Name = "User",
+                  NormalizedName = "USER"
+              }
+           );
+
+
+            //User user = new ()
+            //{
+            //    Id = "5",
+            //    UserName = "admin",
+            //    NormalizedUserName = "ADMIN",
+            //    Email = "admin@gmail.com",
+            //    NormalizedEmail = "ADMIN@GMAIL.COM",
+            //    EmailConfirmed = true
+            //};
+
+            //string passwordHash = new PasswordHasher<User>().HashPassword(user, "@Asc123456");
+
+            //user.PasswordHash = passwordHash;
+
+            //modelBuilder.Entity<User>().HasData(user);
+
+            ////modelBuilder.Entity<Context>().HasData(
+            //// new IdentityUserRole<string>
+            //// {
+            ////     UserId = "1",
+            ////     RoleId = "1"
+            //// });
+
+            //modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+            //new IdentityUserRole<string>
+            //{
+            //    UserId = "1",
+            //    RoleId = "1"
+            //});
+
+            var adminUserId = Guid.NewGuid().ToString();
+            var hasher = new PasswordHasher<User>();
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = adminUserId,
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@example.com",
+                NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "@Abc123456")
+            });
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                UserId = adminUserId,
+                RoleId = "1"
+            });
         }
-
-
     }
 }

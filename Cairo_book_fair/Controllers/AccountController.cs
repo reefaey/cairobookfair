@@ -51,13 +51,18 @@ namespace Cairo_book_fair.Controllers
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, NewUser.Password);
+
                 if (result.Succeeded)
                 {
                     _cartService.Insert(user.Id);
-
-                    //_cartService.UpdateID(user.CartId, user.Id);
                     _cartService.Save();
-                    return Ok( new { message = "User registered successfully" });
+                    //_cartService.UpdateID(user.CartId, user.Id);
+
+                    IdentityResult res = await _userManager.AddToRoleAsync(user, "User");
+                    if (res.Succeeded)
+                    {
+                        return Ok(new { message = "User registered successfully" });
+                    }
                 }
                 return BadRequest(result.Errors);
 
