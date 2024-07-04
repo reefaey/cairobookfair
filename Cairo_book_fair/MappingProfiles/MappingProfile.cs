@@ -10,7 +10,7 @@ namespace Cairo_book_fair.Helper
         public MappingProfile()
         {
             CreateMap<Book, BookWithDetails>()
-                .ForMember(dest => dest.BlockName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.BookName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Author.Name))
                 .ForMember(dest => dest.BlockName, opt => opt.MapFrom(src => src.Publisher.Block.Name))
                 .ForMember(dest => dest.HallNumber, opt => opt.MapFrom(src => src.Publisher.Block.Hall.Id))
@@ -32,7 +32,7 @@ namespace Cairo_book_fair.Helper
                 .ReverseMap();
 
             CreateMap<Publisher, PublisherDtoForInsert>()
-                .ForMember(dest => dest.BlockId, opt => opt.MapFrom(src => src.Block.Id))
+                //.ForMember(dest => dest.BlockId, opt => opt.MapFrom(src => src.Block.Id))
                 .ReverseMap();
 
 

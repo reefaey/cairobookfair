@@ -145,6 +145,8 @@ namespace Cairo_book_fair
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IUsedBookRepository, UsedBookRepository>();
             builder.Services.AddScoped<IUsedBookService, UsedBookService>();
+            builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+            builder.Services.AddScoped<IPublisherService, PublisherService>();
 
             //okayyy
             builder.Services.AddScoped<ITransportationService, TransportationService>();
