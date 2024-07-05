@@ -31,15 +31,18 @@ namespace Cairo_book_fair.Services
                 {
                     bookcart.Quantity++;
                 }
+                _bookCartRepository.Update(bookcart);
             }
-            BookCart bookCart = new()
+            else
             {
-                CartId = cartId,
-                BookId = bookId,
-                Quantity = 1
-            };
-            _bookCartRepository.Insert(bookCart);
-            
+                BookCart bookCart = new()
+                {
+                    CartId = cartId,
+                    BookId = bookId,
+                    Quantity = 1
+                };
+                _bookCartRepository.Insert(bookCart);
+            }
         }
 
         public BookCart GetBookCart(int cartId, int bookId)
@@ -76,7 +79,10 @@ namespace Cairo_book_fair.Services
                         Quantity = cartItem.Quantity,
                         Price = book.Price
                     });
-                wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price;
+                if(cartItem.Quantity != 0)
+                {
+                    wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price * cartItem.Quantity;
+                }
             }
             return wholeCartItemsWithTotalPriceDTO;
 
@@ -91,16 +97,14 @@ namespace Cairo_book_fair.Services
             }
         }
 
-        public void ChangeQuantity(string userId, int bookId, int quantity)
+        public void ChangeQuantity(int cartId, int bookId, int quantity)
         {
-            Cart cart = _cartRepository.GetCartByUserId(userId);
-            BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, bookId);
+            BookCart bookCart = _bookCartRepository.GetBookCart(cartId, bookId);
 
             if (bookCart != null)
             {
                 bookCart.Quantity = quantity;
                 _bookCartRepository.Update(bookCart);
-                _bookCartRepository.Save();
             }
         }
 
