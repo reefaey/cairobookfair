@@ -4,6 +4,7 @@ using Cairo_book_fair.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cairo_book_fair.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240705083438_request2")]
+    partial class request2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -416,17 +419,13 @@ namespace Cairo_book_fair.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("NID")
-                        .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Nid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
@@ -434,6 +433,9 @@ namespace Cairo_book_fair.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("phone")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -627,23 +629,23 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fa518795-6e6b-4228-8be7-19ded644cec0",
+                            Id = "cf6d8646-227e-43a3-a097-f6c02c2fda41",
                             AccessFailedCount = 0,
                             Bio = "Hello",
-                            ConcurrencyStamp = "a12a1b60-884b-47c8-833a-7a17d5a4eb9b",
+                            ConcurrencyStamp = "96452f6c-9524-4d65-adbd-f6f5ca30a40b",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
-                            JoinDate = new DateTime(2024, 7, 5, 11, 53, 44, 638, DateTimeKind.Local).AddTicks(9916),
+                            JoinDate = new DateTime(2024, 7, 5, 11, 34, 37, 539, DateTimeKind.Local).AddTicks(116),
                             Location = "",
                             LockoutEnabled = false,
                             Name = "",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
                             NumberOfDonatedBooks = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEA3LXIcqscH/D9CTu3Ei5Z1VceHj7M9vxmBAyvoTG2S1wYHi9GJuLn6OwF3nG++HEQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECGPih7gOsGrCLCMfGKUYZfG+M3y/+XoGtNLx/0tHad0M4/j2xuPQIj9fBRBrULrIA==",
                             PhoneNumberConfirmed = false,
                             ProfileImage = "default",
-                            SecurityStamp = "09e7a237-8c20-489f-a37d-7db7b5d440f5",
+                            SecurityStamp = "c0d0abce-a9ce-4bf2-8787-55d1350c7c8d",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -807,7 +809,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "fa518795-6e6b-4228-8be7-19ded644cec0",
+                            UserId = "cf6d8646-227e-43a3-a097-f6c02c2fda41",
                             RoleId = "1"
                         });
                 });

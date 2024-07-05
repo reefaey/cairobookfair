@@ -1,131 +1,132 @@
-﻿using Cairo_book_fair.DTOs;
-using Cairo_book_fair.Models;
-using Cairo_book_fair.Repositories;
-using Cairo_book_fair.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Security.Claims;
+﻿//using Cairo_book_fair.DTOs;
+//using Cairo_book_fair.Models;
+//using Cairo_book_fair.Services;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Mvc;
+//using System.Collections.Generic;
 
-namespace Cairo_book_fair.Controllers
-{
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TicketController : ControllerBase
-    {
-        private readonly ITicketService ticketService;
+//namespace Cairo_book_fair.Controllers
+//{
+//    [Route("api/[controller]")]
+//    [ApiController]
+//    public class TicketController : ControllerBase
+//    {
+//        private readonly ITicketService ticketService;
 
-        public TicketController(ITicketService ticketService)
-        {
-            this.ticketService = ticketService;
-        }
+//        public TicketController(ITicketService ticketService)
+//        {
+//            this.ticketService = ticketService;
+//        }
+        
+//        [HttpGet]
+//        [Authorize]
+//        public ActionResult<IEnumerable<TicketDTO>> GetAllTickets()
+//        {
+//            var tickets = ticketService.GetAll();
+//            var ticketDTOs = new List<TicketDTO>();
 
-        //[HttpGet]
-        //[Authorize]
-        //public ActionResult<IEnumerable<TicketDTO>> GetAllTickets()
-        //{
-        //    var tickets = ticketService.GetAll();
-        //    var ticketDTOs = new List<TicketDTO>();
+//            foreach (var ticket in tickets)
+//            {
+//                ticketDTOs.Add(new TicketDTO
+//                {
+//                    Id = ticket.Id,
+//                    TicketName = ticket.Name,
+//                    Phone=ticket.phone,
+//                    TicketNumber = ticket.TicketNum,
+//                    TicketPrice = ticket.Price,
+//                    DateTime = ticket.DateTime,
+//                    User = ticket.User
+//                });
+//            }
 
-        //    foreach (var ticket in tickets)
-        //    {
-        //        ticketDTOs.Add(new TicketDTO
-        //        {
-        //            Id = ticket.Id,
-        //            Name = ticket.Name,
-        //            Phone = ticket.Phone,
-        //            TicketPrice = ticket.Price,
-        //            DateTime = ticket.DateTime,
-        //        });
-        //    }
+//            return Ok(ticketDTOs);
+//        }
 
-        //    return Ok(ticketDTOs);
-        //}
+//        [HttpGet("{id}")]
+//        public ActionResult<TicketDTO> GetTicket(int id)
+//        {
+//            var ticket = ticketService.Get(id);
 
-        [Authorize]
-        [HttpGet("Get-Tickt-for-login-user")]
-        public ActionResult<TicketDTO> GetTicket()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            TicketDTO? ticketDTO = ticketService.GetDTO(userId);
+//            if (ticket == null)
+//            {
+//                return NotFound();
+//            }
 
-            if (ticketDTO == null)
-            {
-                return Ok("عذراً لم يتم العثور على تذكرة");
-            }
+//            var ticketDTO = new TicketDTO
+//            {
+//                Id = ticket.Id,
+//                TicketName = ticket.Name,
+//                TicketNumber = ticket.TicketNum,
+//                Phone = ticket.phone,
+//                TicketPrice = ticket.Price,
+//                DateTime = ticket.DateTime,
+//                User = ticket.User
+//            };
 
-            return Ok(ticketDTO);
-        }
+//            return Ok(ticketDTO);
+//        }
 
-        [Authorize]
-        [HttpPost]
-        public ActionResult<TicketDTO> CreateTicket(NewTicketDTO newTicketDTO)
-        {
-            string userName = User.Identity.Name;
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Ticket? ticket = ticketService.Get(userId);
-            if(ticket != null)
-            {
-                return BadRequest("تم حجز تذكرة مسبقاً يمكنك التعديل عليها");
-            }
-            ticketService.InsertTicket(newTicketDTO, userName, userId);
-            ticketService.Save();
+//        [HttpPost]
+//        public ActionResult<TicketDTO> CreateTicket(TicketDTO ticketDTO)
+//        {
+//            var ticket = new Ticket
+//            {
+//                Name = ticketDTO.TicketName,
+//                TicketNum = ticketDTO.TicketNumber,
+//                phone = ticketDTO.Phone,
+//                Price = ticketDTO.TicketPrice,
+//                DateTime = ticketDTO.DateTime,
+//                UserId = ticketDTO.User.Id
+//            };
 
-            return Ok("!تم حجز التذكرة بنجاح");
-        }
+//            ticketService.Insert(ticket);
+//            ticketService.Save();
 
-        //[Authorize]
-        //[HttpGet("ForEdit")]
-        //public IActionResult GetTicketForEdit()
-        //{
-        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    Ticket? ticket = ticketService.Get(userId);
+//            ticketDTO.Id = ticket.Id;
 
-        //    if (ticket == null)
-        //    {
-        //        return NotFound("Ticket not found");
-        //    }
+//            return CreatedAtAction(nameof(GetTicket), new { id = ticketDTO.Id }, ticketDTO);
+//        }
 
-        //    NewTicketDTO newTicketDTO = new NewTicketDTO
-        //    {
-        //        Phone = ticket.Phone,
-        //        NumberOfTicket = ticket.NoofTicket
-        //    };
+//        [HttpPut("{id}")]
+//        public ActionResult UpdateTicket(int id, TicketDTO ticketDTO)
+//        {
+//            if (id != ticketDTO.Id)
+//            {
+//                return BadRequest();
+//            }
 
-        //    return Ok(newTicketDTO);
-        //}
+//            var ticket = ticketService.Get(id);
+//            if (ticket == null)
+//            {
+//                return NotFound();
+//            }
 
+//            ticket.Name = ticketDTO.TicketName;
+//            ticket.TicketNum = ticketDTO.TicketNumber;
+//            ticket.phone = ticketDTO.Phone;
+//            ticket.Price = ticketDTO.TicketPrice;
+//            ticket.DateTime = ticketDTO.DateTime;
+//            ticket.UserId = ticketDTO.User.Id;
 
-        [Authorize]
-        [HttpPut]
-        public IActionResult UpdateTicket(NewTicketDTO newTicketDTO)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Ticket? ticket = ticketService.Get(userId);
-            if (ticket != null)
-            {
-                ticketService.UpdateTicket(ticket, newTicketDTO);
-                ticketService.Save();
-                return Ok("!تم التعديل علي التذكرة بنجاح");
-            }
+//            ticketService.Update(ticket);
+//            ticketService.Save();
 
-            return NotFound("عذراً لم يتم التعديل على التذكرة"); 
-        }
-        [Authorize]
-        [HttpDelete]
-        public IActionResult DeleteTicket()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Ticket? ticket = ticketService.Get(userId);
-            if (ticket == null)
-            {
-                return NotFound("عذراً لم يتم العثور على تذكرة محجوزة");
-            }
+//            return NoContent();
+//        }
 
-            ticketService.Delete(ticket);
-            ticketService.Save();
+//        [HttpDelete("{id}")]
+//        public ActionResult DeleteTicket(int id)
+//        {
+//            var ticket = ticketService.Get(id);
+//            if (ticket == null)
+//            {
+//                return NotFound();
+//            }
 
-            return Ok("!تم الغاء التذكرة بنجاح");
-        }
-    }
-}
+//            ticketService.Delete(ticket);
+//            ticketService.Save();
+
+//            return NoContent();
+//        }
+//    }
+//}

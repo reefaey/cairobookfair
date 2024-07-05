@@ -12,9 +12,8 @@ namespace Cairo_book_fair.Services
 
         public WholeCartItemsWithTotalPriceDTO GetAllCartItems(int cartId);
 
-        public void RemoveAllCartItems(int cartId);
-
         public void Save();
+
 
     }
 }

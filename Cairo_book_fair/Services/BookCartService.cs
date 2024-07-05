@@ -108,11 +108,6 @@ namespace Cairo_book_fair.Services
             }
         }
 
-        public void RemoveAllCartItems(int cartId)
-        {
-            _bookCartRepository.RemoveAllCartItemsAsync(cartId);
-        }
-
         public void Save()
         {
             _bookCartRepository.Save();

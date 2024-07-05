@@ -1,6 +1,4 @@
-﻿using Cairo_book_fair.DTOs;
-//using Cairo_book_fair.Migrations;
-using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
 
 namespace Cairo_book_fair.Services
@@ -19,34 +17,9 @@ namespace Cairo_book_fair.Services
             ticketRepository.Delete(item);
         }
 
-        public Ticket? Get(string userId)
+        public Ticket Get(int id)
         {
-            Ticket? ticket = ticketRepository.GetTicketByUserId(userId);
-            if (ticket != null)
-            {
-                return ticket;
-            }
-            return null;
-        }
-
-        public TicketDTO? GetDTO(string userId)
-        {
-            Ticket ticket = ticketRepository.GetTicketByUserId(userId);
-            if (ticket !=  null)
-            {
-                TicketDTO ticketDTO = new();
-                ticketDTO.Id = ticket.Id;
-                ticketDTO.userName = ticket.Name;
-                ticketDTO.Phone = ticket.Phone;
-                ticketDTO.NoofTicket = ticket.NoofTicket;
-                ticketDTO.DateTime = ticket.DateTime;
-                if (ticket.NoofTicket != 0)
-                {
-                    ticketDTO.TicketPrice = ticket.Price * ticket.NoofTicket;
-                }
-                return ticketDTO;
-            }
-            return null;
+            return ticketRepository.Get(id);
         }
 
         public List<Ticket> Get(Func<Ticket, bool> where)
@@ -64,29 +37,6 @@ namespace Cairo_book_fair.Services
             ticketRepository.Insert(item);
         }
 
-        public void UpdateTicket(Ticket ticket, NewTicketDTO newTicket)
-        {
-            ticket.Phone = newTicket.Phone;
-            ticket.NoofTicket = newTicket.NumberOfTicket;
-            ticket.DateTime = DateTime.Now;
-            
-            ticketRepository.Update(ticket);
-        }
-
-        public void InsertTicket(NewTicketDTO newTicketDTO, string userName, string userId)
-        {
-            Ticket item = new Ticket();
-
-            item.Name = userName;
-            item.Phone = newTicketDTO.Phone;
-            item.NoofTicket = newTicketDTO.NumberOfTicket;
-            item.DateTime = DateTime.Now;
-            item.UserId = userId;
-            item.Price = 5;
-
-            ticketRepository.Insert(item);
-        }
-
         public void Save()
         {
             ticketRepository.Save();
@@ -95,11 +45,6 @@ namespace Cairo_book_fair.Services
         public void Update(Ticket item)
         {
             ticketRepository.Update(item);
-        }
-
-        public Ticket Get(int id)
-        {
-            return ticketRepository.Get(id);
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Cairo_book_fair.Migrations
 {
     /// <inheritdoc />
-    public partial class tickket : Migration
+    public partial class Ticket : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -320,9 +320,9 @@ namespace Cairo_book_fair.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    phone = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    NoofTicket = table.Column<int>(type: "int", nullable: false),
+                    Nid = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -331,6 +331,30 @@ namespace Cairo_book_fair.Migrations
                     table.PrimaryKey("PK_Tickets", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Tickets_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsedBookRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BookTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BookCondition = table.Column<int>(type: "int", nullable: false),
+                    RequestStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsedBookRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UsedBookRequests_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -403,36 +427,6 @@ namespace Cairo_book_fair.Migrations
                         name: "FK_Orders_Shipments_ShipmentId",
                         column: x => x.ShipmentId,
                         principalTable: "Shipments",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UsedBookRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BookTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BookDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BookCondition = table.Column<int>(type: "int", nullable: false),
-                    RequestStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsedBookId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UsedBookRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UsedBookRequests_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UsedBookRequests_UsedBooks_UsedBookId",
-                        column: x => x.UsedBookId,
-                        principalTable: "UsedBooks",
                         principalColumn: "Id");
                 });
 
@@ -607,12 +601,12 @@ namespace Cairo_book_fair.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Bio", "ConcurrencyStamp", "Email", "EmailConfirmed", "JoinDate", "Location", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "NumberOfDonatedBooks", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfileImage", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e9c6074-c9da-4d4c-a8f5-2a79f15f964b", 0, "Hello", "6a281925-6af1-4eb8-af33-6d4e3c19a578", "admin@example.com", true, new DateTime(2024, 7, 5, 23, 33, 12, 61, DateTimeKind.Local).AddTicks(5700), "", false, null, "", "ADMIN@EXAMPLE.COM", "ADMIN", 0, "AQAAAAIAAYagAAAAEKRVpzaDPFYXKjz9YsbquNm7MQgSBBWIksGAmo2Hl5mNX7vKWu/GU+aU+9hmEN8I2w==", null, false, "default", "126a6038-2888-49db-b044-228cc76da173", false, "admin" });
+                values: new object[] { "eb762213-1d37-49d2-b2ba-db9770352bd8", 0, "Hello", "e5737fb2-5e1f-4efd-9cc0-e3d71f58dcd1", "admin@example.com", true, new DateTime(2024, 7, 5, 10, 54, 21, 325, DateTimeKind.Local).AddTicks(2317), "", false, null, "", "ADMIN@EXAMPLE.COM", "ADMIN", 0, "AQAAAAIAAYagAAAAEDCHoGfhuZI3a2RUH15n2U2xS7xm1T7Qqf8r2CHWcHTbArP3tYy+5c41bIP3Cr3VXg==", null, false, "default", "aabd163c-6080-43fb-bdbf-7fc0dacba7db", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "1", "8e9c6074-c9da-4d4c-a8f5-2a79f15f964b" });
+                values: new object[] { "1", "eb762213-1d37-49d2-b2ba-db9770352bd8" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -733,13 +727,7 @@ namespace Cairo_book_fair.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_UserId",
                 table: "Tickets",
-                column: "UserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UsedBookRequests_UsedBookId",
-                table: "UsedBookRequests",
-                column: "UsedBookId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsedBookRequests_UserId",
@@ -795,6 +783,9 @@ namespace Cairo_book_fair.Migrations
                 name: "UsedBookRequests");
 
             migrationBuilder.DropTable(
+                name: "UsedBooks");
+
+            migrationBuilder.DropTable(
                 name: "Visitors");
 
             migrationBuilder.DropTable(
@@ -811,9 +802,6 @@ namespace Cairo_book_fair.Migrations
 
             migrationBuilder.DropTable(
                 name: "Books");
-
-            migrationBuilder.DropTable(
-                name: "UsedBooks");
 
             migrationBuilder.DropTable(
                 name: "Shipments");
