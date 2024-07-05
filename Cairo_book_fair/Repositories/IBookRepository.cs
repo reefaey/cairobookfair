@@ -17,6 +17,8 @@ namespace Cairo_book_fair.Repositories
         public void Save();
         public List<Book> Search(string SearchBookName);
         public List<Book> SearchUsedBook(string SearchBookName);
+        User GetUserById(string userId);
+
 
     }
 }

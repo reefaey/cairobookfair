@@ -14,6 +14,7 @@ namespace Cairo_book_fair.Services
         void Update(int id, BookDTO item);
         void UpdateUsedBook(int id, UsedBookDtoInsert item);
         void Delete(int id);
+        void DeleteUsedBook(int id);
         public void Save();
         public List<BookWithDetails> Search(string SearchBookName);
         public List<UsedBookDtoGet> SearchUsedBook(string SearchBookName);

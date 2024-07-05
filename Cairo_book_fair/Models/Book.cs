@@ -37,6 +37,11 @@ namespace Cairo_book_fair.Models
         public List<BookCart>? BookCarts { get; set; }
         public List<BookOrder>? BookOrders { get; set; }
 
+
+        [ForeignKey("User")]
+        public string? UserId { get; set; }
+        public User? User { get; set; }
+
         //There is no FK For One to Many And Many To Many Relationships
     }
 }

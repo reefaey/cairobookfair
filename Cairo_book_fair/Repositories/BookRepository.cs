@@ -180,7 +180,10 @@ namespace Cairo_book_fair.Repositories
             return filteredBooks;
 
         }
-
+        public User GetUserById(string userId)
+        {
+            return context.Users.SingleOrDefault(u => u.Id == userId);
+        }
         public void Insert(Book item)
         {
             context.Add(item);

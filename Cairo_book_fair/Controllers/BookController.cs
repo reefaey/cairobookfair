@@ -143,6 +143,23 @@ namespace Cairo_book_fair.Controllers
             }
 
         }
+
+        //////////////////////////////////////////////////////////////////
+        [HttpDelete("UsedBook")]
+        public IActionResult DeleteUsedBook(int id)
+        {
+            try
+            {
+                bookService.DeleteUsedBook(id);
+                bookService.Save();
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
         ///////////////////////////////////////////////////////////////////////////////
         [HttpGet("Search")]
         public IActionResult Search(String search)

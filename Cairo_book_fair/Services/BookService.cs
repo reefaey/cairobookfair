@@ -2,6 +2,7 @@
 using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
+using System.Security.Claims;
 
 namespace Cairo_book_fair.Services
 {
@@ -9,11 +10,24 @@ namespace Cairo_book_fair.Services
     {
         private readonly IBookRepository bookRepository;
         private readonly IMapper mapper;
-        public BookService(IBookRepository bookRepository, IMapper mapper)
+        private readonly IHttpContextAccessor httpContextAccessor;
+
+        public BookService(IBookRepository bookRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             this.bookRepository = bookRepository;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
+
+        private string GetCurrentUserId()
+        {
+            return httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+        private string GetCurrentUserName()
+        {
+            return httpContextAccessor.HttpContext.User.Identity.Name;
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         public void Delete(int id)
         {
@@ -21,6 +35,27 @@ namespace Cairo_book_fair.Services
             if (bookDb != null)
             {
                 bookRepository.Delete(bookDb);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
+
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public void DeleteUsedBook(int id)
+        {
+            Book bookDb = bookRepository.GetUsedBook(id);
+            if (bookDb != null)
+            {
+                var userId = GetCurrentUserId();
+                var userName = GetCurrentUserName();
+                bookDb.UserId = userId;
+                var user = bookRepository.GetUserById(userId);
+                bookDb.User.NumberOfDonatedBooks--;
+                bookRepository.Delete(bookDb);
+
             }
             else
             {
@@ -87,7 +122,13 @@ namespace Cairo_book_fair.Services
         {
             Book bookDB = mapper.Map<Book>(bookDto);
             bookDB.IsAvailableForDonation = true;
+            var userId = GetCurrentUserId();
+            var userName = GetCurrentUserName();
+            bookDB.UserId = userId;
+            var user = bookRepository.GetUserById(userId);
+            bookDB.DonorName = userName;
             bookRepository.Insert(bookDB);
+            bookDB.User.NumberOfDonatedBooks++;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
