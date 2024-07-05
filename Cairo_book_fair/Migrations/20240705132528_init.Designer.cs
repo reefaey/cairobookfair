@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cairo_book_fair.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240704234828_Roles")]
-    partial class Roles
+    [Migration("20240705132528_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,11 +86,14 @@ namespace Cairo_book_fair.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DonorName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
@@ -109,7 +112,7 @@ namespace Cairo_book_fair.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("PublisherId")
+                    b.Property<int?>("PublisherId")
                         .HasColumnType("int");
 
                     b.Property<string>("PublishingYear")
@@ -590,23 +593,23 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "54472eff-a7f7-4588-a375-40e93de228c7",
+                            Id = "b3c6a931-4869-490c-90b5-5c23139e821e",
                             AccessFailedCount = 0,
                             Bio = "Hello",
-                            ConcurrencyStamp = "dc7471da-ebf1-4624-8fef-c48e4e6b0c7d",
+                            ConcurrencyStamp = "e841ab3a-1f4e-4079-abeb-cd19067f85b4",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
-                            JoinDate = new DateTime(2024, 7, 5, 2, 48, 26, 777, DateTimeKind.Local).AddTicks(903),
+                            JoinDate = new DateTime(2024, 7, 5, 16, 25, 27, 507, DateTimeKind.Local).AddTicks(8952),
                             Location = "",
                             LockoutEnabled = false,
                             Name = "",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
                             NumberOfDonatedBooks = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEMd6oC5/XvJ1z0PY+q9x8u6e9cjfTKuxaIMgLEeZSEXSq36KB6ezjV3WWTMMm3xK5g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGWNvCgsJ0dnZn8Koor9O6nqjRuxovj4UqigFoCgQ6aP4czIcsiOVr4LSwjlooCchQ==",
                             PhoneNumberConfirmed = false,
                             ProfileImage = "default",
-                            SecurityStamp = "22f4c434-f7a3-48c4-83e4-c8e15cac19ab",
+                            SecurityStamp = "e25b52c1-c8b1-4611-aa27-0b7851afbba4",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -770,7 +773,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "54472eff-a7f7-4588-a375-40e93de228c7",
+                            UserId = "b3c6a931-4869-490c-90b5-5c23139e821e",
                             RoleId = "1"
                         });
                 });
@@ -816,15 +819,11 @@ namespace Cairo_book_fair.Migrations
                 {
                     b.HasOne("Cairo_book_fair.Models.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId");
 
                     b.HasOne("Cairo_book_fair.Models.Publisher", "Publisher")
                         .WithMany("Books")
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PublisherId");
 
                     b.Navigation("Author");
 

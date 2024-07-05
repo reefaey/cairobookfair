@@ -8,7 +8,9 @@ namespace Cairo_book_fair.Repositories
         public List<Book> GetAll(string[] include = null);
         List<Book> Get(Func<Book, bool> where);
         Book Get(int id, string[] include = null);
+        Book GetUsedBook(int id, string[] include = null);
         public PaginatedList<Book> GetPaginatedBooks(int page, int pageSize, string[] include = null);
+        public PaginatedList<Book> GetPaginatedUsedBooks(int page, int pageSize, string[] include = null);
         void Insert(Book item);
         void Update(Book item);
         void Delete(Book item);

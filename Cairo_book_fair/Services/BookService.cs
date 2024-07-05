@@ -39,6 +39,16 @@ namespace Cairo_book_fair.Services
             return bookDTO;
         }
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+        public UsedBookDtoGet GetUsedBook(int id, string[] include = null)
+        {
+            string[] includeProperties = { "Author" };
+
+            Book bookDB = bookRepository.GetUsedBook(id, includeProperties);
+            UsedBookDtoGet bookDTO = mapper.Map<UsedBookDtoGet>(bookDB);
+            return bookDTO;
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////
         public PaginatedList<BookWithDetails> GetPaginatedBooks(int page, int pageSize, string[] include = null)
         {
@@ -54,7 +64,32 @@ namespace Cairo_book_fair.Services
             };
             return paginatedListDTO;
         }
-        ///
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        public PaginatedList<UsedBookDtoGet> GetPaginatedUsedBooks(int page, int pageSize, string[] include = null)
+        {
+            string[] includeProperties = { "Author" };
+            PaginatedList<Book> paginatedList = bookRepository.GetPaginatedUsedBooks(page, pageSize, includeProperties);
+            IEnumerable<UsedBookDtoGet> booksDTOs = mapper.Map<IEnumerable<UsedBookDtoGet>>(paginatedList.Items);
+            PaginatedList<UsedBookDtoGet> paginatedListDTO = new()
+            {
+                TotalPages = paginatedList.TotalPages,
+                TotalItems = paginatedList.TotalItems,
+                CurrentPage = paginatedList.CurrentPage,
+                Items = booksDTOs
+            };
+            return paginatedListDTO;
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public void InsertUsedBook(UsedBookDtoInsert bookDto)
+        {
+            Book bookDB = mapper.Map<Book>(bookDto);
+            bookDB.IsAvailableForDonation = true;
+            bookRepository.Insert(bookDB);
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         public void Insert(BookDTO bookDTO)
@@ -89,7 +124,23 @@ namespace Cairo_book_fair.Services
                 throw new KeyNotFoundException($"This Book with Id :{id} was not found.");
             }
         }
-        ////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////
 
+        public void UpdateUsedBook(int id, UsedBookDtoInsert bookDto)
+        {
+            Book bookDB = bookRepository.GetUsedBook(id);
+            if (bookDB != null)
+            {
+                mapper.Map(bookDto, bookDB);
+                bookRepository.Update(bookDB);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"This UsedBook with Id :{id} was not found.");
+            }
+
+
+
+        }
     }
 }
