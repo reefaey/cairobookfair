@@ -30,6 +30,21 @@ namespace Cairo_book_fair.Services
             }
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////
+        ///
+
+        public List<BookDTO> GetPublisherBooks(int publisherID)
+        {
+            try
+            {
+                List<Book> Books = publisherRepository.GetPublisherBooks(publisherID);
+                var bookDtos = mapper.Map<List<BookDTO>>(Books);
+
+                return bookDtos;
+            }
+            catch (Exception ex) { Console.WriteLine($"Error retrieving publisher books: {ex.Message}"); return new List<BookDTO>(); }
+
+        }
+
         public PublisherDto Get(int id, string[] include = null)
         {
             string[] includeProperties = { "Block", "Books" };

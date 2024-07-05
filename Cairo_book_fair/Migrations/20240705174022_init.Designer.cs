@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cairo_book_fair.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240705075422_Ticket")]
-    partial class Ticket
+    [Migration("20240705174022_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -419,13 +419,17 @@ namespace Cairo_book_fair.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("NID")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Phone")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
@@ -433,9 +437,6 @@ namespace Cairo_book_fair.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("phone")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -525,11 +526,16 @@ namespace Cairo_book_fair.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UsedBookId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UsedBookId");
 
                     b.HasIndex("UserId");
 
@@ -624,23 +630,23 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eb762213-1d37-49d2-b2ba-db9770352bd8",
+                            Id = "e8ddcf30-3414-4471-bed7-62ebeda6167a",
                             AccessFailedCount = 0,
                             Bio = "Hello",
-                            ConcurrencyStamp = "e5737fb2-5e1f-4efd-9cc0-e3d71f58dcd1",
+                            ConcurrencyStamp = "95593815-c9b1-404e-9c15-39f84ba511b2",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
-                            JoinDate = new DateTime(2024, 7, 5, 10, 54, 21, 325, DateTimeKind.Local).AddTicks(2317),
+                            JoinDate = new DateTime(2024, 7, 5, 20, 40, 20, 71, DateTimeKind.Local).AddTicks(4729),
                             Location = "",
                             LockoutEnabled = false,
                             Name = "",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
                             NumberOfDonatedBooks = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEDCHoGfhuZI3a2RUH15n2U2xS7xm1T7Qqf8r2CHWcHTbArP3tYy+5c41bIP3Cr3VXg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO8uwwRekRELpwzX2t8Iw/uKRALp2XDM2+YZUztG0oOtp0ttlndYoEagUDpjQ36CjA==",
                             PhoneNumberConfirmed = false,
                             ProfileImage = "default",
-                            SecurityStamp = "aabd163c-6080-43fb-bdbf-7fc0dacba7db",
+                            SecurityStamp = "c6ebe605-c149-4a49-bf71-fa82ce9358c3",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -804,7 +810,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "eb762213-1d37-49d2-b2ba-db9770352bd8",
+                            UserId = "e8ddcf30-3414-4471-bed7-62ebeda6167a",
                             RoleId = "1"
                         });
                 });
@@ -1024,11 +1030,17 @@ namespace Cairo_book_fair.Migrations
 
             modelBuilder.Entity("Cairo_book_fair.Models.UsedBookRequest", b =>
                 {
+                    b.HasOne("Cairo_book_fair.Models.UsedBook", "UsedBook")
+                        .WithMany()
+                        .HasForeignKey("UsedBookId");
+
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("UsedBook");
 
                     b.Navigation("User");
                 });

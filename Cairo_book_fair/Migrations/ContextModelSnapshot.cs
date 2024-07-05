@@ -627,23 +627,23 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fa518795-6e6b-4228-8be7-19ded644cec0",
+                            Id = "e8ddcf30-3414-4471-bed7-62ebeda6167a",
                             AccessFailedCount = 0,
                             Bio = "Hello",
-                            ConcurrencyStamp = "a12a1b60-884b-47c8-833a-7a17d5a4eb9b",
+                            ConcurrencyStamp = "95593815-c9b1-404e-9c15-39f84ba511b2",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
-                            JoinDate = new DateTime(2024, 7, 5, 11, 53, 44, 638, DateTimeKind.Local).AddTicks(9916),
+                            JoinDate = new DateTime(2024, 7, 5, 20, 40, 20, 71, DateTimeKind.Local).AddTicks(4729),
                             Location = "",
                             LockoutEnabled = false,
                             Name = "",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
                             NumberOfDonatedBooks = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEA3LXIcqscH/D9CTu3Ei5Z1VceHj7M9vxmBAyvoTG2S1wYHi9GJuLn6OwF3nG++HEQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO8uwwRekRELpwzX2t8Iw/uKRALp2XDM2+YZUztG0oOtp0ttlndYoEagUDpjQ36CjA==",
                             PhoneNumberConfirmed = false,
                             ProfileImage = "default",
-                            SecurityStamp = "09e7a237-8c20-489f-a37d-7db7b5d440f5",
+                            SecurityStamp = "c6ebe605-c149-4a49-bf71-fa82ce9358c3",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -807,7 +807,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "fa518795-6e6b-4228-8be7-19ded644cec0",
+                            UserId = "e8ddcf30-3414-4471-bed7-62ebeda6167a",
                             RoleId = "1"
                         });
                 });

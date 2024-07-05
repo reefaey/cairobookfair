@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Cairo_book_fair.DBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -23,7 +24,12 @@ namespace Cairo_book_fair.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
         {
-            return Ok(await reviewService.GetAllReviews());
+            try
+            {
+                return Ok(await reviewService.GetAllReviews());
+            }
+            catch { return Ok(await reviewService.GetAllReviews()); };
+
         }
 
         // GET: api/Reviews/5
@@ -42,6 +48,7 @@ namespace Cairo_book_fair.Controllers
 
         // POST: api/Reviews
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Review>> PostReview(Review review)
         {
             await reviewService.AddReview(review);
@@ -50,6 +57,8 @@ namespace Cairo_book_fair.Controllers
 
         // PUT: api/Reviews/5
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> PutReview(int id, Review review)
         {
             if (id != review.Id)
@@ -78,6 +87,8 @@ namespace Cairo_book_fair.Controllers
 
         // DELETE: api/Reviews/5
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteReview(int id)
         {
             var review = await reviewService.GetReviewById(id);

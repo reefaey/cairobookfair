@@ -2,6 +2,7 @@
 using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
+using System.Net;
 
 namespace Cairo_book_fair.Services
 {
@@ -29,7 +30,13 @@ namespace Cairo_book_fair.Services
             }
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////
+        public List<ReviewDTO> GetBooksReviews(int bookid)
+        {
+            List<Review> bookReviews = bookRepository.GetBooksReviews(bookid);
+            List<ReviewDTO> reviewDTOs = mapper.Map<List<ReviewDTO>>(bookReviews);
+
+            return reviewDTOs;
+        }
         public BookWithDetails Get(int id, string[] include = null)
         {
             string[] includeProperties = { "Author", "BookCategories.Category", "Publisher.Block.Hall" };

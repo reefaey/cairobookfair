@@ -12,5 +12,6 @@ namespace Cairo_book_fair.Repositories
         void Delete(Publisher item);
         public void Save();
         public List<Publisher> Search(string SearchBookName);
+        public List<Book> GetPublisherBooks(int publisherID);
     }
 }

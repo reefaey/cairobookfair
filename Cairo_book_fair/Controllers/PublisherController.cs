@@ -22,6 +22,19 @@ namespace Cairo_book_fair.Controllers
             return Ok(publisherService.GetPaginatedPublisher(pageNo, pagesize));
         }
 
+        [HttpGet("publisherBooks")]
+        public IActionResult GetPublisherBooks(int publisherID)
+        {
+            List<BookDTO> publisher = publisherService.GetPublisherBooks(publisherID);
+
+            if (publisher != null)
+            {
+                return Ok(publisher);
+            }
+
+            return BadRequest();
+
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)

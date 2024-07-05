@@ -100,6 +100,12 @@ namespace Cairo_book_fair.Controllers
             return NotFound("No books found");
         }
 
+        [HttpGet("BookReview")]
+        public IActionResult GetBookReview(int bookid)
+        {
+            List<ReviewDTO> reviews = bookService.GetBooksReviews(bookid);
+            return Ok(reviews);
+        }
 
     }
 }

@@ -18,7 +18,7 @@ namespace Cairo_book_fair.Repositories
 
         public async Task<IEnumerable<Review>> GetAllReviews()
         {
-            return await context.Reviews.Include(r => r.Book).Include(r => r.User).ToListAsync();
+            return await context.Reviews.ToListAsync();
         }
 
         /*public async Task<Review> GetReviewById(int id)
