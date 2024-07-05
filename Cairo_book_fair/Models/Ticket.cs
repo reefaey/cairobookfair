@@ -7,10 +7,10 @@ namespace Cairo_book_fair.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Phone { get; set; }
-        public decimal Price { get; set; }
-        [MaxLength(14)]
-        public string NID { get; set; } = "29988172672664";
+        [MaxLength(11)]
+        public string Phone { get; set; }
+        public decimal Price { get; set; } = 5;
+        public int NoofTicket { get; set; } = 1;
         public DateTime DateTime { get; set; } = DateTime.Now;
 
         [ForeignKey("User")]
