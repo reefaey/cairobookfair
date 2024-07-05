@@ -124,7 +124,7 @@ namespace Cairo_book_fair.Controllers
 
             {
                 Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.RemoveItem(cart.Id, bookItemWithUserID.bookId);
+                _bookCartService.ChangeQuantity(cart.Id, bookItemWithUserID.bookId, quantity);
                 _bookCartService.Save();
                 return Ok("!تم تعديل الكمية بنجاح");
             }

@@ -8,7 +8,7 @@ namespace Cairo_book_fair.Services
 
         public void RemoveItem(int cartId, int bookId);
 
-        public void ChangeQuantity(string userId, int bookId, int quantity);
+        public void ChangeQuantity(int cartId, int bookId, int quantity);
 
         public WholeCartItemsWithTotalPriceDTO GetAllCartItems(int cartId);
 
