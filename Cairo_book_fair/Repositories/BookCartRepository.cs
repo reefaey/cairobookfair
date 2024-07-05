@@ -16,7 +16,15 @@ namespace Cairo_book_fair.Repositories
                 .FirstOrDefault();
 
             return bookCart;
+        }
 
+        public bool IsBookAdded(int cartId, int bookId)
+        {
+            BookCart? bookCart = Context.Set<BookCart>()
+                .Where(c => c.CartId == cartId && (c.BookId == bookId))
+                .FirstOrDefault();
+
+            return bookCart != null ? true : false;
         }
 
         public List<BookCart> GetAllBooksInCart(int cartId)

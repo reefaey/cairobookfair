@@ -23,6 +23,7 @@ namespace Cairo_book_fair.DBContext
         public DbSet<BookOrder> BooksOrders { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
+        public DbSet<UsedBookRequest> UsedBookRequests { get; set; }
 
         /// here
         public DbSet<Transportation> Transportations { get; set; }
@@ -46,6 +47,10 @@ namespace Cairo_book_fair.DBContext
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.TotalPrice)
+                .HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<Ticket>()
+                .Property(o => o.Price)
                 .HasColumnType("decimal(18, 2)");
 
             // Other configurations
