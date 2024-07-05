@@ -416,17 +416,17 @@ namespace Cairo_book_fair.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("NID")
-                        .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Phone")
+                    b.Property<int>("NoofTicket")
                         .HasColumnType("int");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
@@ -437,7 +437,8 @@ namespace Cairo_book_fair.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Tickets");
                 });
@@ -627,23 +628,23 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fa518795-6e6b-4228-8be7-19ded644cec0",
+                            Id = "8e9c6074-c9da-4d4c-a8f5-2a79f15f964b",
                             AccessFailedCount = 0,
                             Bio = "Hello",
-                            ConcurrencyStamp = "a12a1b60-884b-47c8-833a-7a17d5a4eb9b",
+                            ConcurrencyStamp = "6a281925-6af1-4eb8-af33-6d4e3c19a578",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
-                            JoinDate = new DateTime(2024, 7, 5, 11, 53, 44, 638, DateTimeKind.Local).AddTicks(9916),
+                            JoinDate = new DateTime(2024, 7, 5, 23, 33, 12, 61, DateTimeKind.Local).AddTicks(5700),
                             Location = "",
                             LockoutEnabled = false,
                             Name = "",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
                             NumberOfDonatedBooks = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEA3LXIcqscH/D9CTu3Ei5Z1VceHj7M9vxmBAyvoTG2S1wYHi9GJuLn6OwF3nG++HEQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKRVpzaDPFYXKjz9YsbquNm7MQgSBBWIksGAmo2Hl5mNX7vKWu/GU+aU+9hmEN8I2w==",
                             PhoneNumberConfirmed = false,
                             ProfileImage = "default",
-                            SecurityStamp = "09e7a237-8c20-489f-a37d-7db7b5d440f5",
+                            SecurityStamp = "126a6038-2888-49db-b044-228cc76da173",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -807,7 +808,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "fa518795-6e6b-4228-8be7-19ded644cec0",
+                            UserId = "8e9c6074-c9da-4d4c-a8f5-2a79f15f964b",
                             RoleId = "1"
                         });
                 });
@@ -1008,8 +1009,8 @@ namespace Cairo_book_fair.Migrations
             modelBuilder.Entity("Cairo_book_fair.Models.Ticket", b =>
                 {
                     b.HasOne("Cairo_book_fair.Models.User", "User")
-                        .WithMany("Tickets")
-                        .HasForeignKey("UserId")
+                        .WithOne("Ticket")
+                        .HasForeignKey("Cairo_book_fair.Models.Ticket", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1148,7 +1149,7 @@ namespace Cairo_book_fair.Migrations
 
                     b.Navigation("Reviews");
 
-                    b.Navigation("Tickets");
+                    b.Navigation("Ticket");
 
                     b.Navigation("UsedBooks");
                 });
