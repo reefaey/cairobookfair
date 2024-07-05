@@ -117,22 +117,19 @@ namespace Cairo_book_fair.Controllers
 
         }
 
-        [HttpPut("Change Quantity")]
-        public IActionResult ChangeQuantity(int quantity, BookItemWithUserID bookItemWithUserID)
+        [HttpDelete("Remove-All-items-from-Cart")]
+        public IActionResult RemoveAllCartItems(string userId)
         {
-            if (ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            if (ModelState.IsValid && userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
 
             {
-                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.ChangeQuantity(cart.Id, bookItemWithUserID.bookId, quantity);
-                _bookCartService.Save();
-                return Ok("!تم تعديل الكمية بنجاح");
+                Cart cart = _cartService.GetCartByUserId(userId);
+                _bookCartService.RemoveAllCartItems(cart.Id);
+                return Ok("!تم ازالة جميع الكتب بنجاح");
             }
 
-            return BadRequest("عذراً لم تتم عملية التعديل");
+            return BadRequest("عذراً لم تتم عملية حذف الكتب");
 
         }
-
-
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Cairo_book_fair.Repositories
 {
@@ -34,6 +36,19 @@ namespace Cairo_book_fair.Repositories
                 .ToList();
 
             return itemsList;
+        }
+
+        public async Task RemoveAllCartItemsAsync(int cartId)
+        {
+            List<BookCart> cartItems = await Context.Set<BookCart>()
+                .Where(c => c.CartId == cartId)
+                .ToListAsync();
+
+            if(cartItems.Any())
+            {
+                Context.BooksCarts.RemoveRange(cartItems);
+                await Context.SaveChangesAsync();
+            }
         }
 
     }

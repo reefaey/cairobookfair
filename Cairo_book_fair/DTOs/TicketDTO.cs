@@ -5,11 +5,10 @@ namespace Cairo_book_fair.DTOs
     public class TicketDTO
     {
         public int Id { get; set; }
-        public string TicketName { get; set; }
-        public int Phone { get; set; }
-        public int TicketNumber { get; set; }
-        public float TicketPrice { get; set; }
+        public string userName { get; set; }
+        public string Phone { get; set; }
+        public decimal TicketPrice { get; set; } = 5;
+        public int NoofTicket { get; set; } = 1;
         public DateTime DateTime { get; set; }
-        public User User { get; set; }
     }
 }
