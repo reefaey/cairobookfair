@@ -24,6 +24,14 @@ namespace Cairo_book_fair.Services
         public void AddItem(int cartId, int bookId)
         {
             //search First in BookCart Table to check if this user added same book and increase its quantity rather than new by if condition
+            if (_bookCartRepository.IsBookAdded(cartId, bookId))
+            {
+                BookCart bookcart = _bookCartRepository.GetBookCart(cartId, bookId);
+                if (bookcart != null)
+                {
+                    bookcart.Quantity++;
+                }
+            }
             BookCart bookCart = new()
             {
                 CartId = cartId,
@@ -77,8 +85,10 @@ namespace Cairo_book_fair.Services
         public void RemoveItem(int cartId, int bookId)
         {
             BookCart bookCart = _bookCartRepository.GetBookCart(cartId, bookId);
-            _bookCartRepository.Delete(bookCart);
-            
+            if (bookCart != null)
+            {
+                _bookCartRepository.Delete(bookCart);
+            }
         }
 
         public void ChangeQuantity(string userId, int bookId, int quantity)
@@ -86,9 +96,12 @@ namespace Cairo_book_fair.Services
             Cart cart = _cartRepository.GetCartByUserId(userId);
             BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, bookId);
 
-            bookCart.Quantity= quantity;
-            _bookCartRepository.Update(bookCart);
-            _bookCartRepository.Save();
+            if (bookCart != null)
+            {
+                bookCart.Quantity = quantity;
+                _bookCartRepository.Update(bookCart);
+                _bookCartRepository.Save();
+            }
         }
 
         public void Save()

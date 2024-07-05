@@ -3,6 +3,7 @@ using Cairo_book_fair.Models;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
@@ -16,12 +17,15 @@ namespace Cairo_book_fair.Controllers
     {
         private readonly IBookCartService _bookCartService;
         private readonly ICartService _cartService;
-        
-        public CartController(IBookCartService bookCartService, ICartService cartService)
+        private readonly UserManager<User> _userManager;
+
+        public CartController(IBookCartService bookCartService, ICartService cartService, UserManager<User> userManager)
         {
             _bookCartService = bookCartService;
             _cartService = cartService;
+            _userManager = userManager;
         }
+
         [HttpGet("All")]
         public IActionResult GetAllItems(string UserId)
         {
@@ -32,7 +36,7 @@ namespace Cairo_book_fair.Controllers
 
                 if(Cart.cartItems.Count == 0)
                 {
-                    return BadRequest("!نأسف لعدم وجود اي كتاب في السلة .. اشتري الآن");
+                    return Ok("!نأسف لعدم وجود اي كتاب في السلة .. اشتري الآن");
                 }
 
                 return Ok(Cart);
@@ -46,7 +50,7 @@ namespace Cairo_book_fair.Controllers
         //{
 
         //}
-        [HttpPost ("Buy Regular Book")]
+        [HttpPost("Buy-Regular-Book")]
         public IActionResult InserItem(BookItemWithUserID bookItemWithUserID)
         {
             if(ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -59,7 +63,7 @@ namespace Cairo_book_fair.Controllers
             }
             return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
         }
-        [HttpPost("Take Donated Book")]
+        [HttpPost("Take-Donated-Book")]
         public IActionResult TakeBook(BookItemWithUserID bookItemWithUserID)
         {
             if (ModelState.IsValid)
@@ -72,7 +76,32 @@ namespace Cairo_book_fair.Controllers
             }
             return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
         }
-        
+
+        //[HttpPost("Take-Donated-Book")]
+        //public async Task<IActionResult> TakeBook(BookItemWithUserID bookItemWithUserID)
+        //{
+        //    if (ModelState.IsValid)
+        //        if (ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+        //        {
+        //            Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
+        //            _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
+        //            _bookCartService.Save();
+        //            //Use UserManager.GetUserAsync(User) to get the currently authenticated user.
+        //            //Use UserManager.FindByIdAsync(id) to get a user by their ID.
+
+        //            return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
+        //            User user = await _userManager.GetUserAsync(User);
+        //            if (user.NumberOfDonatedBooks > user.NumberOfTakedBooks)
+        //            {
+        //                _bookCartService.AddDonatedBook(cart.Id, bookItemWithUserID.bookId);
+        //                _bookCartService.Save();
+
+        //                return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
+        //            }
+        //        }
+        //        return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة ربما تخطيت العدد المسموح لك بأخذ كتب التبرع");
+        //}
+
         [HttpDelete("Remove-item-from-Cart")]
         public IActionResult Delete(BookItemWithUserID bookItemWithUserID)
         {
