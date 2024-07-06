@@ -38,7 +38,6 @@ namespace Cairo_book_fair.Services
                     bookcart.Quantity++;
                 }
                 _bookCartRepository.Update(bookcart);
-                _bookCartRepository.Save();
             }
             else
             {
@@ -50,7 +49,6 @@ namespace Cairo_book_fair.Services
                 };
 
                 _bookCartRepository.Insert(bookcart);
-                _bookCartRepository.Save();
             }
             cart.TotalCost += book.Price * bookcart.Quantity;
             _cartRepository.Update(cart);
