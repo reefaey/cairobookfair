@@ -4,6 +4,7 @@ using Cairo_book_fair.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Cairo_book_fair.Services
 {
@@ -22,6 +23,19 @@ namespace Cairo_book_fair.Services
             this._cartRepository = cartRepository;
         }
 
+        public Book? GetBook(int bookId)
+        {
+            Book? book = _bookRepository.Get(bookId);
+            if(book == null)
+            {
+                book = _bookRepository.GetUsedBook(bookId);
+                if (book == null)
+                {
+                    return null;
+                }
+            }
+            return book;
+        }
         public bool IsBookAdded(int cartId,int bookId)
         {
             return _bookCartRepository.IsBookAdded(cartId, bookId) != null ? true : false;
@@ -33,11 +47,11 @@ namespace Cairo_book_fair.Services
             if (_bookCartRepository.IsBookAdded(cart.Id, book.Id))
             {
                 bookcart = _bookCartRepository.GetBookCart(cart.Id, book.Id);
-                if (bookcart != null)
+                if (bookcart != null && book.IsAvailableForDonation == false)
                 {
                     bookcart.Quantity++;
+                    _bookCartRepository.Update(bookcart);   
                 }
-                _bookCartRepository.Update(bookcart);
             }
             else
             {
@@ -82,19 +96,28 @@ namespace Cairo_book_fair.Services
 
                 foreach (BookCart cartItem in cartItems)
                 {
-                    Book book = _bookRepository.Get(cartItem.BookId);
-                    wholeCartItemsWithTotalPriceDTO.cartItems
-                        .Add(new CartItemDTO()
-                        {
-                            BookId = cartItem.BookId,
-                            Name = book.Name,
-                            Image = book.ImageUrl,
-                            Quantity = cartItem.Quantity,
-                            Price = book.Price
-                        });
-                    if (cartItem.Quantity != 0)
+
+                    Book? book = _bookRepository.Get(cartItem.BookId);
+                    if (book == null)
                     {
-                        wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price * cartItem.Quantity;
+                        book = _bookRepository.GetUsedBook(cartItem.BookId);
+                    }
+
+                    if(book != null)
+                    {
+                        wholeCartItemsWithTotalPriceDTO.cartItems
+                            .Add(new CartItemDTO()
+                            {
+                                BookId = cartItem.BookId,
+                                Name = book.Name,
+                                Image = book.ImageUrl,
+                                Quantity = cartItem.Quantity,
+                                Price = book.Price
+                            });
+                        if (cartItem.Quantity != 0 && book.IsAvailableForDonation == false)
+                        {
+                            wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price * cartItem.Quantity;
+                        }
                     }
                 }
 
@@ -107,23 +130,21 @@ namespace Cairo_book_fair.Services
         {
             BookCart bookcart;
             bookcart = _bookCartRepository.GetBookCart(cart.Id, book.Id);
-            if (bookcart != null)
+            if (bookcart != null && book.IsAvailableForDonation == false)
             {
                 cart.TotalCost -= book.Price * bookcart.Quantity;
                 _cartRepository.Update(cart);
                 _cartRepository.Save();
-                _bookCartRepository.Delete(bookcart);
             }
+            _bookCartRepository.Delete(bookcart);
         }
 
-        public void ChangeQuantity(Cart cart, int bookId, int quantity)
+        public void ChangeQuantity(Cart cart, Book book, int quantity)
         {
-            BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, bookId);
+            BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, book.Id);
 
-            if (bookCart != null)
+            if (bookCart != null && book.IsAvailableForDonation == false)
             {
-                Book? book = _bookRepository.Get(bookId);
-
                 if(quantity < bookCart.Quantity)
                 {
                     cart.TotalCost -= book.Price * bookCart.Quantity;
