@@ -29,18 +29,23 @@ namespace Cairo_book_fair.Repositories
             return bookCart != null ? true : false;
         }
 
-        public List<BookCart> GetAllBooksInCart(int cartId)
+        public List<BookCart>? GetAllBooksInCart(int cartId)
         {
-            List<BookCart> itemsList = Context.BooksCarts
+            List<BookCart>? itemsList = Context.BooksCarts
                 .Where(c =>  cartId == c.CartId)
                 .ToList();
+
+            if(itemsList.Count == 0)
+            {
+                return null;
+            }
 
             return itemsList;
         }
 
         public async Task RemoveAllCartItemsAsync(int cartId)
         {
-            List<BookCart> cartItems = await Context.Set<BookCart>()
+            var cartItems = await Context.Set<BookCart>()
                 .Where(c => c.CartId == cartId)
                 .ToListAsync();
 
