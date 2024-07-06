@@ -4,6 +4,7 @@ using Cairo_book_fair.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Cairo_book_fair.Services
 {
@@ -13,15 +14,13 @@ namespace Cairo_book_fair.Services
         private readonly IBookCartRepository _bookCartRepository;
         private readonly IBookRepository _bookRepository;
         private readonly UserManager<User> _userManager;
-        private readonly IBookCartService _bookCartService;
 
-        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository, ICartRepository cartRepository, IBookCartService bookCartService)
+        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository, ICartRepository cartRepository)
         {
             this._bookCartRepository = bookCartRepository;
             this._userManager = userManager;
             this._bookRepository = bookRepository;
             this._cartRepository = cartRepository;
-            this._bookCartService = bookCartService;
         }
 
         public Book? GetBook(int bookId)
@@ -97,7 +96,13 @@ namespace Cairo_book_fair.Services
 
                 foreach (BookCart cartItem in cartItems)
                 {
-                    Book? book = _bookCartService.GetBook(cartItem.BookId);
+
+                    Book? book = _bookRepository.Get(cartItem.BookId);
+                    if (book == null)
+                    {
+                        book = _bookRepository.GetUsedBook(cartItem.BookId);
+                    }
+
                     if(book != null)
                     {
                         wholeCartItemsWithTotalPriceDTO.cartItems

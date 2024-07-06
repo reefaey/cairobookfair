@@ -48,18 +48,20 @@ namespace Cairo_book_fair.Controllers
         [HttpPut]
         public IActionResult ChangeTheQuantity(BookIdDTO bookIdDto, int quantity)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Cart cart = _cartService.GetCartByUserId(userId);
             Book? book = _bookCartService.GetBook(bookIdDto.bookId);
-            if (book != null || book.IsAvailableForDonation == false)
+
+            if (_bookCartService.IsBookAdded(cart.Id, book.Id))
             {
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                Cart cart = _cartService.GetCartByUserId(userId);
-                if (_bookCartService.IsBookAdded(cart.Id, book.Id))
+                if(book.IsAvailableForDonation == false)
                 {
                     _bookCartService.ChangeQuantity(cart, book, quantity);
-                    return Ok("تم تعديل الكمية بنجاح");
+                    return Ok("تم تعديل الكمية بنجاح");   
                 }
+                return Ok("لا يمكن تعديل كمية الكتب المستعملة من قبل");
             }
-            return Ok("لا يمكن تعديل كمية الكتب المستعملة من قبل");
+            return Ok("عذراً هذا الكتاب غير موجود في السلة مسبقاً");
         }
 
         [HttpPost("Buy-Regular-Book")]
