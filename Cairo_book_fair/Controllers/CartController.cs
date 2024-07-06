@@ -1,5 +1,6 @@
 ﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
+using Cairo_book_fair.Repositories;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,32 +18,32 @@ namespace Cairo_book_fair.Controllers
     {
         private readonly IBookCartService _bookCartService;
         private readonly ICartService _cartService;
+        private readonly IBookRepository _bookRepository;
         private readonly UserManager<User> _userManager;
 
-        public CartController(IBookCartService bookCartService, ICartService cartService, UserManager<User> userManager)
+        public CartController(IBookCartService bookCartService, ICartService cartService, UserManager<User> userManager, IBookRepository bookRepository)
         {
             _bookCartService = bookCartService;
             _cartService = cartService;
             _userManager = userManager;
+            _bookRepository = bookRepository;
         }
 
         [HttpGet("All")]
-        public IActionResult GetAllItems(string UserId)
+        public IActionResult GetAllItems()
         {
-            if(UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Cart cart = _cartService.GetCartByUserId(userId);
+            WholeCartItemsWithTotalPriceDTO? cartItems = _bookCartService.GetAllCartItems(cart.Id);
+
+            if(cartItems == null)
             {
-                Cart cart = _cartService.GetCartByUserId(UserId);
-                WholeCartItemsWithTotalPriceDTO Cart = _bookCartService.GetAllCartItems(cart.Id);
-
-                if(Cart.cartItems.Count == 0)
-                {
-                    return Ok("!نأسف لعدم وجود اي كتاب في السلة .. اشتري الآن");
-                }
-
-                return Ok(Cart);
+                return Ok("!نأسف لعدم وجود اي كتاب في السلة .. اشتري الآن");
             }
 
-            return Unauthorized("عذراً هذا الحساب ليس له صلاحية الوصول للسلة");
+            return Ok(cartItems);
+
+            //return Unauthorized("عذراً هذا الحساب ليس له صلاحية الوصول للسلة");
         }
 
         //[HttpGet]
@@ -51,12 +52,15 @@ namespace Cairo_book_fair.Controllers
 
         //}
         [HttpPost("Buy-Regular-Book")]
-        public IActionResult InserItem(BookItemWithUserID bookItemWithUserID)
+        public IActionResult InserItem(BookIdDTO bookItemWithUserID)
         {
-            if(ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            Book? book = _bookRepository.Get(bookItemWithUserID.bookId);
+            if(book != null)
             {
-                 Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Cart cart = _cartService.GetCartByUserId(userId);
+                _bookCartService.AddItem(cart, book);
+
                 _bookCartService.Save();
 
                 return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
@@ -64,12 +68,14 @@ namespace Cairo_book_fair.Controllers
             return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
         }
         [HttpPost("Take-Donated-Book")]
-        public IActionResult TakeBook(BookItemWithUserID bookItemWithUserID)
+        public IActionResult TakeBook(BookIdDTO bookItemWithUserID)
         {
-            if (ModelState.IsValid)
+            Book? book = _bookRepository.Get(bookItemWithUserID.bookId);
+            if(book != null)
             {
-                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Cart cart = _cartService.GetCartByUserId(userId);
+                _bookCartService.AddItem(cart, book);
                 _bookCartService.Save();
 
                 return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
@@ -103,12 +109,15 @@ namespace Cairo_book_fair.Controllers
         //}
 
         [HttpDelete("Remove-item-from-Cart")]
-        public IActionResult Delete(BookItemWithUserID bookItemWithUserID)
+        public IActionResult Delete(BookIdDTO bookItemWithUserID)
         {
-            if (ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Book? book = _bookRepository.Get(bookItemWithUserID.bookId);
+            Cart cart = _cartService.GetCartByUserId(userId);
+            if(_bookCartService.IsBookAdded(cart.Id,book.Id))
             {
-                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.RemoveItem(cart.Id, bookItemWithUserID.bookId);
+                _bookCartService.RemoveItem(cart, book);
                 _bookCartService.Save();
                 return Ok("!تمت ازالة الكتاب بنجاح");
             }
@@ -118,18 +127,13 @@ namespace Cairo_book_fair.Controllers
         }
 
         [HttpDelete("Remove-All-items-from-Cart")]
-        public IActionResult RemoveAllCartItems(string userId)
+        public async Task<IActionResult> RemoveAllCartItems()
         {
-            if (ModelState.IsValid && userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-
-            {
-                Cart cart = _cartService.GetCartByUserId(userId);
-                _bookCartService.RemoveAllCartItems(cart.Id);
-                return Ok("!تم ازالة جميع الكتب بنجاح");
-            }
-
-            return BadRequest("عذراً لم تتم عملية حذف الكتب");
-
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Cart cart = _cartService.GetCartByUserId(userId);
+            await _bookCartService.RemoveAllCartItems(cart);
+            //_bookCartService.Save();
+            return Ok("!تم ازالة جميع الكتب بنجاح");
         }
     }
 }

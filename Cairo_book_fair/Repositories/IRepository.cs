@@ -9,14 +9,14 @@
         //T Get(int id, string[] include = null);
         public T Get(int Id);
 
-        List<T> Get(Func<T, bool> where);
+        public List<T> Get(Func<T, bool> where);
 
-        void Insert(T item);
+        public void Insert(T item);
 
-        void Update(T item);
+        public void Update(T item);
 
-        void Delete(T item);
+        public void Delete(T item);
 
-        void Save();
+        public void Save();
     }
 }
