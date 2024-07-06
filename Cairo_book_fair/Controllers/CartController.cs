@@ -42,7 +42,6 @@ namespace Cairo_book_fair.Controllers
             }
 
             return Ok(cartItems);
-
             //return Unauthorized("عذراً هذا الحساب ليس له صلاحية الوصول للسلة");
         }
 
