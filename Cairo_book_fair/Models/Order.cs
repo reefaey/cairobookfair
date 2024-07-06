@@ -12,7 +12,7 @@ namespace Cairo_book_fair.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]  // specifies that the formatting should also be applied when the value is displayed in a text box for editing
         public DateTime OrderDate { get; set; } = DateTime.Now; // Date the order was placed
 
-        public List<BookOrder>? BookOrders { get; set; }
+        public List<BookOrder> BookOrders { get; set; }
 
         [ForeignKey("User")]
         public string UserId { get; set; }

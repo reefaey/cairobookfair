@@ -20,12 +20,12 @@ namespace Cairo_book_fair.Repositories
 
         public Order Get(int id)
         {
-            return context.Orders.Include(o => o.BookOrders).FirstOrDefault(o => o.Id == id);
+            return context.Orders.Include(o => o.BookOrders).ThenInclude(b => b.Book).FirstOrDefault(o => o.Id == id);
         }
 
         public List<Order> GetAll()
         {
-            return context.Orders.Include(o => o.BookOrders).ToList();
+            return context.Orders.Include(o => o.BookOrders).ThenInclude(b => b.Book).ToList();
         }
 
         public void Insert(Order item)
