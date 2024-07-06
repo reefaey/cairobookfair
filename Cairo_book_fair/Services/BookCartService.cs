@@ -13,15 +13,30 @@ namespace Cairo_book_fair.Services
         private readonly IBookCartRepository _bookCartRepository;
         private readonly IBookRepository _bookRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IBookCartService _bookCartService;
 
-        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository, ICartRepository cartRepository)
+        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository, ICartRepository cartRepository, IBookCartService bookCartService)
         {
             this._bookCartRepository = bookCartRepository;
             this._userManager = userManager;
             this._bookRepository = bookRepository;
             this._cartRepository = cartRepository;
+            this._bookCartService = bookCartService;
         }
 
+        public Book? GetBook(int bookId)
+        {
+            Book? book = _bookRepository.Get(bookId);
+            if(book == null)
+            {
+                book = _bookRepository.GetUsedBook(bookId);
+                if (book == null)
+                {
+                    return null;
+                }
+            }
+            return book;
+        }
         public bool IsBookAdded(int cartId,int bookId)
         {
             return _bookCartRepository.IsBookAdded(cartId, bookId) != null ? true : false;
@@ -33,11 +48,11 @@ namespace Cairo_book_fair.Services
             if (_bookCartRepository.IsBookAdded(cart.Id, book.Id))
             {
                 bookcart = _bookCartRepository.GetBookCart(cart.Id, book.Id);
-                if (bookcart != null)
+                if (bookcart != null && book.IsAvailableForDonation == false)
                 {
                     bookcart.Quantity++;
+                    _bookCartRepository.Update(bookcart);   
                 }
-                _bookCartRepository.Update(bookcart);
             }
             else
             {
@@ -82,19 +97,22 @@ namespace Cairo_book_fair.Services
 
                 foreach (BookCart cartItem in cartItems)
                 {
-                    Book book = _bookRepository.Get(cartItem.BookId);
-                    wholeCartItemsWithTotalPriceDTO.cartItems
-                        .Add(new CartItemDTO()
-                        {
-                            BookId = cartItem.BookId,
-                            Name = book.Name,
-                            Image = book.ImageUrl,
-                            Quantity = cartItem.Quantity,
-                            Price = book.Price
-                        });
-                    if (cartItem.Quantity != 0)
+                    Book? book = _bookCartService.GetBook(cartItem.BookId);
+                    if(book != null)
                     {
-                        wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price * cartItem.Quantity;
+                        wholeCartItemsWithTotalPriceDTO.cartItems
+                            .Add(new CartItemDTO()
+                            {
+                                BookId = cartItem.BookId,
+                                Name = book.Name,
+                                Image = book.ImageUrl,
+                                Quantity = cartItem.Quantity,
+                                Price = book.Price
+                            });
+                        if (cartItem.Quantity != 0 && book.IsAvailableForDonation == false)
+                        {
+                            wholeCartItemsWithTotalPriceDTO.totalPrice += book.Price * cartItem.Quantity;
+                        }
                     }
                 }
 
@@ -107,23 +125,21 @@ namespace Cairo_book_fair.Services
         {
             BookCart bookcart;
             bookcart = _bookCartRepository.GetBookCart(cart.Id, book.Id);
-            if (bookcart != null)
+            if (bookcart != null && book.IsAvailableForDonation == false)
             {
                 cart.TotalCost -= book.Price * bookcart.Quantity;
                 _cartRepository.Update(cart);
                 _cartRepository.Save();
-                _bookCartRepository.Delete(bookcart);
             }
+            _bookCartRepository.Delete(bookcart);
         }
 
-        public void ChangeQuantity(Cart cart, int bookId, int quantity)
+        public void ChangeQuantity(Cart cart, Book book, int quantity)
         {
-            BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, bookId);
+            BookCart bookCart = _bookCartRepository.GetBookCart(cart.Id, book.Id);
 
-            if (bookCart != null)
+            if (bookCart != null && book.IsAvailableForDonation == false)
             {
-                Book? book = _bookRepository.Get(bookId);
-
                 if(quantity < bookCart.Quantity)
                 {
                     cart.TotalCost -= book.Price * bookCart.Quantity;
