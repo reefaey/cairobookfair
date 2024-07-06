@@ -36,6 +36,9 @@ namespace Cairo_book_fair.Helper
               .ForMember(dest => dest.BookName, opt => opt.MapFrom(src => src.Name))
               .ReverseMap();
 
+            ///////////OrderMapping//////////////
+            CreateMap<Order, OrderDto>().ReverseMap();
+            CreateMap<BookOrder, BookOrderDto>().ReverseMap();
 
 
             CreateMap<Publisher, PublisherDto>()
