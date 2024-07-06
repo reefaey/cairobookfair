@@ -28,7 +28,7 @@ namespace Cairo_book_fair
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer("Data Source=.;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=False");
+                options.UseSqlServer("Data Source=DESKTOP-8H9KKU1\\SQLEXPRESS;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=False");
             });
 
             builder.Services.AddCors(options =>
@@ -97,7 +97,7 @@ namespace Cairo_book_fair
             //    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
             //});
 
-            
+
 
             builder.Services.AddSwaggerGen(swagger =>
             {
@@ -170,7 +170,7 @@ namespace Cairo_book_fair
             builder.Services.AddAutoMapper(typeof(Program));
 
 
-            
+
 
             //review and shipment services
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();

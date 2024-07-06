@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -6,67 +8,65 @@ namespace Cairo_book_fair.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        //private readonly IOrderService orderService;
+        private readonly IOrderService orderService;
 
-        //public OrderController(IOrderService orderService)
-        //{
-        //    this.orderService = orderService;
-        //}
+        public OrderController(IOrderService orderService)
+        {
+            this.orderService = orderService;
+        }
 
-        //[HttpGet]
-        ////public IActionResult GetAll(string? include = null)
-        ////{
-        ////    List<Order> orders = orderService.GetAll(include);
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<OrderDto> orders = orderService.GetAll();
+            if (orders != null)
+            {
+                return Ok(orders);
+            }
+            return NotFound();
+        }
 
-        ////    return Ok(orders);
-        ////}
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
+        {
+            OrderDto order = orderService.Get(id);
 
-        //[HttpGet("{id:int}")]
-        //public IActionResult Get(int id)
-        //{
-        //    Order order = orderService.Get(id);
+            if (order != null)
+            {
+                return Ok(order);
+            }
 
-        //    if (order != null)
-        //    {
-        //        return Ok(order);
-        //    }
+            return NotFound();
+        }
 
-        //    return BadRequest();
-        //}
+        [HttpPost]
+        public IActionResult Insert()
+        {
 
-        //[HttpPost]
-        //public IActionResult Insert(OrderDto order)
-        //{
-        //    if (ModelState.IsValid == true)
-        //    {
-        //        orderService.Insert(order);
+            orderService.Insert();
 
-        //        return CreatedAtAction("Get", new { id = order.Id }, order);
-        //    }
+            return Ok();
 
-        //    return BadRequest(ModelState);
-        //}
+        }
 
-        //[HttpPut]
-        //public IActionResult Update(Order order)
-        //{
-        //    if (ModelState.IsValid == true)
-        //    {
-        //        orderService.Update(order);
+        [HttpPut]
+        public IActionResult Update(OrderDto order)
+        {
+            if (ModelState.IsValid == true)
+            {
+                orderService.Update(order);
 
-        //        orderService.Save();
+                return Ok();
+            }
 
-        //        return NoContent();
-        //    }
+            return BadRequest(ModelState);
+        }
 
-        //    return BadRequest(ModelState);
-        //}
-
-        //[HttpDelete]
-        //public IActionResult Delete(Order order)
-        //{
-        //    orderService.Delete(order);
-        //    return NoContent();
-        //}
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            orderService.Delete(id);
+            return NoContent();
+        }
     }
 }

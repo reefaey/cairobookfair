@@ -77,12 +77,15 @@ namespace Cairo_book_fair.Services
             Cart cart = orderRepository.GetCartByUserId(userId);
             if (cart.BookCarts != null)
             {
+                order.BookOrders = new List<BookOrder>();
                 foreach (var bookcart in cart.BookCarts)
                 {
                     var bookOrder = new BookOrder()
                     {
+                        Id = bookcart.Id,
                         BookId = bookcart.BookId,
                         Quantity = bookcart.Quantity,
+                        OrderId = order.Id,
                         Order = order
                     };
                     order.BookOrders.Add(bookOrder);
@@ -90,7 +93,12 @@ namespace Cairo_book_fair.Services
 
                 order.TotalPrice = cart.TotalCost;
 
-                ///Delete item from cart               
+                ///Delete item from cart
+
+            }
+            else
+            {
+                throw new Exception("Cart has no book carts");
             }
             orderRepository.Insert(order);
             orderRepository.Save();
