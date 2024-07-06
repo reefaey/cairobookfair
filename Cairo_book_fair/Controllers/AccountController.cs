@@ -197,12 +197,12 @@ namespace Cairo_book_fair.Controllers
         public async Task<ActionResult> GoogleLogin([FromBody] GoogleLoginDTO googleLoginDto)
         {
             string idtoken = googleLoginDto.IdToken;
+
+            var googleClientId = _configuration["GoogleOAuth:ClientId"];
+
             var setting = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new string[] 
-                {
-                    "1058478672774-r4eisi8our5n78186g1eie17ubaovfsd.apps.googleusercontent.com"
-                }
+                Audience = new string[] { googleClientId }
             };
             var result = await GoogleJsonWebSignature.ValidateAsync(idtoken,setting);
             if(result != null)

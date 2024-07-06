@@ -18,6 +18,8 @@ namespace Cairo_book_fair
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var googleClientId = builder.Configuration["GoogleOAuth:ClientId"];
+
 
             // Add services to the container.
 
@@ -63,6 +65,7 @@ namespace Cairo_book_fair
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
             }).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -75,6 +78,10 @@ namespace Cairo_book_fair
                     ValidAudience = builder.Configuration["JWT:ValidAudience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigninKey"]))
                 };
+            }).AddGoogle(options =>
+            {
+                options.ClientId = googleClientId;
+                options.ClientSecret = builder.Configuration["GoogleOAuth:ClientSecret"]; // Make sure this is also set
             });
 
 
@@ -89,6 +96,8 @@ namespace Cairo_book_fair
             //    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]; ;
             //    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
             //});
+
+            
 
             builder.Services.AddSwaggerGen(swagger =>
             {
