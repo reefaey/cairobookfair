@@ -8,6 +8,9 @@ namespace Cairo_book_fair.Models
         public string Name { get; set; }
         public string? DonorName { get; set; }
         public string Description { get; set; }
+
+        //[NotMapped]
+        //public IFormFile ImageFile { get; set; }
         public string? ImageUrl { get; set; }
         public decimal Price { get; set; } = 0;
         public string? PublishingYear { get; set; }

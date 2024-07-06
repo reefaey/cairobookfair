@@ -3,6 +3,9 @@
     public class BookDTO
     {
         public string Name { get; set; }
+
+        //[NotMapped]
+        //public IFormFile ImageFile { get; set; }
         public string? ImageUrl { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
