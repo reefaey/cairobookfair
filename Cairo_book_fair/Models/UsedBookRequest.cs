@@ -21,7 +21,7 @@ namespace Cairo_book_fair.Models
 
         public Condition BookCondition { get; set; } = Condition.Used; // Description of the book's condition
 
-        public string RequestStatus { get; set; } = "Pending"; // Pending, Approved, Declined
+        public RequestStatus RequestStatus { get; set; } = RequestStatus.Pending; // Pending, Approved, Declined
 
         public DateTime RequestDate { get; set; } = DateTime.Now;
         public int? UsedBookId { get; set; }

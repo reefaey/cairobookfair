@@ -27,7 +27,6 @@ namespace Cairo_book_fair.Models
         public int AuthorId { get; set; }
         public Author Author { get; set; }
         public bool IsAvailableForDonation { get; set; } = false;
-
         public List<Review>? Reviews { get; set; }
 
         //[ForeignKey("Donation")]

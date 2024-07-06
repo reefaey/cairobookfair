@@ -199,6 +199,12 @@ namespace Cairo_book_fair.Controllers
             string idtoken = googleLoginDto.IdToken;
 
             var googleClientId = _configuration["GoogleOAuth:ClientId"];
+            var googleClientSecret = _configuration["GoogleOAuth:ClientSecret"];
+
+            if (string.IsNullOrEmpty(googleClientId))
+            {
+                throw new ArgumentException("The 'ClientId' option must be provided.", nameof(googleClientId));
+            }
 
             var setting = new GoogleJsonWebSignature.ValidationSettings
             {

@@ -43,7 +43,8 @@
       "commandName": "CairoBookFair",
       "environmentVariables": {
         "GoogleOAuth:ClientId": "1058478672774-gj4cm6gbhm71vjgltsqthfj3b60thq6k.apps.googleusercontent.com",
-        "GoogleOAuth:ClientSecret": "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"
+        "GoogleOAuth:ClientSecret": "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",
+
       }
     }
   }
