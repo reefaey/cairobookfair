@@ -14,11 +14,12 @@ namespace Cairo_book_fair.Services
         private readonly IBookRepository _bookRepository;
         private readonly UserManager<User> _userManager;
 
-        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository)
+        public BookCartService(IBookCartRepository bookCartRepository, UserManager<User> userManager, IBookRepository bookRepository, ICartRepository cartRepository)
         {
             this._bookCartRepository = bookCartRepository;
             this._userManager = userManager;
             this._bookRepository = bookRepository;
+            this._cartRepository = cartRepository;
         }
 
         public bool IsBookAdded(int cartId,int bookId)
@@ -37,6 +38,7 @@ namespace Cairo_book_fair.Services
                     bookcart.Quantity++;
                 }
                 _bookCartRepository.Update(bookcart);
+                _bookCartRepository.Save();
             }
             else
             {
@@ -48,6 +50,7 @@ namespace Cairo_book_fair.Services
                 };
 
                 _bookCartRepository.Insert(bookcart);
+                _bookCartRepository.Save();
             }
             cart.TotalCost += book.Price * bookcart.Quantity;
             _cartRepository.Update(cart);

@@ -135,6 +135,8 @@ namespace Cairo_book_fair
             builder.Services.AddScoped<IBookCartService, BookCartService>();
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IAuthorService, AuthorService>();
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<ITicketService, TicketService>();
 
             //Abdelraheem Services//
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -159,8 +161,7 @@ namespace Cairo_book_fair
             builder.Services.AddAutoMapper(typeof(Program));
 
 
-            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-            builder.Services.AddScoped<ITicketService, TicketService>();
+            
 
             //review and shipment services
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
