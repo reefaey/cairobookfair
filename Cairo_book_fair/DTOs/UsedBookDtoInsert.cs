@@ -3,7 +3,10 @@
     public class UsedBookDtoInsert
     {
         public string BookName { get; set; }
-        public string ImageURL { get; set; }
+
+        //[NotMapped]
+        //public IFormFile ImageFile { get; set; }
+        public string? ImageUrl { get; set; }
         public string AuthorName { get; set; }
         public string Description { get; set; }
     }

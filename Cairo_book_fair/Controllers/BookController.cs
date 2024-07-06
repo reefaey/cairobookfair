@@ -2,6 +2,8 @@
 using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+
 
 namespace Cairo_book_fair.Controllers
 {
@@ -12,12 +14,14 @@ namespace Cairo_book_fair.Controllers
 
         private readonly IBookService bookService;
         private readonly IMapper mapper;
+        private readonly IHostingEnvironment hosting;
 
-        public BookController(IBookService bookService, IMapper mapper)
+        public BookController(IBookService bookService, IMapper mapper, IHostingEnvironment hosting)
         {
 
             this.bookService = bookService;
             this.mapper = mapper;
+            this.hosting = hosting;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,6 +70,14 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid == true)
             {
+                //if (book.ImageFile != null)
+                //{
+                //    string BookImageFolder = Path.Combine(hosting.WebRootPath, "BookImages");
+                //    string ImagePath = Path.Combine(BookImageFolder, book.ImageFile.FileName);
+                //    book.ImageFile.CopyTo(new FileStream(ImagePath, FileMode.Create));
+                //    book.ImageUrl = book.ImageFile.FileName;
+                //}
+
                 bookService.Insert(book);
                 bookService.Save();
                 return Ok();
@@ -80,6 +92,13 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid == true)
             {
+                //if (book.ImageFile != null)
+                //{
+                //    string UsedBookImageFolder = Path.Combine(hosting.WebRootPath, "UsedBookImages");
+                //    string ImagePath = Path.Combine(UsedBookImageFolder, book.ImageFile.FileName);
+                //    book.ImageFile.CopyTo(new FileStream(ImagePath, FileMode.Create));
+                //    book.ImageUrl = book.ImageFile.FileName;
+                //}
                 bookService.InsertUsedBook(book);
                 bookService.Save();
                 return Ok();
@@ -93,6 +112,13 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid == true)
             {
+                //if (book.ImageFile != null)
+                //{
+                //    string BookImageFolder = Path.Combine(hosting.WebRootPath, "BookImages");
+                //    string ImagePath = Path.Combine(BookImageFolder, book.ImageFile.FileName);
+                //    book.ImageFile.CopyTo(new FileStream(ImagePath, FileMode.Create));
+                //    book.ImageUrl = book.ImageFile.FileName;
+                //}
                 try
                 {
                     bookService.Update(id, book);
@@ -114,6 +140,13 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid == true)
             {
+                //if (book.ImageFile != null)
+                //{
+                //    string UsedBookImageFolder = Path.Combine(hosting.WebRootPath, "UsedBookImages");
+                //    string ImagePath = Path.Combine(UsedBookImageFolder, book.ImageFile.FileName);
+                //    book.ImageFile.CopyTo(new FileStream(ImagePath, FileMode.Create));
+                //    book.ImageUrl = book.ImageFile.FileName;
+                //}
                 try
                 {
                     bookService.UpdateUsedBook(id, book);

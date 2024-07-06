@@ -27,6 +27,8 @@
   <ItemGroup>
     <Folder Include="Hub\" />
     <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\BookImages\" />
+    <Folder Include="wwwroot\UsedBookImages\" />
   </ItemGroup>
 
 </Project>
