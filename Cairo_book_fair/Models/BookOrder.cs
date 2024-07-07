@@ -5,7 +5,7 @@ namespace Cairo_book_fair.Models
     //[Keyless]
     public class BookOrder
     {
-        public int Id { get; set; } // if there is more properties than essential of join table as quantity then u require id?
+        // public int Id { get; set; } // if there is more properties than essential of join table as quantity then u require id?
         public int Quantity { get; set; }
 
 
