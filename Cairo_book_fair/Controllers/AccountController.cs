@@ -102,7 +102,8 @@ namespace Cairo_book_fair.Controllers
                             new
                             {
                                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                            }
+                                id = userDb.Id
+                            } 
                         );
                     }
                 }
