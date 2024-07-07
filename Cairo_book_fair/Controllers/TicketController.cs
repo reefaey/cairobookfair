@@ -71,7 +71,7 @@ namespace Cairo_book_fair.Controllers
             ticketService.InsertTicket(newTicketDTO, userName, userId);
             ticketService.Save();
 
-            return Ok("!تم حجز التذكرة بنجاح");
+            return Ok();
         }
 
         //[Authorize]

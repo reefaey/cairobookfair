@@ -4,5 +4,6 @@
     { 
         public string Phone { get; set; }
         public int NumberOfTicket { get; set; } = 1;
+        public string UserId { get; set; }
     }
 }
