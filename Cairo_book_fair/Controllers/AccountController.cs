@@ -94,7 +94,7 @@ namespace Cairo_book_fair.Controllers
                             issuer: _configuration["JWT:ValidIssuer"],
                             audience: _configuration["JWT:ValidAudience"],
                             claims: MyClaims,
-                            expires: DateTime.Now.AddMinutes(5),
+                            expires: DateTime.Now.AddDays(1),
                             notBefore: null
                             );
                         JwtSecurityToken token = new(JWTHeader, pyload);
