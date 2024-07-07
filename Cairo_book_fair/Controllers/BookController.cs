@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cairo_book_fair.Controllers
@@ -60,8 +61,8 @@ namespace Cairo_book_fair.Controllers
             return BadRequest();
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////
-
-        [HttpPost]
+        
+        [HttpPost, Authorize(Roles = "Admin")]
         public IActionResult Insert(BookDTO book)
         {
             if (ModelState.IsValid == true)
@@ -75,7 +76,7 @@ namespace Cairo_book_fair.Controllers
 
         /////////////////////////////////////////////////////////////////////////////////////////////////
 
-        [HttpPost("UsedBook")]
+        [HttpPost("UsedBook"), Authorize(Roles = "Admin")]
         public IActionResult InsertUsedBook(UsedBookDtoInsert book)
         {
             if (ModelState.IsValid == true)
@@ -88,7 +89,7 @@ namespace Cairo_book_fair.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////////
         ///
-        [HttpPut]
+        [HttpPut, Authorize(Roles = "Admin")]
         public IActionResult Update(int id, BookDTO book)
         {
             if (ModelState.IsValid == true)
@@ -109,7 +110,7 @@ namespace Cairo_book_fair.Controllers
 
         ////////////////////////////////////////////////////////////////////////////////
         ///
-        [HttpPut("UsedBook")]
+        [HttpPut("UsedBook"), Authorize(Roles = "Admin")]
         public IActionResult UpdateUsedBook(int id, UsedBookDtoInsert book)
         {
             if (ModelState.IsValid == true)
@@ -128,7 +129,7 @@ namespace Cairo_book_fair.Controllers
             return BadRequest(ModelState);
         }
         //////////////////////////////////////////////////////////////////
-        [HttpDelete]
+        [HttpDelete, Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             try
@@ -145,7 +146,7 @@ namespace Cairo_book_fair.Controllers
         }
 
         //////////////////////////////////////////////////////////////////
-        [HttpDelete("UsedBook")]
+        [HttpDelete("UsedBook"), Authorize(Roles = "Admin")]
         public IActionResult DeleteUsedBook(int id)
         {
             try

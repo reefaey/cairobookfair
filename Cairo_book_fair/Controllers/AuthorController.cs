@@ -1,6 +1,7 @@
 ﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -18,7 +19,7 @@ namespace Cairo_book_fair.Controllers
             _authorService = authorService;
         }
 
-        [HttpGet]
+        [HttpGet("ALL")]
         public IActionResult GetAuthors()
         {
             List<AuthorDTO> authorDTOs = _authorService.GetAllDTO();
@@ -33,7 +34,7 @@ namespace Cairo_book_fair.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public IActionResult InsertAuthor(AuthorDTO authorDto)
         {
             if (ModelState.IsValid)
@@ -49,7 +50,7 @@ namespace Cairo_book_fair.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPut]
+        [HttpPut, Authorize(Roles = "Admin")]
         public IActionResult UpdateAuthor(int id, AuthorDTO authorDto)
         {
             Author author = _authorService.GetById(id);
@@ -61,7 +62,7 @@ namespace Cairo_book_fair.Controllers
             return BadRequest("Invalid ID");
         }
 
-        [HttpDelete]
+        [HttpDelete, Authorize(Roles = "Admin")]
         public IActionResult DeleteAuthor(int id)
         {
             try
