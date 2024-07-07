@@ -1,54 +1,42 @@
-﻿using AutoMapper;
-using Cairo_book_fair.DTOs;
-using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cairo_book_fair.Services
 {
     public class ShipmentService : IShipmentService
     {
-        private readonly IShipmentRepository shipmentRepository;
-        private readonly IMapper mapper;
+        private readonly IShipmentRepository _shipmentRepository;
 
-        public ShipmentService(IShipmentRepository shipmentRepository, IMapper mapper)
+        public ShipmentService(IShipmentRepository shipmentRepository)
         {
-            this.shipmentRepository = shipmentRepository;
-            this.mapper = mapper;
+            _shipmentRepository = shipmentRepository;
         }
 
-        public async Task<ShipmentDTO> GetShipmentByIdAsync(int id)
+        public async Task<IEnumerable<Shipment>> GetAllShipments()
         {
-            var shipment = await shipmentRepository.GetShipmentByIdAsync(id);
-            return mapper.Map<ShipmentDTO>(shipment);
+            return await _shipmentRepository.GetAllShipments();
         }
 
-        public async Task<List<ShipmentDTO>> GetAllShipmentsAsync()
+        public async Task<Shipment> GetShipmentById(int id)
         {
-            var shipments = await shipmentRepository.GetAllShipmentsAsync();
-            return mapper.Map<List<ShipmentDTO>>(shipments);
+            return await _shipmentRepository.GetShipmentById(id);
         }
 
-        public async Task CreateShipmentAsync(ShipmentDTO shipmentDto)
+        public async Task<Shipment> AddShipment(Shipment shipment)
         {
-            var shipment = mapper.Map<Shipment>(shipmentDto);
-            await shipmentRepository.CreateShipmentAsync(shipment);
+            return await _shipmentRepository.AddShipment(shipment);
         }
 
-        public async Task UpdateShipmentAsync(int id, ShipmentDTO shipmentDto)
+        public async Task<Shipment> UpdateShipment(Shipment shipment)
         {
-            var existingShipment = await shipmentRepository.GetShipmentByIdAsync(id);
-            if (existingShipment == null)
-            {
-                throw new ArgumentException("Shipment not found");
-            }
-
-            mapper.Map(shipmentDto, existingShipment);
-            await shipmentRepository.UpdateShipmentAsync(existingShipment);
+            return await _shipmentRepository.UpdateShipment(shipment);
         }
 
-        public async Task DeleteShipmentAsync(int id)
+        public async Task<Shipment> DeleteShipment(int id)
         {
-            await shipmentRepository.DeleteShipmentAsync(id);
+            return await _shipmentRepository.DeleteShipment(id);
         }
     }
 }

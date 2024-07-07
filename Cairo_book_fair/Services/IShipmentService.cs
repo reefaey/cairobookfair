@@ -1,13 +1,15 @@
-﻿using Cairo_book_fair.DTOs;
+﻿using Cairo_book_fair.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cairo_book_fair.Services
 {
     public interface IShipmentService
     {
-        Task<ShipmentDTO> GetShipmentByIdAsync(int id);
-        Task<List<ShipmentDTO>> GetAllShipmentsAsync();
-        Task CreateShipmentAsync(ShipmentDTO shipmentDto);
-        Task UpdateShipmentAsync(int id, ShipmentDTO shipmentDto);
-        Task DeleteShipmentAsync(int id);
+        Task<IEnumerable<Shipment>> GetAllShipments();
+        Task<Shipment> GetShipmentById(int id);
+        Task<Shipment> AddShipment(Shipment shipment);
+        Task<Shipment> UpdateShipment(Shipment shipment);
+        Task<Shipment> DeleteShipment(int id);
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cairo_book_fair.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240705174022_init")]
+    [Migration("20240707013636_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -630,23 +630,23 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e8ddcf30-3414-4471-bed7-62ebeda6167a",
+                            Id = "35912009-00c6-4e32-8f8d-24b0e5fd6987",
                             AccessFailedCount = 0,
                             Bio = "Hello",
-                            ConcurrencyStamp = "95593815-c9b1-404e-9c15-39f84ba511b2",
+                            ConcurrencyStamp = "79e25049-e9c3-4f30-9898-0ad7e933c11b",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
-                            JoinDate = new DateTime(2024, 7, 5, 20, 40, 20, 71, DateTimeKind.Local).AddTicks(4729),
+                            JoinDate = new DateTime(2024, 7, 7, 4, 36, 34, 719, DateTimeKind.Local).AddTicks(8187),
                             Location = "",
                             LockoutEnabled = false,
                             Name = "",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
                             NumberOfDonatedBooks = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEO8uwwRekRELpwzX2t8Iw/uKRALp2XDM2+YZUztG0oOtp0ttlndYoEagUDpjQ36CjA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIVd9DZcu/cGfcuGeyOnX3HAr+AXNJ4u3y0b49MfPTHUIwjoPbSwZ5BeYGcP5T7hvw==",
                             PhoneNumberConfirmed = false,
                             ProfileImage = "default",
-                            SecurityStamp = "c6ebe605-c149-4a49-bf71-fa82ce9358c3",
+                            SecurityStamp = "0af49abd-6330-46cc-9b2e-fd66082682ef",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -810,7 +810,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "e8ddcf30-3414-4471-bed7-62ebeda6167a",
+                            UserId = "35912009-00c6-4e32-8f8d-24b0e5fd6987",
                             RoleId = "1"
                         });
                 });
@@ -846,7 +846,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.Hall", "Hall")
                         .WithMany("Blocks")
                         .HasForeignKey("HallId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Hall");
@@ -857,13 +857,13 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.Author", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cairo_book_fair.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -876,13 +876,13 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.Book", "Book")
                         .WithMany("BookCarts")
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cairo_book_fair.Models.Cart", "Cart")
                         .WithMany("BookCarts")
                         .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Book");
@@ -895,13 +895,13 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.Book", "Book")
                         .WithMany("BookCategories")
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cairo_book_fair.Models.Category", "Category")
                         .WithMany("BookCategories")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Book");
@@ -914,13 +914,13 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.Book", "Book")
                         .WithMany("BookOrders")
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cairo_book_fair.Models.Order", "Order")
                         .WithMany("BookOrders")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Book");
@@ -933,7 +933,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -944,7 +944,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -959,7 +959,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Shipment");
@@ -972,7 +972,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.Block", "Block")
                         .WithMany()
                         .HasForeignKey("BlockId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Block");
@@ -983,13 +983,13 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.Book", "Book")
                         .WithMany("Reviews")
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Book");
@@ -1002,7 +1002,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1013,7 +1013,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1037,7 +1037,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("UsedBook");
@@ -1050,7 +1050,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -1059,7 +1059,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -1068,7 +1068,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -1077,13 +1077,13 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cairo_book_fair.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -1092,7 +1092,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasOne("Cairo_book_fair.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

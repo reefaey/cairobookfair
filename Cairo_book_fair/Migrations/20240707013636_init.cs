@@ -607,12 +607,12 @@ namespace Cairo_book_fair.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Bio", "ConcurrencyStamp", "Email", "EmailConfirmed", "JoinDate", "Location", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "NumberOfDonatedBooks", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfileImage", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "e8ddcf30-3414-4471-bed7-62ebeda6167a", 0, "Hello", "95593815-c9b1-404e-9c15-39f84ba511b2", "admin@example.com", true, new DateTime(2024, 7, 5, 20, 40, 20, 71, DateTimeKind.Local).AddTicks(4729), "", false, null, "", "ADMIN@EXAMPLE.COM", "ADMIN", 0, "AQAAAAIAAYagAAAAEO8uwwRekRELpwzX2t8Iw/uKRALp2XDM2+YZUztG0oOtp0ttlndYoEagUDpjQ36CjA==", null, false, "default", "c6ebe605-c149-4a49-bf71-fa82ce9358c3", false, "admin" });
+                values: new object[] { "35912009-00c6-4e32-8f8d-24b0e5fd6987", 0, "Hello", "79e25049-e9c3-4f30-9898-0ad7e933c11b", "admin@example.com", true, new DateTime(2024, 7, 7, 4, 36, 34, 719, DateTimeKind.Local).AddTicks(8187), "", false, null, "", "ADMIN@EXAMPLE.COM", "ADMIN", 0, "AQAAAAIAAYagAAAAEIVd9DZcu/cGfcuGeyOnX3HAr+AXNJ4u3y0b49MfPTHUIwjoPbSwZ5BeYGcP5T7hvw==", null, false, "default", "0af49abd-6330-46cc-9b2e-fd66082682ef", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "1", "e8ddcf30-3414-4471-bed7-62ebeda6167a" });
+                values: new object[] { "1", "35912009-00c6-4e32-8f8d-24b0e5fd6987" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

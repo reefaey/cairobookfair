@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Cairo_book_fair.Services
 {
-    public class ReviewService : IReviewService 
+    public class ReviewService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
 
