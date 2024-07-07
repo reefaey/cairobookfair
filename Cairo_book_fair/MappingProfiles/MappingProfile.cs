@@ -60,6 +60,13 @@ namespace Cairo_book_fair.Helper
                 .ReverseMap();
 
 
+            CreateMap<Review, ReviewDTO>()
+           .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId)); // Ensure UserId is mapped correctly if needed
+
+            CreateMap<ReviewDTO, Review>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId)); // Ensure UserId is mapped correctly if needed
+
+
         }
     }
 }

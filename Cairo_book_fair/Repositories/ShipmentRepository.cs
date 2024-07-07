@@ -1,6 +1,5 @@
 ﻿using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
-using Google;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,44 +8,52 @@ namespace Cairo_book_fair.Repositories
 {
     public class ShipmentRepository : IShipmentRepository
     {
-        private readonly Context context;
+        private readonly Context _context;
 
         public ShipmentRepository(Context context)
         {
-            this.context = context;
+            _context = context;
         }
 
-        public async Task<Shipment> GetShipmentByIdAsync(int id)
+        public async Task<IEnumerable<Shipment>> GetAllShipments()
         {
-            return await context.Shipments.FindAsync(id);
+            return await _context.Shipments.Include(s => s.Order).Include(s => s.User).ToListAsync();
         }
 
-        public async Task<List<Shipment>> GetAllShipmentsAsync()
+        public async Task<Shipment> GetShipmentById(int id)
         {
-            return await context.Shipments.ToListAsync();
+            var shipment = await _context.Shipments.Include(s => s.Order).Include(s => s.User)
+                                                   .FirstOrDefaultAsync(s => s.Id == id);
+            if (shipment == null)
+            {
+                throw new KeyNotFoundException($"Shipment with id {id} not found.");
+            }
+            return shipment;
         }
 
-        public async Task CreateShipmentAsync(Shipment shipment)
+        public async Task<Shipment> AddShipment(Shipment shipment)
         {
-            context.Shipments.Add(shipment);
-            await context.SaveChangesAsync();
+            _context.Shipments.Add(shipment);
+            await _context.SaveChangesAsync();
+            return shipment;
         }
 
-        public async Task UpdateShipmentAsync(Shipment shipment)
+        public async Task<Shipment> UpdateShipment(Shipment shipment)
         {
-            context.Entry(shipment).State = EntityState.Modified;
-            await context.SaveChangesAsync();
+            _context.Entry(shipment).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return shipment;
         }
 
-        public async Task DeleteShipmentAsync(int id)
+        public async Task<Shipment> DeleteShipment(int id)
         {
-            var shipment = await context.Shipments.FindAsync(id);
+            var shipment = await _context.Shipments.FindAsync(id);
             if (shipment != null)
             {
-                context.Shipments.Remove(shipment);
-                await context.SaveChangesAsync();
+                _context.Shipments.Remove(shipment);
+                await _context.SaveChangesAsync();
             }
+            return shipment;
         }
     }
 }
-

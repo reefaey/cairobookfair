@@ -17,12 +17,19 @@ namespace Cairo_book_fair.Controllers
             _visitorService = visitorService;
         }
 
-        [HttpGet]
+        [HttpGet("getvistors")]
         public IActionResult GetVisitors()
         {
             var visitors = _visitorService.GetAll();
 
             return Ok(visitors);
+        }
+
+        [HttpGet("getcount")]
+        public IActionResult GetCount()
+        {
+            var statistics = _visitorService.GetStatistics();
+            return Ok(statistics);
         }
 
         [HttpPatch]

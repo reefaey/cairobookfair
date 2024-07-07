@@ -1,100 +1,135 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Services;
-using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Cairo_book_fair.Models;
 
 namespace Cairo_book_fair.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShipmentController : ControllerBase
+    public class ShipmentsController : ControllerBase
     {
-        private readonly IShipmentService shipmentService;
+        private readonly IShipmentService _shipmentService;
 
-        public ShipmentController(IShipmentService shipmentService)
+        public ShipmentsController(IShipmentService shipmentService)
         {
-            this.shipmentService = shipmentService;
+            _shipmentService = shipmentService;
         }
 
-        // GET: api/Shipment
         [HttpGet]
-        public async Task<ActionResult<List<ShipmentDTO>>> GetAllShipmentsAsync()
+        public async Task<ActionResult<IEnumerable<ShipmentDTO>>> GetShipments()
         {
-            var shipments = await shipmentService.GetAllShipmentsAsync();
-            return Ok(shipments);
+            var shipments = await _shipmentService.GetAllShipments();
+            var shipmentDTOs = shipments.Select(shipment => new ShipmentDTO
+            {
+                Id = shipment.Id,
+                Address = shipment.Address,
+                Date = shipment.Date,
+                OrderId = shipment.OrderId,
+                Status = shipment.Status,
+                City = shipment.City,
+                Region = shipment.Region,
+                PostalCode = shipment.PostalCode,
+                UserId = shipment.UserId
+            });
+            return Ok(shipmentDTOs);
         }
 
-        // GET: api/Shipment/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ShipmentDTO>> GetShipmentByIdAsync(int id)
+        public async Task<ActionResult<ShipmentDTO>> GetShipment(int id)
         {
-            var shipment = await shipmentService.GetShipmentByIdAsync(id);
+            var shipment = await _shipmentService.GetShipmentById(id);
             if (shipment == null)
             {
                 return NotFound();
             }
-            return Ok(shipment);
+
+            var shipmentDTO = new ShipmentDTO
+            {
+                Id = shipment.Id,
+                Address = shipment.Address,
+                Date = shipment.Date,
+                OrderId = shipment.OrderId,
+                Status = shipment.Status,
+                City = shipment.City,
+                Region = shipment.Region,
+                PostalCode = shipment.PostalCode,
+                UserId = shipment.UserId
+            };
+
+            return Ok(shipmentDTO);
         }
 
-        // POST: api/Shipment
         [HttpPost]
-        public async Task<IActionResult> CreateShipmentAsync([FromBody] ShipmentDTO shipmentDto)
+        public async Task<ActionResult<ShipmentDTO>> PostShipment(ShipmentDTO shipmentDTO)
         {
-            if (!ModelState.IsValid)
+            var shipment = new Shipment
             {
-                return BadRequest(ModelState);
-            }
+                Address = shipmentDTO.Address,
+                Date = shipmentDTO.Date,
+                OrderId = shipmentDTO.OrderId,
+                Status = shipmentDTO.Status,
+                City = shipmentDTO.City,
+                Region = shipmentDTO.Region,
+                PostalCode = shipmentDTO.PostalCode,
+                UserId = shipmentDTO.UserId
+            };
 
-            try
-            {
-                await shipmentService.CreateShipmentAsync(shipmentDto);
-                return CreatedAtAction(nameof(GetShipmentByIdAsync), new { id = shipmentDto.Id }, shipmentDto);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var createdShipment = await _shipmentService.AddShipment(shipment);
+
+            shipmentDTO.Id = createdShipment.Id;
+
+            return CreatedAtAction(nameof(GetShipment), new { id = createdShipment.Id }, shipmentDTO);
         }
 
-        // PUT: api/Shipment/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateShipmentAsync(int id, [FromBody] ShipmentDTO shipmentDto)
+        public async Task<IActionResult> PutShipment(int id, ShipmentDTO shipmentDTO)
         {
-            if (!ModelState.IsValid)
+            if (id != shipmentDTO.Id)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
+
+            var shipment = new Shipment
+            {
+                Id = shipmentDTO.Id,
+                Address = shipmentDTO.Address,
+                Date = shipmentDTO.Date,
+                OrderId = shipmentDTO.OrderId,
+                Status = shipmentDTO.Status,
+                City = shipmentDTO.City,
+                Region = shipmentDTO.Region,
+                PostalCode = shipmentDTO.PostalCode,
+                UserId = shipmentDTO.UserId
+            };
 
             try
             {
-                await shipmentService.UpdateShipmentAsync(id, shipmentDto);
-                return NoContent();
+                await _shipmentService.UpdateShipment(shipment);
             }
-            catch (ArgumentException)
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return NoContent();
         }
 
-        // DELETE: api/Shipment/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteShipmentAsync(int id)
+        public async Task<IActionResult> DeleteShipment(int id)
         {
-            try
+            var shipment = await _shipmentService.GetShipmentById(id);
+            if (shipment == null)
             {
-                await shipmentService.DeleteShipmentAsync(id);
-                return NoContent();
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            await _shipmentService.DeleteShipment(id);
+
+            return NoContent();
         }
     }
 }

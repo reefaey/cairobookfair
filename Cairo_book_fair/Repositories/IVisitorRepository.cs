@@ -1,4 +1,5 @@
-﻿using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Models;
 
 public interface IVisitorRepository
 {
@@ -6,4 +7,5 @@ public interface IVisitorRepository
     public Visitors Update(int id, Visitors visitor);
 
     public Visitors Add(Visitors visitor);
+    public statistics GetStatistics();
 }

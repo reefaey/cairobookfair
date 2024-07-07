@@ -17,9 +17,8 @@ namespace Cairo_book_fair.Services
         void DeleteUsedBook(int id);
         public void Save();
         public List<BookWithDetails> Search(string SearchBookName);
+        public List<ReviewDTO> GetBooksReviews(int bookid);
         public List<UsedBookDtoGet> SearchUsedBook(string SearchBookName);
-
-
 
     }
 }

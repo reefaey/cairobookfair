@@ -207,6 +207,14 @@ namespace Cairo_book_fair.Controllers
             return NotFound("No books found");
         }
 
+
+        [HttpGet("BookReview")]
+        public IActionResult GetBookReview(int bookid)
+        {
+            List<ReviewDTO> reviews = bookService.GetBooksReviews(bookid);
+            return Ok(reviews);
+        }
+
         ///////////////////////////////////////////////////////////////////////////////
         [HttpGet("Search/UsedBook")]
         public IActionResult SearchUsedBook(String search)
@@ -218,7 +226,5 @@ namespace Cairo_book_fair.Controllers
             }
             return NotFound("No books found");
         }
-
-
     }
 }

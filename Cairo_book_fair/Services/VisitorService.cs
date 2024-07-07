@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Services.Interfaces;
 
@@ -35,5 +36,10 @@ public class VisitorService : IVisitorsService
 
         return _mapper.Map<VisitorsDTO>(_visitorsRepository.Update(id, visitors));
 
+    }
+
+    public statistics GetStatistics()
+    {
+        return _visitorsRepository.GetStatistics();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Cairo_book_fair.DBContext;
+using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 
 namespace Cairo_book_fair.Repositories;
@@ -43,5 +44,13 @@ public class VisitorRepository : IVisitorRepository
         _context.Visitors.Add(visitor);
         _context.SaveChanges();
         return visitor;
+    }
+
+    public statistics GetStatistics()
+    {
+        var publisherCount = _context.Publishers.Count();
+        var cycle = 5;
+
+        return new statistics { publishersCount = publisherCount, Cycle = cycle };
     }
 }

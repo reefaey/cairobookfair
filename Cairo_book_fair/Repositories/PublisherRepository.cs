@@ -32,7 +32,18 @@ namespace Cairo_book_fair.Repositories
             return query.FirstOrDefault(b => b.Id == id);
         }
 
-
+        public List<Book> GetPublisherBooks(int publisherID)
+        {
+            return context.Books
+                .Include(b => b.Publisher)
+                .Include(b => b.Author)
+                .Include(b => b.Reviews)
+                .Include(b => b.BookCarts)
+                .Include(b => b.BookOrders)
+                .Include(b => b.BookCategories)
+                .Where(b => b.PublisherId == publisherID)
+                .ToList();
+        }
         public PaginatedList<Publisher> GetPaginatedPublisher(int page, int pageSize, string[] include = null)
         {
             IQueryable<Publisher> query = context.Publishers;

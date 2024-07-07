@@ -22,6 +22,7 @@ namespace Cairo_book_fair.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "User")]
         public IActionResult GetAll()
         {
             var transportation = _transportationService.GetAll();
@@ -29,7 +30,7 @@ namespace Cairo_book_fair.Controllers
 
         }
 
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("import")]
         public async Task<IActionResult> ImportTransportations([FromQuery] string filePath)
         {

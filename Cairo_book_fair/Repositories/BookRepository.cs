@@ -45,7 +45,15 @@ namespace Cairo_book_fair.Repositories
             }
             return query.FirstOrDefault(b => b.Id == id);
         }
-
+        public List<Review> GetBooksReviews(int bookid)
+        {
+            return context.Reviews
+                 .Include(r => r.Book)
+                 .Include(r => r.User)
+                 .Where(r => r.BookId == bookid)
+                 .Take(5)
+                 .ToList();
+        }
         public List<Book> Get(Func<Book, bool> where)
         {
             return context.Books.Where(where).ToList();
