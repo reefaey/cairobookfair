@@ -49,18 +49,18 @@ namespace Cairo_book_fair.Controllers
 
         }
 
-        [HttpPut]
-        public IActionResult Update(OrderDto order)
-        {
-            if (ModelState.IsValid == true)
-            {
-                orderService.Update(order);
+        //[HttpPut]
+        //public IActionResult Update(OrderDto order)
+        //{
+        //    if (ModelState.IsValid == true)
+        //    {
+        //        orderService.Update(order);
 
-                return Ok();
-            }
+        //        return Ok();
+        //    }
 
-            return BadRequest(ModelState);
-        }
+        //    return BadRequest(ModelState);
+        //}
 
         [HttpDelete]
         public IActionResult Delete(int id)

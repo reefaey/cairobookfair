@@ -18,8 +18,8 @@ namespace Cairo_book_fair.Models
         public string UserId { get; set; }
         public User? User { get; set; }
 
-        [ForeignKey("Shipment")]
-        public int? ShipmentId { get; set; }
+        //[ForeignKey("Shipment")]
+        //public int? ShipmentId { get; set; }
         public Shipment? Shipment { get; set; }
     }
 }

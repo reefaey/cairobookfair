@@ -1,4 +1,4 @@
-﻿    using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +28,7 @@ namespace Cairo_book_fair.DBContext
         public DbSet<Transportation> Transportations { get; set; }
         public DbSet<Visitors> Visitors { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<ReviewRequest> ReviewRequests {  get; set; }
+        public DbSet<ReviewRequest> ReviewRequests { get; set; }
         public Context(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,10 +62,10 @@ namespace Cairo_book_fair.DBContext
             modelBuilder.Entity<BookOrder>()
                 .HasKey(bo => new { bo.BookId, bo.OrderId });
 
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Shipment)
-                .WithOne(s => s.Order)
-                .HasForeignKey<Order>(o => o.ShipmentId);
+            modelBuilder.Entity<Shipment>()
+                .HasOne(s => s.Order)
+                .WithOne(o => o.Shipment)
+                .HasForeignKey<Shipment>(o => o.OrderId);
 
             //for Review ///////
             /* modelBuilder.Entity<Review>()

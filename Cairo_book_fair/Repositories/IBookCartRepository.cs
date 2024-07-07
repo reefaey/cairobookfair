@@ -8,6 +8,7 @@ namespace Cairo_book_fair.Repositories
         public List<BookCart> GetAllBooksInCart(int cartId);
         public bool IsBookAdded(int cartId, int bookId);
         public Task RemoveAllCartItemsAsync(int cartId);
+        public void RemoveAllItems(int cartId);
 
     }
 }

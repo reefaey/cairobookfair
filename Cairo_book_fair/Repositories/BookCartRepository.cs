@@ -1,7 +1,6 @@
 ﻿using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Cairo_book_fair.Repositories
 {
@@ -11,7 +10,7 @@ namespace Cairo_book_fair.Repositories
         {
         }
 
-        public BookCart GetBookCart(int cartId,  int bookId)
+        public BookCart GetBookCart(int cartId, int bookId)
         {
             BookCart bookCart = Context.Set<BookCart>()
                 .Where(c => c.CartId == cartId && c.BookId == bookId)
@@ -32,10 +31,10 @@ namespace Cairo_book_fair.Repositories
         public List<BookCart>? GetAllBooksInCart(int cartId)
         {
             List<BookCart>? itemsList = Context.BooksCarts
-                .Where(c =>  cartId == c.CartId)
+                .Where(c => cartId == c.CartId)
                 .ToList();
 
-            if(itemsList.Count == 0)
+            if (itemsList.Count == 0)
             {
                 return null;
             }
@@ -49,10 +48,20 @@ namespace Cairo_book_fair.Repositories
                 .Where(c => c.CartId == cartId)
                 .ToListAsync();
 
-            if(cartItems.Any())
+            if (cartItems.Any())
             {
                 Context.BooksCarts.RemoveRange(cartItems);
                 await Context.SaveChangesAsync();
+            }
+        }
+
+        public void RemoveAllItems(int cartId)
+        {
+            var itemsList = Context.BooksCarts.Where(i => i.CartId == cartId).ToList();
+            if (itemsList.Any())
+            {
+                Context.BooksCarts.RemoveRange(itemsList);
+                Context.SaveChanges();
             }
         }
 

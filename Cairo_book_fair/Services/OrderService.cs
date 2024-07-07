@@ -12,12 +12,14 @@ namespace Cairo_book_fair.Services
         private readonly IOrderRepository orderRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IBookCartRepository bookCartRepository;
 
-        public OrderService(IOrderRepository orderRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public OrderService(IOrderRepository orderRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IBookCartRepository bookCartRepository)
         {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
+            this.bookCartRepository = bookCartRepository;
         }
 
         private string GetCurrentUserId()
@@ -67,7 +69,7 @@ namespace Cairo_book_fair.Services
             return ordersDto;
         }
 
-        public void Insert()
+        public async Task Insert()
         {
             Order order = new Order();      //mapper.Map<Order>(Orderdto);
             var userId = GetCurrentUserId();
@@ -82,11 +84,11 @@ namespace Cairo_book_fair.Services
                 {
                     var bookOrder = new BookOrder()
                     {
-                        Id = bookcart.Id,
+
                         BookId = bookcart.BookId,
                         Quantity = bookcart.Quantity,
                         OrderId = order.Id,
-                        Order = order
+                        //Order = order
                     };
                     order.BookOrders.Add(bookOrder);
                 }
@@ -102,36 +104,37 @@ namespace Cairo_book_fair.Services
             }
             orderRepository.Insert(order);
             orderRepository.Save();
+            bookCartRepository.RemoveAllItems(cart.Id);
         }
 
 
-        public void Update(OrderDto orderDto)
-        {
-            Order orderDb = orderRepository.Get(orderDto.Id);
-            if (orderDb == null)
-            {
-                throw new Exception("Order Not Found");
-            }
-            mapper.Map(orderDto, orderDb);
+        //public void Update(OrderDto orderDto)
+        //{
+        //    Order orderDb = orderRepository.Get(orderDto.Id);
+        //    if (orderDb == null)
+        //    {
+        //        throw new Exception("Order Not Found");
+        //    }
+        //    mapper.Map(orderDto, orderDb);
 
-            foreach (var bookOrderDtos in orderDto.BookOrders)
-            {
-                var bookOrderDb = orderDb.BookOrders.FirstOrDefault(bo => bo.Id == bookOrderDtos.Id);
-                if (bookOrderDb == null)
-                {
-                    var newBookOrder = mapper.Map<BookOrder>(bookOrderDtos);
-                    orderDb.BookOrders.Add(newBookOrder);
-                }
-                else
-                {
-                    bookOrderDb.BookId = bookOrderDtos.Id;
-                    bookOrderDb.Quantity = bookOrderDtos.Quantity;
-                }
-            }
-            orderRepository.Update(orderDb);
-            orderRepository.Save();
+        //    foreach (var bookOrderDtos in orderDto.BookOrders)
+        //    {
+        //        var bookOrderDb = orderDb.BookOrders.FirstOrDefault(bo => bo.Id == bookOrderDtos.Id);
+        //        if (bookOrderDb == null)
+        //        {
+        //            var newBookOrder = mapper.Map<BookOrder>(bookOrderDtos);
+        //            orderDb.BookOrders.Add(newBookOrder);
+        //        }
+        //        else
+        //        {
+        //            bookOrderDb.BookId = bookOrderDtos.Id;
+        //            bookOrderDb.Quantity = bookOrderDtos.Quantity;
+        //        }
+        //    }
+        //    orderRepository.Update(orderDb);
+        //    orderRepository.Save();
 
-        }
+        //}
 
 
 
