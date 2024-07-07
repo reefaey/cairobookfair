@@ -22,7 +22,20 @@ namespace Cairo_book_fair.Repositories
 
         public Book Get(int id, string[] include = null)
         {
-            IQueryable<Book> query = context.Books;
+            IQueryable<Book> query = context.Books.Where(b => b.IsAvailableForDonation == false);
+            if (include != null)
+            {
+                foreach (var navigationProperty in include)
+                {
+                    query = query.Include(navigationProperty);
+                }
+            }
+            return query.FirstOrDefault(b => b.Id == id);
+        }
+
+        public Book GetUsedBook(int id, string[] include = null)
+        {
+            IQueryable<Book> query = context.Books.Where(b => b.IsAvailableForDonation == true);
             if (include != null)
             {
                 foreach (var navigationProperty in include)
@@ -60,7 +73,7 @@ namespace Cairo_book_fair.Repositories
         }
         public PaginatedList<Book> GetPaginatedBooks(int page, int pageSize, string[] include = null)
         {
-            IQueryable<Book> query = context.Books;
+            IQueryable<Book> query = context.Books.Where(b => b.IsAvailableForDonation == false);
             if (include != null)
             {
                 foreach (var navigationProperty in include)
@@ -105,17 +118,80 @@ namespace Cairo_book_fair.Repositories
             };
         }
 
+
+        public PaginatedList<Book> GetPaginatedUsedBooks(int page, int pageSize, string[] include = null)
+        {
+            IQueryable<Book> query = context.Books.Where(b => b.IsAvailableForDonation == true);
+            if (include != null)
+            {
+                foreach (var navigationProperty in include)
+                {
+                    query = query.Include(navigationProperty);
+                }
+            }
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+            //pagination
+            int NoOfPages = (int)Math.Ceiling(query.Count() / (double)pageSize);
+            int NoOfRecordsToSkip = (page - 1) * pageSize;
+            query = query.Skip(NoOfRecordsToSkip).Take(pageSize);
+
+            if (page > NoOfPages)
+            {
+                page = NoOfPages;
+            }
+            if (NoOfPages == 0)
+            {
+                return new PaginatedList<Book>()
+                {
+                    Items = null,
+                    TotalItems = 0,
+                    TotalPages = 0,
+                    CurrentPage = 0
+                };
+            }
+
+
+
+            return new PaginatedList<Book>
+            {
+                Items = query.ToList(),
+                TotalItems = query.Count(),
+                TotalPages = NoOfPages,
+                CurrentPage = page
+
+            };
+        }
+
+
         public List<Book> Search(string SearchBookName)
         {
             List<Book> filteredBooks = context.Books
                 .Include(b => b.Publisher).ThenInclude(p => p.Block).ThenInclude(f => f.Hall)
                 .Include(b => b.Author)
-            .Where(b => b.Name.Contains(SearchBookName)).ToList();
+            .Where(b => b.IsAvailableForDonation == false && b.Name.Contains(SearchBookName)).ToList();
 
             return filteredBooks;
 
         }
 
+        public List<Book> SearchUsedBook(string SearchBookName)
+        {
+            List<Book> filteredBooks = context.Books
+                .Include(b => b.Publisher).ThenInclude(p => p.Block).ThenInclude(f => f.Hall)
+                .Include(b => b.Author)
+            .Where(b => b.IsAvailableForDonation == true && b.Name.Contains(SearchBookName)).ToList();
+
+            return filteredBooks;
+
+        }
+        public User GetUserById(string userId)
+        {
+            return context.Users.SingleOrDefault(u => u.Id == userId);
+        }
         public void Insert(Book item)
         {
             context.Add(item);

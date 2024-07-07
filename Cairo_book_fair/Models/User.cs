@@ -18,12 +18,12 @@ namespace Cairo_book_fair.Models
         public string? Bio { get; set; } = "Hello";
         public string? Location { get; set; } = "";
         public DateTime JoinDate { get; set; } = DateTime.Now;
-        public List<Ticket>? Tickets { get; set; }
+        public Ticket? Ticket { get; set; }
         public List<Review>? Reviews { get; set; }
         public List<Order>? Orders { get; set; }
         public List<Author>? AuthorsFollowing { get; set; }
         public int NumberOfDonatedBooks { get; set; } = 0;
-        public List<UsedBook>? UsedBooks { get; set; }
+        public List<Book>? UsedBooks { get; set; }
 
     }
 }

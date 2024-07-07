@@ -1,5 +1,6 @@
 ﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
+using Cairo_book_fair.Repositories;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,65 +18,85 @@ namespace Cairo_book_fair.Controllers
     {
         private readonly IBookCartService _bookCartService;
         private readonly ICartService _cartService;
+        private readonly IBookRepository _bookRepository;
         private readonly UserManager<User> _userManager;
 
-        public CartController(IBookCartService bookCartService, ICartService cartService, UserManager<User> userManager)
+        public CartController(IBookCartService bookCartService, ICartService cartService, UserManager<User> userManager, IBookRepository bookRepository)
         {
             _bookCartService = bookCartService;
             _cartService = cartService;
             _userManager = userManager;
+            _bookRepository = bookRepository;
         }
 
         [HttpGet("All")]
-        public IActionResult GetAllItems(string UserId)
+        public IActionResult GetAllItems()
         {
-            if(UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) 
-            {
-                Cart cart = _cartService.GetCartByUserId(UserId);
-                WholeCartItemsWithTotalPriceDTO Cart = _bookCartService.GetAllCartItems(cart.Id);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Cart cart = _cartService.GetCartByUserId(userId);
+            WholeCartItemsWithTotalPriceDTO? cartItems = _bookCartService.GetAllCartItems(cart.Id);
 
-                if(Cart.cartItems.Count == 0)
+            if(cartItems == null)
+            {
+                return Ok("!نأسف لعدم وجود اي كتاب في السلة .. اشتري الآن");
+            }
+
+            return Ok(cartItems);
+            //return Unauthorized("عذراً هذا الحساب ليس له صلاحية الوصول للسلة");
+        }
+
+        [HttpPut]
+        public IActionResult ChangeTheQuantity(BookIdDTO bookIdDto, int quantity)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Cart cart = _cartService.GetCartByUserId(userId);
+            Book? book = _bookCartService.GetBook(bookIdDto.bookId);
+
+            if (_bookCartService.IsBookAdded(cart.Id, book.Id))
+            {
+                if(book.IsAvailableForDonation == false)
                 {
-                    return Ok("!نأسف لعدم وجود اي كتاب في السلة .. اشتري الآن");
+                    _bookCartService.ChangeQuantity(cart, book, quantity);
+                    return Ok("تم تعديل الكمية بنجاح");   
                 }
-
-                return Ok(Cart);
+                return Ok("لا يمكن تعديل كمية الكتب المستعملة من قبل");
             }
-
-            return Unauthorized("عذراً هذا الحساب ليس له صلاحية الوصول للسلة");
+            return Ok("عذراً هذا الكتاب غير موجود في السلة مسبقاً");
         }
 
-        //[HttpGet]
-        //public IActionResult GetBookNamewithUserName()
-        //{
-
-        //}
         [HttpPost("Buy-Regular-Book")]
-        public IActionResult InserItem(BookItemWithUserID bookItemWithUserID)
+        public IActionResult InserItem(BookIdDTO bookItemWithUserID)
         {
-            if(ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            Book? book = _bookCartService.GetBook(bookItemWithUserID.bookId);
+            if (book != null)
             {
-                 Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
+                
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Cart cart = _cartService.GetCartByUserId(userId);
+                _bookCartService.AddItem(cart, book);
+
                 _bookCartService.Save();
 
                 return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
             }
             return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
         }
-        [HttpPost("Take-Donated-Book")]
-        public IActionResult TakeBook(BookItemWithUserID bookItemWithUserID)
-        {
-            if (ModelState.IsValid)
-            {
-                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.AddItem(cart.Id, bookItemWithUserID.bookId);
-                _bookCartService.Save();
+        #region takeDonatedBook
+        //[HttpPost("Take-Donated-Book")]
+        //public IActionResult TakeBook(BookIdDTO bookItemWithUserID)
+        //{
+        //    Book? book = _bookCartService.GetBook(bookItemWithUserID.bookId);
+        //    if(book != null)
+        //    {
+        //        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //        Cart cart = _cartService.GetCartByUserId(userId);
+        //        _bookCartService.AddItem(cart, book);
+        //        _bookCartService.Save();
 
-                return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
-            }
-            return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
-        }
+        //        return Ok("!تمت اضافة الكتاب إلى السلة بنجاح");
+        //    }
+        //    return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة");
+        //}
 
         //[HttpPost("Take-Donated-Book")]
         //public async Task<IActionResult> TakeBook(BookItemWithUserID bookItemWithUserID)
@@ -100,15 +121,19 @@ namespace Cairo_book_fair.Controllers
         //            }
         //        }
         //        return BadRequest("عذراً لم يتم اضافة الكتاب إلى السلة ربما تخطيت العدد المسموح لك بأخذ كتب التبرع");
-        //}
+        //} 
+        #endregion
 
         [HttpDelete("Remove-item-from-Cart")]
-        public IActionResult Delete(BookItemWithUserID bookItemWithUserID)
+        public IActionResult Delete(BookIdDTO bookItemWithUserID)
         {
-            if (ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Book? book = _bookCartService.GetBook(bookItemWithUserID.bookId);
+            Cart cart = _cartService.GetCartByUserId(userId);
+            if(_bookCartService.IsBookAdded(cart.Id,book.Id))
             {
-                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.RemoveItem(cart.Id, bookItemWithUserID.bookId);
+                _bookCartService.RemoveItem(cart, book);
                 _bookCartService.Save();
                 return Ok("!تمت ازالة الكتاب بنجاح");
             }
@@ -117,22 +142,14 @@ namespace Cairo_book_fair.Controllers
 
         }
 
-        [HttpPut("Change Quantity")]
-        public IActionResult ChangeQuantity(int quantity, BookItemWithUserID bookItemWithUserID)
+        [HttpDelete("Remove-All-items-from-Cart")]
+        public async Task<IActionResult> RemoveAllCartItems()
         {
-            if (ModelState.IsValid && bookItemWithUserID.userId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-
-            {
-                Cart cart = _cartService.GetCartByUserId(bookItemWithUserID.userId);
-                _bookCartService.ChangeQuantity(cart.Id, bookItemWithUserID.bookId, quantity);
-                _bookCartService.Save();
-                return Ok("!تم تعديل الكمية بنجاح");
-            }
-
-            return BadRequest("عذراً لم تتم عملية التعديل");
-
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Cart cart = _cartService.GetCartByUserId(userId);
+            await _bookCartService.RemoveAllCartItems(cart);
+            //_bookCartService.Save();
+            return Ok("!تم ازالة جميع الكتب بنجاح");
         }
-
-
     }
 }
