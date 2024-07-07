@@ -4,6 +4,7 @@ using Cairo_book_fair.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cairo_book_fair.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240707120033_usdReq")]
+    partial class usdReq
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -687,23 +690,23 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "58248eed-4550-421f-b942-9472a0a8402c",
+                            Id = "31c9ea10-72a4-4c14-84fd-b67a120a937e",
                             AccessFailedCount = 0,
                             Bio = "Hello",
-                            ConcurrencyStamp = "e26fd438-4ff9-49fc-b2bc-7c1c16867a29",
+                            ConcurrencyStamp = "34db1ef9-6d08-44f7-999b-af256b0a12e0",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
-                            JoinDate = new DateTime(2024, 7, 7, 15, 4, 46, 999, DateTimeKind.Local).AddTicks(2872),
+                            JoinDate = new DateTime(2024, 7, 7, 15, 0, 33, 128, DateTimeKind.Local).AddTicks(1141),
                             Location = "",
                             LockoutEnabled = false,
                             Name = "",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN",
                             NumberOfDonatedBooks = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAELysLCXztRJ2/ri5/evFnivND+TAmGbhIOn7b8caapOOspgkwgHoI4RDF4YKGC7HNQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDNqNXWfOff+4HCkLGIc1hUjpUOCekZbI/6W+D2u0G2Q5RgDClnzSFp2EiBc1EDoFA==",
                             PhoneNumberConfirmed = false,
                             ProfileImage = "default",
-                            SecurityStamp = "5b5007c3-8952-40ed-90e9-02b8b4fb4290",
+                            SecurityStamp = "aa56dbe8-e32f-4e18-814c-d396c2b956cf",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -867,7 +870,7 @@ namespace Cairo_book_fair.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "58248eed-4550-421f-b942-9472a0a8402c",
+                            UserId = "31c9ea10-72a4-4c14-84fd-b67a120a937e",
                             RoleId = "1"
                         });
                 });
@@ -1119,7 +1122,7 @@ namespace Cairo_book_fair.Migrations
                         .HasForeignKey("UsedBookId");
 
                     b.HasOne("Cairo_book_fair.Models.User", "User")
-                        .WithMany("UsedBookRequest")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1236,8 +1239,6 @@ namespace Cairo_book_fair.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Ticket");
-
-                    b.Navigation("UsedBookRequest");
 
                     b.Navigation("UsedBooks");
                 });
