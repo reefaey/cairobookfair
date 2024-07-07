@@ -101,7 +101,6 @@ namespace Cairo_book_fair.Controllers
 
             return NoContent();
         }
-         
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview(int id)
         {
