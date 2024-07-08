@@ -40,10 +40,10 @@ namespace Cairo_book_fair.Controllers
         }
 
         [HttpPost]
-        public IActionResult Insert(string UserId)
+        public IActionResult Insert()
         {
 
-           orderService.Insert(UserId);
+           orderService.Insert();
 
             return Ok();
 

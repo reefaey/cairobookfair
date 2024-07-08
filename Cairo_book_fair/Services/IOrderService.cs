@@ -7,7 +7,7 @@ namespace Cairo_book_fair.Services
     {
         public OrderDto Get(int id);
         public List<OrderDto> GetAll();
-        public Task<int> Insert(string UserId);
+        public void Insert();
 
         //void Update(OrderDto item);
         void Delete(int id);

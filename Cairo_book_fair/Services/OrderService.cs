@@ -70,14 +70,14 @@ namespace Cairo_book_fair.Services
             return ordersDto;
         }
 
-        public async Task<int> Insert(string UserId) 
+        public void Insert() 
         {
             Order order = new Order();      //mapper.Map<Order>(Orderdto);
-          //  var userId = GetCurrentUserId();
-            order.UserId = UserId;
-            var user = orderRepository.GetUserById(UserId);
+            var userId = GetCurrentUserId();
+             order.UserId = userId;
+            var user = orderRepository.GetUserById(userId);
             // order.ShipmentId = user.ShipmentId;
-            Cart cart = orderRepository.GetCartByUserId(UserId);
+            Cart cart = orderRepository.GetCartByUserId(userId);
             if (cart.BookCarts != null)
             {
                 order.BookOrders = new List<BookOrder>();
@@ -106,7 +106,7 @@ namespace Cairo_book_fair.Services
             orderRepository.Insert(order);
             orderRepository.Save();
             bookCartRepository.RemoveAllItems(cart.Id);
-            return order.Id;
+           // return order.Id;
         }
 
 
