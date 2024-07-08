@@ -24,6 +24,7 @@ namespace Cairo_book_fair.Services
 
         private string GetCurrentUserId()
         {
+           
             return httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
         private string GetCurrentUserName()
@@ -69,11 +70,11 @@ namespace Cairo_book_fair.Services
             return ordersDto;
         }
 
-        public async Task Insert()
+        public void Insert() 
         {
             Order order = new Order();      //mapper.Map<Order>(Orderdto);
             var userId = GetCurrentUserId();
-            order.UserId = userId;
+             order.UserId = userId;
             var user = orderRepository.GetUserById(userId);
             // order.ShipmentId = user.ShipmentId;
             Cart cart = orderRepository.GetCartByUserId(userId);
@@ -101,10 +102,11 @@ namespace Cairo_book_fair.Services
             else
             {
                 throw new Exception("Cart has no book carts");
-            }
+            } 
             orderRepository.Insert(order);
             orderRepository.Save();
             bookCartRepository.RemoveAllItems(cart.Id);
+           // return order.Id;
         }
 
 

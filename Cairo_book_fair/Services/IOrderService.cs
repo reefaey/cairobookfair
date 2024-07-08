@@ -1,4 +1,5 @@
 ﻿using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Models;
 
 namespace Cairo_book_fair.Services
 {
@@ -6,7 +7,8 @@ namespace Cairo_book_fair.Services
     {
         public OrderDto Get(int id);
         public List<OrderDto> GetAll();
-        public Task Insert();
+        public void Insert();
+
         //void Update(OrderDto item);
         void Delete(int id);
 
