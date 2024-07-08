@@ -64,10 +64,10 @@ namespace Cairo_book_fair.Controllers
             return Ok("عذراً هذا الكتاب غير موجود في السلة مسبقاً");
         }
 
-        [HttpPost("Buy-Regular-Book")]
-        public IActionResult InserItem(BookIdDTO bookItemWithUserID)
+        [HttpPost("Buy-Regular-Book/{id}")]
+        public IActionResult InserItem(int id)
         {
-            Book? book = _bookCartService.GetBook(bookItemWithUserID.bookId);
+            Book? book = _bookCartService.GetBook(id);
             if (book != null)
             {
                 
