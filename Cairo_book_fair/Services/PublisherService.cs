@@ -1,49 +1,111 @@
-﻿using Cairo_book_fair.Models;
+﻿using AutoMapper;
+using Cairo_book_fair.DTOs;
+using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
 
 namespace Cairo_book_fair.Services
 {
-    public class PublisherServicem : IPublisherService
+    public class PublisherService : IPublisherService
     {
         private readonly IPublisherRepository publisherRepository;
+        private readonly IMapper mapper;
 
-        public PublisherServicem(IPublisherRepository publisherRepository)
+        public PublisherService(IPublisherRepository publisherRepository, IMapper mapper)
         {
             this.publisherRepository = publisherRepository;
+            this.mapper = mapper;
         }
-        public void Delete(Publisher item)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        public void Delete(int id)
         {
-            publisherRepository.Delete(item);
+            Publisher publisherDb = publisherRepository.Get(id);
+            if (publisherDb != null)
+            {
+                publisherRepository.Delete(publisherDb);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"This Publisher with Id :{id} was not found.");
+
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+        ///
+
+        public List<BookDTO> GetPublisherBooks(int publisherID)
+        {
+            try
+            {
+                List<Book> Books = publisherRepository.GetPublisherBooks(publisherID);
+                var bookDtos = mapper.Map<List<BookDTO>>(Books);
+
+                return bookDtos;
+            }
+            catch (Exception ex) { Console.WriteLine($"Error retrieving publisher books: {ex.Message}"); return new List<BookDTO>(); }
+
         }
 
-        public Publisher Get(int id)
+        public PublisherDto Get(int id, string[] include = null)
         {
-            return publisherRepository.Get(id);
+            string[] includeProperties = { "Block", "Books" };
+
+            Publisher publisherDB = publisherRepository.Get(id, includeProperties);
+            PublisherDto publisherDTO = mapper.Map<PublisherDto>(publisherDB);
+            return publisherDTO;
         }
 
-        public List<Publisher> Get(Func<Publisher, bool> where)
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        public PaginatedList<PublisherDto> GetPaginatedPublisher(int page, int pageSize, string[] include = null)
         {
-            return publisherRepository.Get(where);
+            string[] includeProperties = { "Block", "Books" };
+            PaginatedList<Publisher> paginatedList = publisherRepository.GetPaginatedPublisher(page, pageSize, includeProperties);
+            IEnumerable<PublisherDto> publisherDTOs = mapper.Map<IEnumerable<PublisherDto>>(paginatedList.Items);
+            PaginatedList<PublisherDto> paginatedListDTO = new()
+            {
+                TotalPages = paginatedList.TotalPages,
+                TotalItems = paginatedList.TotalItems,
+                CurrentPage = paginatedList.CurrentPage,
+                Items = publisherDTOs
+            };
+            return paginatedListDTO;
         }
 
-        public List<Publisher> GetAll(string include = null)
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public void Insert(PublisherDtoForInsert publisherDTO)
         {
-            return publisherRepository.GetAll(include);
+            Publisher publisherDB = mapper.Map<Publisher>(publisherDTO);
+            publisherRepository.Insert(publisherDB);
         }
 
-        public void Insert(Publisher item)
-        {
-            publisherRepository.Insert(item);
-        }
-
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         public void Save()
         {
             publisherRepository.Save();
         }
 
-        public void Update(Publisher item)
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        public void Update(int id, PublisherDtoForInsert item)
         {
-            publisherRepository.Update(item);
+            Publisher publisherDB = publisherRepository.Get(id);
+            if (publisherDB != null)
+            {
+                mapper.Map(item, publisherDB);
+                publisherRepository.Update(publisherDB);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"This Publisher with Id :{id} was not found.");
+            }
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        public List<PublisherDto> Search(string SearchPublisherName)
+        {
+            List<Publisher> publishersDB = publisherRepository.Search(SearchPublisherName);
+            List<PublisherDto> publishersDTO = mapper.Map<List<PublisherDto>>(publishersDB);
+            return publishersDTO;
+
         }
     }
 }

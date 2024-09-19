@@ -1,21 +1,24 @@
 ﻿using Cairo_book_fair.DTOs;
-using Cairo_book_fair.Models;
 
 namespace Cairo_book_fair.Services
 {
     public interface IBookService
     {
 
-        public PaginatedList<BookWithDetails> GetPaginatedBooks(int page = 1, int pageSize = 10, string[] include = null);
-        public List<BookWithDetails> GetAll(string[] include = null);
-        List<Book> Get(Func<Book, bool> where);
+        public PaginatedList<BookWithDetails> GetPaginatedBooks(int page, int pageSize, string[] include = null);
+        public PaginatedList<UsedBookDtoGet> GetPaginatedUsedBooks(int page, int pageSize, string[] include = null);
         BookWithDetails Get(int id, string[] include = null);
-        void Insert(Book item);
-        void Update(Book item);
-        void Delete(Book item);
+        UsedBookDtoGet GetUsedBook(int id, string[] include = null);
+        void Insert(BookDTO item);
+        void InsertUsedBook(UsedBookDtoInsert item);
+        void Update(int id, BookDTO item);
+        void UpdateUsedBook(int id, UsedBookDtoInsert item);
+        void Delete(int id);
+        void DeleteUsedBook(int id);
         public void Save();
         public List<BookWithDetails> Search(string SearchBookName);
-
+        public List<ReviewDTO> GetBooksReviews(int bookid);
+        public List<UsedBookDtoGet> SearchUsedBook(string SearchBookName);
 
     }
 }

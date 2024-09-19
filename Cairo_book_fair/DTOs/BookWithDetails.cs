@@ -2,8 +2,10 @@
 {
     public class BookWithDetails
     {
+        public int Id { get; set; }
         public string BookName { get; set; }
         public string AuthorName { get; set; }
+        public string Price { get; set; }
         public int HallNumber { get; set; }
         public string BlockName { get; set; }
         public string ImageUrl { get; set; }
@@ -11,6 +13,5 @@
         public int? PagesNumber { get; set; }
         public List<string> CategoryNames { get; set; }
         public string? SoundBook { get; set; }
-
     }
 }

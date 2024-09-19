@@ -2,6 +2,7 @@
 using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cairo_book_fair.Services
 {
@@ -9,11 +10,13 @@ namespace Cairo_book_fair.Services
     {
         private readonly IAuthorRepository authorRepository;
         public readonly IBookRepository bookRepository;
+        private readonly Context _context;
 
-        public AuthorService(IAuthorRepository authorRepository, IBookRepository bookRepository)
+        public AuthorService(IAuthorRepository authorRepository, IBookRepository bookRepository, Context context)
         {
             this.authorRepository = authorRepository;
             this.bookRepository = bookRepository;
+            _context = context;
         }
 
         //***************************************************
@@ -48,6 +51,7 @@ namespace Cairo_book_fair.Services
             var authors = authorRepository.GetAll(include)
                 .Select(author => new AuthorDTO
                 {
+                    Id = author.Id,
                     Name = author.Name,
                     Image = author.Image,
                     Description = author.Description,
@@ -64,14 +68,24 @@ namespace Cairo_book_fair.Services
 
         public AuthorDTO Get(int id)
         {
-            Author author = authorRepository.Get(id);
+            Author author = _context.Authors.Include(b => b.Books).FirstOrDefault(i => i.Id == id);
             AuthorDTO authorDTO = new();
+            List<BookVM> books = new List<BookVM>();
 
+            authorDTO.Id = author.Id;
             authorDTO.Name = author.Name;
             authorDTO.Description = author.Description;
             authorDTO.Image = author.Image;
             authorDTO.NumberOfBooks = author.NumberOfBooks;
+            foreach (var book in author.Books)
 
+                books.Add(new BookVM
+                {
+                    Id = book.Id,
+                    Name = book.Name,
+
+                });
+            authorDTO.Books = books;
             return authorDTO;
         }
 
@@ -107,6 +121,7 @@ namespace Cairo_book_fair.Services
             item.NumberOfBooks = author.NumberOfBooks;
 
             authorRepository.Update(item);
+            authorRepository.Save();
 
         }
 
@@ -121,10 +136,12 @@ namespace Cairo_book_fair.Services
             List<Author> authorsPerPage = authors.Skip((page -1) * pageSize).Take(pageSize).ToList();
 
             List<AuthorDTO> paginatedAuthors = new();
-            foreach(Author author in authors)
+
+            foreach(Author author in authorsPerPage)
             {
                 paginatedAuthors.Add(new AuthorDTO
                 {
+                    Id = author.Id,
                     Name = author.Name,
                     Description = author.Description,
                     Image = author.Image,
@@ -134,6 +151,30 @@ namespace Cairo_book_fair.Services
             }
             return paginatedAuthors;
         }
+
+        public List<AuthorDTO> GetSearchResult(string term)
+        {
+            List<Author> Result = authorRepository.GetSearchResult(term);
+            List<AuthorDTO> ResultList = new List<AuthorDTO>();
+            if (Result != null)
+            {
+                foreach (Author author in Result) 
+                {
+                    ResultList.Add(new AuthorDTO
+                    {
+                        Id = author.Id,
+                        Name = author.Name,
+                        Description = author.Description,
+                        Image = author.Image,
+                        NumberOfBooks = author.NumberOfBooks,
+
+                    });
+                }
+            }
+
+            return ResultList;
+        }
+
 
         public void Save()
         {

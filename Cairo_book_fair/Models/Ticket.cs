@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cairo_book_fair.Models
 {
@@ -6,13 +7,11 @@ namespace Cairo_book_fair.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int TicketNum { get; set; }
-        public int phone { get; set; }
-
-        public float Price { get; set; }
-        public string side { get; set; }
-
-        public DateTime DateTime { get; set; }
+        [MaxLength(11)]
+        public string Phone { get; set; }
+        public decimal Price { get; set; } = 5;
+        public int NoofTicket { get; set; } = 1;
+        public DateTime DateTime { get; set; } = DateTime.Now;
 
         [ForeignKey("User")]
         public string UserId { get; set; }

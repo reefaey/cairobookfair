@@ -20,17 +20,11 @@ namespace Cairo_book_fair.Repositories
             context.Remove(item);
         }
 
-        public UsedBook Get(int id, string[] include = null)
+        public UsedBook Get(int id)
         {
-            IQueryable<UsedBook> query = context.UsedBooks;
-            if (include != null)
-            {
-                foreach (var navigationProperty in include)
-                {
-                    query = query.Include(navigationProperty);
-                }
-            }
-            return query.FirstOrDefault(b => b.Id == id);
+            return context.UsedBooks
+                      .Include(ub => ub.User)
+                      .FirstOrDefault(ub => ub.Id == id);
         }
 
         public List<UsedBook> Get(Func<UsedBook, bool> where)
@@ -50,16 +44,17 @@ namespace Cairo_book_fair.Repositories
             }
             return query.ToList();
         }
-        public PaginatedList<UsedBook> GetPaginatedBooks(int page = 1, int pageSize = 10, string[] include = null)
+        public PaginatedList<UsedBook> GetPaginatedBooks(int page, int pageSize, string[] include = null)
         {
-            IQueryable<UsedBook> query = context.UsedBooks;
-            if (include != null)
-            {
-                foreach (var navigationProperty in include)
-                {
-                    query = query.Include(navigationProperty);
-                }
-            }
+            IQueryable<UsedBook> query = context.UsedBooks.Include(ub => ub.User);
+            //if (include != null)
+            //{
+            //    foreach (var navigationProperty in include)
+            //    {
+            //        query = query.Include(navigationProperty);
+            //    }
+            //}
+
 
             if (page < 1)
             {
@@ -100,7 +95,7 @@ namespace Cairo_book_fair.Repositories
         public List<UsedBook> Search(string SearchBookName)
         {
             List<UsedBook> filteredBooks = context.UsedBooks
-            .Where(b => b.Name.Contains(SearchBookName)).ToList();
+            .Where(b => b.BookName.Contains(SearchBookName)).ToList();
 
             return filteredBooks;
 
@@ -119,6 +114,11 @@ namespace Cairo_book_fair.Repositories
         public void Update(UsedBook item)
         {
             context.Update(item);
+        }
+
+        public User GetUserById(string userId)
+        {
+            return context.Users.SingleOrDefault(u => u.Id == userId);
         }
     }
 

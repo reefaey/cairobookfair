@@ -20,8 +20,8 @@ namespace Cairo_book_fair.DTOs
         public string Fullname { get; set; }
         [Required]
         public string Email { get; set; }
-        public string Location { get; set; }
-        public string ProfileImage { get; set; }
-        public string Bio { get; set; } = " ";
+        public string? Location { get; set; }
+        public string? ProfileImage { get; set; }
+        public string? Bio { get; set; } = " ";
     }
 }

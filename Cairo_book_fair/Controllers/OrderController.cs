@@ -1,4 +1,4 @@
-﻿using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,60 +16,56 @@ namespace Cairo_book_fair.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll(string? include = null)
+        public IActionResult GetAll()
         {
-            List<Order> orders = orderService.GetAll(include);
-
-            return Ok(orders);
+            List<OrderDto> orders = orderService.GetAll();
+            if (orders != null)
+            {
+                return Ok(orders);
+            }
+            return NotFound();
         }
 
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            Order order = orderService.Get(id);
+            OrderDto order = orderService.Get(id);
 
             if (order != null)
             {
                 return Ok(order);
             }
 
-            return BadRequest();
+            return NotFound();
         }
 
         [HttpPost]
-        public IActionResult Insert(Order order)
+        public IActionResult Insert()
         {
-            if (ModelState.IsValid == true)
-            {
-                orderService.Insert(order);
 
-                orderService.Save();
+           orderService.Insert();
 
-                return CreatedAtAction("Get", new { id = order.Id }, order);
-            }
+            return Ok();
 
-            return BadRequest(ModelState);
         }
 
-        [HttpPut]
-        public IActionResult Update(Order order)
-        {
-            if (ModelState.IsValid == true)
-            {
-                orderService.Update(order);
+        //[HttpPut]
+        //public IActionResult Update(OrderDto order)
+        //{
+        //    if (ModelState.IsValid == true)
+        //    {
+        //        orderService.Update(order);
 
-                orderService.Save();
+        //        return Ok();
+        //    }
 
-                return NoContent();
-            }
-
-            return BadRequest(ModelState);
-        }
+        //    return BadRequest(ModelState);
+        //}
 
         [HttpDelete]
-        public IActionResult Delete(Order order)
+        public IActionResult Delete(int id)
         {
-            orderService.Delete(order);
+            orderService.Delete(id);
             return NoContent();
         }
     }

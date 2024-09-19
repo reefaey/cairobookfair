@@ -11,6 +11,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Google.Apis.Auth;
+using Cairo_book_fair.Repositories;
+using Cairo_book_fair.Services;
 
 namespace Cairo_book_fair.Controllers
 {
@@ -20,11 +22,13 @@ namespace Cairo_book_fair.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ICartService _cartService;
         //private readonly ILogger<AccountController> _logger;
-        public AccountController(UserManager<User> userManager, IConfiguration configuration)
+        public AccountController(UserManager<User> userManager, IConfiguration configuration, ICartService cartService)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _cartService = cartService;
         }
 
         [HttpPost("register")]
@@ -32,6 +36,8 @@ namespace Cairo_book_fair.Controllers
         {
             if (ModelState.IsValid)
             {
+
+
                 //create acc
                 User user = new User()
                 {
@@ -41,13 +47,22 @@ namespace Cairo_book_fair.Controllers
                     Name = NewUser.Fullname,
                     Location = NewUser.Location,
                     ProfileImage = NewUser.ProfileImage,
-                    Bio = NewUser.Bio
+                    Bio = NewUser.Bio,
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, NewUser.Password);
+
                 if (result.Succeeded)
                 {
-                    return Ok( new { message = "User registered successfully" });
+                    _cartService.Insert(user.Id);
+                    _cartService.Save();
+                    //_cartService.UpdateID(user.CartId, user.Id);
+
+                    IdentityResult res = await _userManager.AddToRoleAsync(user, "User");
+                    if (res.Succeeded)
+                    {
+                        return Ok(new { message = "User registered successfully" });
+                    }
                 }
                 return BadRequest(result.Errors);
 
@@ -79,7 +94,7 @@ namespace Cairo_book_fair.Controllers
                             issuer: _configuration["JWT:ValidIssuer"],
                             audience: _configuration["JWT:ValidAudience"],
                             claims: MyClaims,
-                            expires: DateTime.Now.AddMinutes(5),
+                            expires: DateTime.Now.AddDays(1),
                             notBefore: null
                             );
                         JwtSecurityToken token = new(JWTHeader, pyload);
@@ -87,7 +102,8 @@ namespace Cairo_book_fair.Controllers
                             new
                             {
                                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                            }
+                                id = userDb.Id
+                            } 
                         );
                     }
                 }
@@ -182,12 +198,18 @@ namespace Cairo_book_fair.Controllers
         public async Task<ActionResult> GoogleLogin([FromBody] GoogleLoginDTO googleLoginDto)
         {
             string idtoken = googleLoginDto.IdToken;
+
+            var googleClientId = _configuration["GoogleOAuth:ClientId"];
+            var googleClientSecret = _configuration["GoogleOAuth:ClientSecret"];
+
+            if (string.IsNullOrEmpty(googleClientId))
+            {
+                throw new ArgumentException("The 'ClientId' option must be provided.", nameof(googleClientId));
+            }
+
             var setting = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new string[] 
-                {
-                    "1058478672774-r4eisi8our5n78186g1eie17ubaovfsd.apps.googleusercontent.com"
-                }
+                Audience = new string[] { googleClientId }
             };
             var result = await GoogleJsonWebSignature.ValidateAsync(idtoken,setting);
             if(result != null)

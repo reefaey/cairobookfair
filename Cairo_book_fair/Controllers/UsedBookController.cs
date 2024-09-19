@@ -1,4 +1,4 @@
-﻿using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,29 +15,19 @@ namespace Cairo_book_fair.Controllers
             this.usedBookService = usedBookService;
         }
 
-        [HttpGet]
-        public IActionResult GetAll(string[] includes = null)
-        {
-            List<UsedBook> books = usedBookService.GetAll(includes);
-            if (books != null)
-            {
-                return Ok(books);
-            }
-            return BadRequest();
-        }
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpGet("Paginated")]
         public IActionResult GetPaginatedBooks(int pageNo, int pagesize, string[] includes = null)
         {
-            return Ok(usedBookService.GetPaginatedBooks());
+            return Ok(usedBookService.GetPaginatedBooks(pageNo, pagesize));
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id, string[] include = null)
+        public IActionResult Get(int id)
         {
-            UsedBook book = usedBookService.Get(id, include);
+            UsedBookDto book = usedBookService.Get(id);
             if (book != null)
             {
                 return Ok(book);
@@ -47,41 +37,43 @@ namespace Cairo_book_fair.Controllers
         /////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost]
-        public IActionResult Insert(UsedBook bookDB)
+        public IActionResult Insert(UsedBookForInsert bookDB)
         {
             if (ModelState.IsValid == true)
             {
                 usedBookService.Insert(bookDB);
                 usedBookService.Save();
-                return CreatedAtAction("Get", new { id = bookDB.Id }, bookDB);
+                //return CreatedAtAction("Get", new { id = bookDB }, bookDB);
+                return Ok(bookDB);
             }
             return BadRequest(ModelState);
         }
         ////////////////////////////////////////////////////////////////////////////////
         ///
         [HttpPut]
-        public IActionResult Update(UsedBook bookDB)
+        public IActionResult Update(int id, UsedBookForInsert bookDB)
         {
             if (ModelState.IsValid == true)
             {
-                usedBookService.Update(bookDB);
+                usedBookService.Update(id, bookDB);
                 usedBookService.Save();
-                return NoContent();
+                return Ok();
             }
             return BadRequest(ModelState);
         }
         //////////////////////////////////////////////////////////////////
         [HttpDelete]
-        public IActionResult Delete(UsedBook book)
+        public IActionResult Delete(int id)
         {
-            usedBookService.Delete(book);
+            usedBookService.Delete(id);
+            usedBookService.Save();
             return NoContent();
         }
         ///////////////////////////////////////////////////////////////////////////////
         [HttpGet("Search")]
         public IActionResult Search(String search)
         {
-            List<UsedBook> books = usedBookService.Search(search);
+            List<UsedBookDto> books = usedBookService.Search(search);
             if (books != null)
             {
                 return Ok(books);

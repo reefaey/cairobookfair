@@ -1,4 +1,4 @@
-﻿using Cairo_book_fair.Models;
+﻿using Cairo_book_fair.DTOs;
 using Cairo_book_fair.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,18 +14,18 @@ namespace Cairo_book_fair.Controllers
         {
             this.publisherService = publisherService;
         }
-        [HttpGet]
-        public IActionResult GetAll(string? include = null)
-        {
-            List<Publisher> publishers = publisherService.GetAll(include);
+        //////////////////////////////////////////////////////////////////////////////////////////////////
 
-            return Ok(publishers);
+        [HttpGet("Paginated")]
+        public IActionResult GetPaginatedPublisher(int pageNo, int pagesize)
+        {
+            return Ok(publisherService.GetPaginatedPublisher(pageNo, pagesize));
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult Get(int id)
+        [HttpGet("publisherBooks")]
+        public IActionResult GetPublisherBooks(int publisherID)
         {
-            Publisher publisher = publisherService.Get(id);
+            List<BookDTO> publisher = publisherService.GetPublisherBooks(publisherID);
 
             if (publisher != null)
             {
@@ -33,43 +33,78 @@ namespace Cairo_book_fair.Controllers
             }
 
             return BadRequest();
+
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
+        {
+            PublisherDto publisher = publisherService.Get(id);
+            if (publisher != null)
+            {
+                return Ok(publisher);
+            }
+            return BadRequest();
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPost]
-        public IActionResult Insert(Publisher publisher)
+        public IActionResult Insert(PublisherDtoForInsert publisher)
         {
             if (ModelState.IsValid == true)
             {
                 publisherService.Insert(publisher);
-
                 publisherService.Save();
-
-                return CreatedAtAction("Get", new { id = publisher.Id }, publisher);
+                return Ok();
             }
-
             return BadRequest(ModelState);
         }
-
+        ////////////////////////////////////////////////////////////////////////////////
+        ///
         [HttpPut]
-        public IActionResult Update(Publisher publisher)
+        public IActionResult Update(int id, PublisherDtoForInsert publisher)
         {
             if (ModelState.IsValid == true)
             {
-                publisherService.Update(publisher);
-
-                publisherService.Save();
-
-                return NoContent();
+                try
+                {
+                    publisherService.Update(id, publisher);
+                    publisherService.Save();
+                    return NoContent();
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-
             return BadRequest(ModelState);
         }
-
+        //////////////////////////////////////////////////////////////////
         [HttpDelete]
-        public IActionResult Delete(Publisher publisher)
+        public IActionResult Delete(int id)
         {
-            publisherService.Delete(publisher);
-            return NoContent();
+            try
+            {
+                publisherService.Delete(id);
+                publisherService.Save();
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        ///////////////////////////////////////////////////////////////////////////////
+        [HttpGet("Search")]
+        public IActionResult Search(String search)
+        {
+            List<PublisherDto> publishers = publisherService.Search(search);
+            if (publishers != null)
+            {
+                return Ok(publishers);
+            }
+            return NotFound("No books found");
         }
     }
 }

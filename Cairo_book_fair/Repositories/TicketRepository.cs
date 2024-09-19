@@ -7,4 +7,9 @@ public class TicketRepository : Repository<Ticket>, ITicketRepository
     public TicketRepository(Context _context) : base(_context)
     {
     }
+
+    public Ticket GetTicketByUserId(string userId)
+    {
+        return Context.Set<Ticket>().Where(c => c.UserId == userId).FirstOrDefault();
+    }
 }

@@ -2,6 +2,7 @@ using Cairo_book_fair.DBContext;
 using Cairo_book_fair.Models;
 using Cairo_book_fair.Repositories;
 using Cairo_book_fair.Services;
+using Cairo_book_fair.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 
@@ -17,6 +18,8 @@ namespace Cairo_book_fair
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var googleClientId = builder.Configuration["GoogleOAuth:ClientId"];
+
 
             // Add services to the container.
 
@@ -25,10 +28,10 @@ namespace Cairo_book_fair
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer("Data Source=.;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+                options.UseSqlServer("Data Source=.;Initial Catalog=CairoBookDB;Integrated Security=True;Encrypt=False");
             });
 
-            builder.Services.AddCors(options => 
+            builder.Services.AddCors(options =>
             options.AddPolicy("MyPolicy", policy =>
                 policy.AllowAnyMethod()
                 .AllowAnyHeader()
@@ -59,30 +62,42 @@ namespace Cairo_book_fair
 
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme =
-                JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
             }).AddJwtBearer(options =>
             {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters()
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new
-                                SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigninKey"]))
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigninKey"]))
                 };
-            });//.AddGoogle(googleOptions =>
+            }).AddGoogle(options =>
+            {
+                options.ClientId = googleClientId;
+                options.ClientSecret = builder.Configuration["GoogleOAuth:ClientSecret"]; // Make sure this is also set
+            });
+
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+            });
+
+
+            //.AddGoogle(googleOptions =>
             //{
             //    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]; ;
             //    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
             //});
+
+
 
             builder.Services.AddSwaggerGen(swagger =>
             {
@@ -119,13 +134,18 @@ namespace Cairo_book_fair
                     });
             });
 
+
             //~~Abdallah Services~~//
             builder.Services.AddScoped<IRepository<Author>, Repository<Author>>();
             builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
-
+            builder.Services.AddScoped<IBookCartRepository, BookCartRepository>();
+            builder.Services.AddScoped<IBookCartService, BookCartService>();
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IAuthorService, AuthorService>();
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<ITicketService, TicketService>();
 
             //Abdelraheem Services//
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -136,14 +156,28 @@ namespace Cairo_book_fair
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IUsedBookRepository, UsedBookRepository>();
             builder.Services.AddScoped<IUsedBookService, UsedBookService>();
+            builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+            builder.Services.AddScoped<IPublisherService, PublisherService>();
 
+            //okayyy
+            builder.Services.AddScoped<ITransportationService, TransportationService>();
+            builder.Services.AddScoped<IVisitorsService, VisitorService>();
+
+            builder.Services.AddScoped<IVisitorRepository, VisitorRepository>();
+            builder.Services.AddScoped<ITransportationRepository, TransportationRepository>();
 
 
             builder.Services.AddAutoMapper(typeof(Program));
 
 
-            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-            builder.Services.AddScoped<ITicketService, TicketService>();
+
+
+            //review and shipment services
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+
+            builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            builder.Services.AddScoped<IShipmentService, ShipmentService>();
 
 
             var app = builder.Build();
@@ -154,12 +188,32 @@ namespace Cairo_book_fair
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            // make sure database is created before running the application.//
+            /*using (var scope = app.Services.CreateScope())
+            {
+                try
+                {
+                    var Services = scope.ServiceProvider;
+                    var context = Services.GetRequiredService<Context>();
+                    context.Database.EnsureCreated();
+
+                }
+                catch (Exception ex)
+                {
+                    var LoggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+                    var Logger = LoggerFactory.CreateLogger<Program>();
+                    Logger.LogError(ex, ex.Message);
+                }
+            }*/
+
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles(); // to make it able to read static pages in wwwroot if needed
 
             app.UseCors("MyPolicy"); // to make the provider able to serve consumer from other domains
 
-            app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

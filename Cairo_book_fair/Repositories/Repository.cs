@@ -1,5 +1,7 @@
 ﻿using Cairo_book_fair.DBContext;
+using Cairo_book_fair.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Cairo_book_fair.Repositories
 {
@@ -52,5 +54,11 @@ namespace Cairo_book_fair.Repositories
         {
             Context.Update(item);
         }
+
+        //public bool CompareLoginUserWithUserId(string userID)
+        //{
+        //    return userID == User.FindFirstValue(ClaimTypes.NameIdentifier) ? true : false;
+        //}
     }
+
 }
